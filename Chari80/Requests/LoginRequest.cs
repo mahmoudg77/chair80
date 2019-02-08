@@ -9,6 +9,5 @@ namespace Chari80.Requests
     {
         public string username { get; set; }
         public string password { get; set; }
-        public Nullable<bool> remember { get; set; }
     }
 }

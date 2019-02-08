@@ -13,12 +13,18 @@ namespace Chari80
 
             // Web API routes
             config.MapHttpAttributeRoutes();
-
+            //config.Routes.MapHttpRoute(
+            //    name: "ApiWithAction",
+            //    routeTemplate: "{controller}/{Action}/{id}",
+            //    defaults: new { id = RouteParameter.Optional , Action = RouteParameter.Optional }
+            //);
             config.Routes.MapHttpRoute(
                 name: "DefaultApi",
-                routeTemplate: "api/{controller}/{id}",
+                routeTemplate: "{controller}/{id}",
                 defaults: new { id = RouteParameter.Optional }
             );
+            config.Formatters.XmlFormatter.SupportedMediaTypes.Add(new System.Net.Http.Headers.MediaTypeHeaderValue("multipart/form-data"));
+
         }
     }
 }

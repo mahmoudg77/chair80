@@ -1,4 +1,5 @@
 ﻿using Chari80.BLL.Security;
+using Chari80.Libs;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -11,14 +12,14 @@ using System.Web.Http;
 using System.Web.Http.Controllers;
 using System.Web.Http.Filters;
 
-namespace Chari80.Libs
+namespace Chari80.Filters
 {
     public class AppFilter : ActionFilterAttribute
     {
         public static readonly string[] AppKeys={
-                                                "Rxs6t5jHwtLwwvjyW9RXHuDwP2HH52Dn9FmN83sDiDSECF6XqcJuC6CLdRvS8R7KtMwPVcPEyGcbqmxF",//android
-                                                "Wnmbyz22xi7prd7uTL6h7ZVzG28NHaWoU7FWXeQ4cWUFnxRzxuQFvH6yJc3Hb8wZkNbjj3a5kSCQPGew",//web
-                                                "4EfzxTXb6g7dJVm5rXTjAynHxYbdAHmRHm5eavoL2BdWLovL6dA34CxrBopF8fcVN5yU9zfrp9H4avzf"//ios
+                                                "Q5rNWze8jtcYqxpqiuBswm7a7AZP3uoWiHi4Q9QNpyThs6GGkGQNszLcx8soqrpkdQkBAFDeFbcuKUWg",//android
+                                                "tVbA82DwfCx2QL3UumZV2z8mTZnmzKMDGcjuikccGc933vpAfx2PDitmZmFdAbVF5LkZ9GWRtkq4j8kT",//web
+                                                "QMmVx3PDVEnJ24kZdyzJ3PJoCdWnn9cvZ98F4NuNCdRHLbTMFCzKdgvydRd8G8jAAFtxpUmgUE36MCBA"//ios
                                                 };
         public override void OnActionExecuting(HttpActionContext actionContext)
         {
