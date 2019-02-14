@@ -193,11 +193,7 @@
     <Compile Include="BLL\Sessions.cs" />
     <Compile Include="BLL\Setting.cs" />
     <Compile Include="BLL\Users.cs" />
-    <Compile Include="Controllers\AdminApiController.cs" />
-    <Compile Include="Controllers\ClientApiController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\AdminApi\LookUpController.cs" />
-    <Compile Include="Controllers\Security\SecRoleController.cs" />
     <Compile Include="Controllers\Security\UserController.cs" />
     <Compile Include="DAL\DataAccess.cs" />
     <Compile Include="DAL\Model1.Context.cs">
@@ -265,6 +261,7 @@
     <Compile Include="Filters\AppFilter.cs" />
     <Compile Include="Libs\DataTableFilters.cs" />
     <Compile Include="Libs\DataTableResponse.cs" />
+    <Compile Include="Libs\ErrorHandler.cs" />
     <Compile Include="Libs\Extentions.cs" />
     <Compile Include="Libs\Functions.cs" />
     <Compile Include="Libs\General.cs" />
@@ -339,6 +336,8 @@
     <Content Include="DAL\Model1.edmx.diagram">
       <DependentUpon>Model1.edmx</DependentUpon>
     </Content>
+    <Content Include="App_Data\firebase-config.json" />
+    <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -365,7 +364,6 @@
     <Content Include="Views\Shared\_Layout.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="App_Data\" />
     <Folder Include="Controllers\ClientApi\" />
   </ItemGroup>
   <ItemGroup>

@@ -23,6 +23,11 @@ namespace Chari80
                 routeTemplate: "{controller}/{id}",
                 defaults: new { id = RouteParameter.Optional }
             );
+           // config.Routes.MapHttpRoute(
+           //    name: "AdminApi",
+           //    routeTemplate: "AdminApi/{controller}/{id}",
+           //    defaults: new { id = RouteParameter.Optional }
+           //);
             config.Formatters.XmlFormatter.SupportedMediaTypes.Add(new System.Net.Http.Headers.MediaTypeHeaderValue("multipart/form-data"));
 
         }
