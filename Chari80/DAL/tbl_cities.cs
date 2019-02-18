@@ -24,8 +24,8 @@ namespace Chari80.DAL
         public int country_id { get; set; }
         public string name { get; set; }
     
+        public virtual tbl_countries tbl_countries { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<tbl_accounts> tbl_accounts { get; set; }
-        public virtual tbl_countries tbl_countries { get; set; }
     }
 }

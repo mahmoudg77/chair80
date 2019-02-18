@@ -193,6 +193,7 @@
     <Compile Include="BLL\Sessions.cs" />
     <Compile Include="BLL\Setting.cs" />
     <Compile Include="BLL\Users.cs" />
+    <Compile Include="Controllers\Account\AccountController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\Security\UserController.cs" />
     <Compile Include="DAL\DataAccess.cs" />
@@ -280,6 +281,7 @@
     <Compile Include="Requests\APIRequest.cs" />
     <Compile Include="Requests\DataTableRequest.cs" />
     <Compile Include="Requests\HasAccessResponse.cs" />
+    <Compile Include="Requests\ActAsDriverRequest.cs" />
     <Compile Include="Requests\LoginRequest.cs" />
     <Compile Include="Requests\PasswordEditRequest.cs" />
     <Compile Include="Requests\SavePermissionRequest.cs" />
@@ -363,9 +365,7 @@
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Controllers\ClientApi\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
   </ItemGroup>

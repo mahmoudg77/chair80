@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="MainModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="MainModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="sec_access_right">
           <Key>
             <PropertyRef Name="id" />
@@ -94,18 +94,17 @@
           </Key>
           <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="first_name" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="second_name" Type="nvarchar" MaxLength="50" />
-          <Property Name="third_name" Type="nvarchar" MaxLength="50" />
           <Property Name="last_name" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="date_of_birth" Type="date" />
           <Property Name="mobile" Type="nvarchar" MaxLength="15" />
           <Property Name="email" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="register_time" Type="datetime" />
           <Property Name="is_deleted" Type="bit" />
-          <Property Name="country_id" Type="int" />
-          <Property Name="city_id" Type="int" />
           <Property Name="gender_id" Type="int" />
-          <Property Name="phone" Type="nvarchar" MaxLength="50" />
+          <Property Name="id_no" Type="nvarchar" MaxLength="50" />
+          <Property Name="driver_license_no" Type="nvarchar" MaxLength="50" />
+          <Property Name="city_id" Type="int" />
+          <Property Name="country_id" Type="int" />
         </EntityType>
         <EntityType Name="tbl_cities">
           <Key>
@@ -141,6 +140,8 @@
           <Property Name="meduim" Type="nvarchar" MaxLength="255" />
           <Property Name="large" Type="nvarchar" MaxLength="255" />
           <Property Name="original" Type="nvarchar" MaxLength="255" />
+          <Property Name="created_at" Type="datetime" />
+          <Property Name="created_by" Type="int" />
         </EntityType>
         <EntityType Name="tbl_setting">
           <Key>
@@ -238,6 +239,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_tbl_accounts_tbl_countries">
+          <End Role="tbl_countries" Type="Self.tbl_countries" Multiplicity="0..1" />
+          <End Role="tbl_accounts" Type="Self.tbl_accounts" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_countries">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="tbl_accounts">
+              <PropertyRef Name="country_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_tbl_accounts_tbl_genders">
           <End Role="tbl_genders" Type="Self.tbl_genders" Multiplicity="0..1" />
           <End Role="tbl_accounts" Type="Self.tbl_accounts" Multiplicity="*" />
@@ -303,6 +316,10 @@
             <End Role="tbl_cities" EntitySet="tbl_cities" />
             <End Role="tbl_accounts" EntitySet="tbl_accounts" />
           </AssociationSet>
+          <AssociationSet Name="FK_tbl_accounts_tbl_countries" Association="Self.FK_tbl_accounts_tbl_countries">
+            <End Role="tbl_countries" EntitySet="tbl_countries" />
+            <End Role="tbl_accounts" EntitySet="tbl_accounts" />
+          </AssociationSet>
           <AssociationSet Name="FK_tbl_accounts_tbl_genders" Association="Self.FK_tbl_accounts_tbl_genders">
             <End Role="tbl_genders" EntitySet="tbl_genders" />
             <End Role="tbl_accounts" EntitySet="tbl_accounts" />
@@ -312,8 +329,7 @@
             <End Role="tbl_cities" EntitySet="tbl_cities" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="MainModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -387,7 +403,7 @@
           <Property Name="firebase_uid" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="sec_sessions" Relationship="Self.FK_sec_sessions_sec_users" FromRole="sec_users" ToRole="sec_sessions" />
           <NavigationProperty Name="sec_users_roles" Relationship="Self.FK_sec_users_roles_sec_users" FromRole="sec_users" ToRole="sec_users_roles" />
-          <NavigationProperty Name="tbl_accounts" Relationship="Self.FK_sec_users_tbl_accounts" FromRole="sec_users" ToRole="tbl_accounts" />
+          <NavigationProperty Name="tbl_accounts" Relationship="MainModel.FK_sec_users_tbl_accounts" FromRole="sec_users" ToRole="tbl_accounts" />
         </EntityType>
         <EntityType Name="sec_users_roles">
           <Key>
@@ -409,28 +425,6 @@
           <Property Name="version" Type="Int32" />
           <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
         </EntityType>
-        <EntityType Name="tbl_accounts">
-          <Key>
-            <PropertyRef Name="id" />
-          </Key>
-          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="first_name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="second_name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="third_name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="last_name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="date_of_birth" Type="DateTime" Precision="0" />
-          <Property Name="mobile" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
-          <Property Name="email" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="register_time" Type="DateTime" Precision="3" />
-          <Property Name="is_deleted" Type="Boolean" />
-          <Property Name="country_id" Type="Int32" />
-          <Property Name="city_id" Type="Int32" />
-          <Property Name="gender_id" Type="Int32" />
-          <Property Name="phone" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="sec_users" Relationship="Self.FK_sec_users_tbl_accounts" FromRole="tbl_accounts" ToRole="sec_users" />
-          <NavigationProperty Name="tbl_cities" Relationship="Self.FK_tbl_accounts_tbl_cities" FromRole="tbl_accounts" ToRole="tbl_cities" />
-          <NavigationProperty Name="tbl_genders" Relationship="Self.FK_tbl_accounts_tbl_genders" FromRole="tbl_accounts" ToRole="tbl_genders" />
-        </EntityType>
         <EntityType Name="tbl_cities">
           <Key>
             <PropertyRef Name="id" />
@@ -438,8 +432,8 @@
           <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="country_id" Type="Int32" Nullable="false" />
           <Property Name="name" Type="String" MaxLength="300" FixedLength="false" Unicode="true" Nullable="false" />
-          <NavigationProperty Name="tbl_accounts" Relationship="Self.FK_tbl_accounts_tbl_cities" FromRole="tbl_cities" ToRole="tbl_accounts" />
           <NavigationProperty Name="tbl_countries" Relationship="Self.FK_tbl_cities_tbl_countries" FromRole="tbl_cities" ToRole="tbl_countries" />
+          <NavigationProperty Name="tbl_accounts" Relationship="MainModel.FK_tbl_accounts_tbl_cities" FromRole="tbl_cities" ToRole="tbl_accounts" />
         </EntityType>
         <EntityType Name="tbl_countries">
           <Key>
@@ -448,6 +442,7 @@
           <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="name" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="tbl_cities" Relationship="Self.FK_tbl_cities_tbl_countries" FromRole="tbl_countries" ToRole="tbl_cities" />
+          <NavigationProperty Name="tbl_accounts" Relationship="MainModel.FK_tbl_accounts_tbl_countries" FromRole="tbl_countries" ToRole="tbl_accounts" />
         </EntityType>
         <EntityType Name="tbl_genders">
           <Key>
@@ -455,7 +450,7 @@
           </Key>
           <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="name" Type="String" MaxLength="300" FixedLength="false" Unicode="true" Nullable="false" />
-          <NavigationProperty Name="tbl_accounts" Relationship="Self.FK_tbl_accounts_tbl_genders" FromRole="tbl_genders" ToRole="tbl_accounts" />
+          <NavigationProperty Name="tbl_accounts" Relationship="MainModel.FK_tbl_accounts_tbl_genders" FromRole="tbl_genders" ToRole="tbl_accounts" />
         </EntityType>
         <EntityType Name="tbl_images">
           <Key>
@@ -469,6 +464,8 @@
           <Property Name="meduim" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="large" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="original" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="created_at" Type="DateTime" Precision="3" />
+          <Property Name="created_by" Type="Int32" />
         </EntityType>
         <EntityType Name="tbl_setting">
           <Key>
@@ -542,42 +539,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_sec_users_tbl_accounts">
-          <End Role="tbl_accounts" Type="Self.tbl_accounts" Multiplicity="1" />
-          <End Role="sec_users" Type="Self.sec_users" Multiplicity="0..1" />
-          <ReferentialConstraint>
-            <Principal Role="tbl_accounts">
-              <PropertyRef Name="id" />
-            </Principal>
-            <Dependent Role="sec_users">
-              <PropertyRef Name="id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_tbl_accounts_tbl_cities">
-          <End Role="tbl_cities" Type="Self.tbl_cities" Multiplicity="0..1" />
-          <End Role="tbl_accounts" Type="Self.tbl_accounts" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="tbl_cities">
-              <PropertyRef Name="id" />
-            </Principal>
-            <Dependent Role="tbl_accounts">
-              <PropertyRef Name="city_id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_tbl_accounts_tbl_genders">
-          <End Role="tbl_genders" Type="Self.tbl_genders" Multiplicity="0..1" />
-          <End Role="tbl_accounts" Type="Self.tbl_accounts" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="tbl_genders">
-              <PropertyRef Name="id" />
-            </Principal>
-            <Dependent Role="tbl_accounts">
-              <PropertyRef Name="gender_id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_tbl_cities_tbl_countries">
           <End Role="tbl_countries" Type="Self.tbl_countries" Multiplicity="1">
             <OnDelete Action="Cascade" />
@@ -600,7 +561,6 @@
           <EntitySet Name="sec_users" EntityType="Self.sec_users" />
           <EntitySet Name="sec_users_roles" EntityType="Self.sec_users_roles" />
           <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" />
-          <EntitySet Name="tbl_accounts" EntityType="Self.tbl_accounts" />
           <EntitySet Name="tbl_cities" EntityType="Self.tbl_cities" />
           <EntitySet Name="tbl_countries" EntityType="Self.tbl_countries" />
           <EntitySet Name="tbl_genders" EntityType="Self.tbl_genders" />
@@ -623,23 +583,98 @@
             <End Role="sec_users" EntitySet="sec_users" />
             <End Role="sec_users_roles" EntitySet="sec_users_roles" />
           </AssociationSet>
-          <AssociationSet Name="FK_sec_users_tbl_accounts" Association="Self.FK_sec_users_tbl_accounts">
-            <End Role="tbl_accounts" EntitySet="tbl_accounts" />
-            <End Role="sec_users" EntitySet="sec_users" />
-          </AssociationSet>
-          <AssociationSet Name="FK_tbl_accounts_tbl_cities" Association="Self.FK_tbl_accounts_tbl_cities">
-            <End Role="tbl_cities" EntitySet="tbl_cities" />
-            <End Role="tbl_accounts" EntitySet="tbl_accounts" />
-          </AssociationSet>
-          <AssociationSet Name="FK_tbl_accounts_tbl_genders" Association="Self.FK_tbl_accounts_tbl_genders">
-            <End Role="tbl_genders" EntitySet="tbl_genders" />
-            <End Role="tbl_accounts" EntitySet="tbl_accounts" />
-          </AssociationSet>
           <AssociationSet Name="FK_tbl_cities_tbl_countries" Association="Self.FK_tbl_cities_tbl_countries">
             <End Role="tbl_countries" EntitySet="tbl_countries" />
             <End Role="tbl_cities" EntitySet="tbl_cities" />
           </AssociationSet>
+          <EntitySet Name="tbl_accounts" EntityType="MainModel.tbl_accounts" />
+          <AssociationSet Name="FK_sec_users_tbl_accounts" Association="MainModel.FK_sec_users_tbl_accounts">
+            <End Role="tbl_accounts" EntitySet="tbl_accounts" />
+            <End Role="sec_users" EntitySet="sec_users" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_accounts_tbl_cities" Association="MainModel.FK_tbl_accounts_tbl_cities">
+            <End Role="tbl_cities" EntitySet="tbl_cities" />
+            <End Role="tbl_accounts" EntitySet="tbl_accounts" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_accounts_tbl_countries" Association="MainModel.FK_tbl_accounts_tbl_countries">
+            <End Role="tbl_countries" EntitySet="tbl_countries" />
+            <End Role="tbl_accounts" EntitySet="tbl_accounts" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_accounts_tbl_genders" Association="MainModel.FK_tbl_accounts_tbl_genders">
+            <End Role="tbl_genders" EntitySet="tbl_genders" />
+            <End Role="tbl_accounts" EntitySet="tbl_accounts" />
+          </AssociationSet>
         </EntityContainer>
+        <EntityType Name="tbl_accounts">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="first_name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="last_name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="date_of_birth" Type="DateTime" Precision="0" />
+          <Property Name="mobile" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
+          <Property Name="email" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="register_time" Type="DateTime" Precision="3" />
+          <Property Name="is_deleted" Type="Boolean" />
+          <Property Name="gender_id" Type="Int32" />
+          <Property Name="id_no" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="driver_license_no" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="city_id" Type="Int32" />
+          <Property Name="country_id" Type="Int32" />
+          <NavigationProperty Name="sec_users" Relationship="MainModel.FK_sec_users_tbl_accounts" FromRole="tbl_accounts" ToRole="sec_users" />
+          <NavigationProperty Name="tbl_cities" Relationship="MainModel.FK_tbl_accounts_tbl_cities" FromRole="tbl_accounts" ToRole="tbl_cities" />
+          <NavigationProperty Name="tbl_countries" Relationship="MainModel.FK_tbl_accounts_tbl_countries" FromRole="tbl_accounts" ToRole="tbl_countries" />
+          <NavigationProperty Name="tbl_genders" Relationship="MainModel.FK_tbl_accounts_tbl_genders" FromRole="tbl_accounts" ToRole="tbl_genders" />
+        </EntityType>
+        <Association Name="FK_sec_users_tbl_accounts">
+          <End Type="MainModel.tbl_accounts" Role="tbl_accounts" Multiplicity="1" />
+          <End Type="MainModel.sec_users" Role="sec_users" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_accounts">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="sec_users">
+              <PropertyRef Name="id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_accounts_tbl_cities">
+          <End Type="MainModel.tbl_cities" Role="tbl_cities" Multiplicity="0..1" />
+          <End Type="MainModel.tbl_accounts" Role="tbl_accounts" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_cities">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="tbl_accounts">
+              <PropertyRef Name="city_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_accounts_tbl_countries">
+          <End Type="MainModel.tbl_countries" Role="tbl_countries" Multiplicity="0..1" />
+          <End Type="MainModel.tbl_accounts" Role="tbl_accounts" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_countries">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="tbl_accounts">
+              <PropertyRef Name="country_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_accounts_tbl_genders">
+          <End Type="MainModel.tbl_genders" Role="tbl_genders" Multiplicity="0..1" />
+          <End Type="MainModel.tbl_accounts" Role="tbl_accounts" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_genders">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="tbl_accounts">
+              <PropertyRef Name="gender_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -736,26 +771,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="tbl_accounts">
-            <EntityTypeMapping TypeName="MainModel.tbl_accounts">
-              <MappingFragment StoreEntitySet="tbl_accounts">
-                <ScalarProperty Name="id" ColumnName="id" />
-                <ScalarProperty Name="first_name" ColumnName="first_name" />
-                <ScalarProperty Name="second_name" ColumnName="second_name" />
-                <ScalarProperty Name="third_name" ColumnName="third_name" />
-                <ScalarProperty Name="last_name" ColumnName="last_name" />
-                <ScalarProperty Name="date_of_birth" ColumnName="date_of_birth" />
-                <ScalarProperty Name="mobile" ColumnName="mobile" />
-                <ScalarProperty Name="email" ColumnName="email" />
-                <ScalarProperty Name="register_time" ColumnName="register_time" />
-                <ScalarProperty Name="is_deleted" ColumnName="is_deleted" />
-                <ScalarProperty Name="country_id" ColumnName="country_id" />
-                <ScalarProperty Name="city_id" ColumnName="city_id" />
-                <ScalarProperty Name="gender_id" ColumnName="gender_id" />
-                <ScalarProperty Name="phone" ColumnName="phone" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="tbl_cities">
             <EntityTypeMapping TypeName="MainModel.tbl_cities">
               <MappingFragment StoreEntitySet="tbl_cities">
@@ -784,6 +799,8 @@
           <EntitySetMapping Name="tbl_images">
             <EntityTypeMapping TypeName="MainModel.tbl_images">
               <MappingFragment StoreEntitySet="tbl_images">
+                <ScalarProperty Name="created_by" ColumnName="created_by" />
+                <ScalarProperty Name="created_at" ColumnName="created_at" />
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="model_name" ColumnName="model_name" />
                 <ScalarProperty Name="model_id" ColumnName="model_id" />
@@ -816,6 +833,25 @@
               <MappingFragment StoreEntitySet="tbl_setting_types">
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="name" ColumnName="name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_accounts">
+            <EntityTypeMapping TypeName="MainModel.tbl_accounts">
+              <MappingFragment StoreEntitySet="tbl_accounts">
+                <ScalarProperty Name="country_id" ColumnName="country_id" />
+                <ScalarProperty Name="city_id" ColumnName="city_id" />
+                <ScalarProperty Name="driver_license_no" ColumnName="driver_license_no" />
+                <ScalarProperty Name="id_no" ColumnName="id_no" />
+                <ScalarProperty Name="gender_id" ColumnName="gender_id" />
+                <ScalarProperty Name="is_deleted" ColumnName="is_deleted" />
+                <ScalarProperty Name="register_time" ColumnName="register_time" />
+                <ScalarProperty Name="email" ColumnName="email" />
+                <ScalarProperty Name="mobile" ColumnName="mobile" />
+                <ScalarProperty Name="date_of_birth" ColumnName="date_of_birth" />
+                <ScalarProperty Name="last_name" ColumnName="last_name" />
+                <ScalarProperty Name="first_name" ColumnName="first_name" />
+                <ScalarProperty Name="id" ColumnName="id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

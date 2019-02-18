@@ -33,12 +33,12 @@ namespace Chari80.DAL
         public virtual DbSet<sec_users> sec_users { get; set; }
         public virtual DbSet<sec_users_roles> sec_users_roles { get; set; }
         public virtual DbSet<sysdiagrams> sysdiagrams { get; set; }
-        public virtual DbSet<tbl_accounts> tbl_accounts { get; set; }
         public virtual DbSet<tbl_cities> tbl_cities { get; set; }
         public virtual DbSet<tbl_countries> tbl_countries { get; set; }
         public virtual DbSet<tbl_genders> tbl_genders { get; set; }
         public virtual DbSet<tbl_images> tbl_images { get; set; }
         public virtual DbSet<tbl_setting> tbl_setting { get; set; }
         public virtual DbSet<tbl_setting_types> tbl_setting_types { get; set; }
+        public virtual DbSet<tbl_accounts> tbl_accounts { get; set; }
     }
 }

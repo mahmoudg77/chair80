@@ -82,15 +82,23 @@ namespace Chari80.Controllers
             try
             {
 
-
-
+                //foreach(var i in decodedToken.Claims.Keys)
+                //{
+                //    email=i;
+                //}
+                //phone_number
+                //email
+                //firebase
+                //email_verified
+                //user_id
+                //auth_time
                 if (decodedToken.Claims.Keys.Contains("email")) email = decodedToken.Claims.FirstOrDefault(a => a.Key == "email").Value.ToString();
 
                 if (decodedToken.Claims.Keys.Contains("name")) name = decodedToken.Claims.FirstOrDefault(a => a.Key == "name").Value.ToString();
 
                 if (decodedToken.Claims.Keys.Contains("picture")) picture = decodedToken.Claims.FirstOrDefault(a => a.Key == "picture").Value.ToString();
 
-                if (decodedToken.Claims.Keys.Contains("phoneNumber")) phone = decodedToken.Claims.FirstOrDefault(a => a.Key == "phoneNumber").Value.ToString();
+                if (decodedToken.Claims.Keys.Contains("phone_number")) phone = decodedToken.Claims.FirstOrDefault(a => a.Key == "phone_number").Value.ToString();
 
             }
             catch (Exception ex)
@@ -112,7 +120,7 @@ namespace Chari80.Controllers
             if (phone == "")
                 return new APIResult<LoginResponse>(ResultType.fail, null, "Phone is required!");
 
-            return await this.Auth(email,General.MD5( login.password), f_name, l_name, c, picture, "email", uid);
+            return await this.Auth(email,General.MD5(uid), f_name, l_name, c, picture, "email", uid, phone);
 
 
 
@@ -543,7 +551,7 @@ namespace Chari80.Controllers
        //     //}
        // }
 
-        private async Task<APIResult<LoginResponse>> Auth(string email, string password, string first_name, string last_name,HttpContext http, string pic = "", string network = "", string FirebaseUID = "")
+        private async Task<APIResult<LoginResponse>> Auth(string email, string password, string first_name, string last_name,HttpContext http, string pic = "", string network = "", string FirebaseUID = "", string phone="")
         {
             using (MainEntities ctx = new MainEntities())
             {
@@ -556,15 +564,15 @@ namespace Chari80.Controllers
                 {
 
                
-                    if (email != "")
-                    {
-                        dbuser = ctx.tbl_accounts.Include("sec_users").Where(a => a.email == email).FirstOrDefault();
-                    }
-                    else
-                    if (FirebaseUID != "")
-                    {
+                    //if (email != "")
+                    //{
+                    //    dbuser = ctx.tbl_accounts.Include("sec_users").Where(a => a.email == email).FirstOrDefault();
+                    //}
+                    //else
+                    //if (FirebaseUID != "")
+                    //{
                         dbuser = ctx.tbl_accounts.Include("sec_users").Where(a => a.sec_users.firebase_uid == FirebaseUID).FirstOrDefault();
-                    }
+                    //}
                     
                     if(dbuser==null)
                     {
@@ -573,7 +581,7 @@ namespace Chari80.Controllers
                         dbuser.first_name = first_name;
                         dbuser.last_name = last_name;
                         dbuser.register_time = DateTime.Now;
-
+                        dbuser.mobile = phone;
                         
                         ctx.tbl_accounts.Add(dbuser);
                         try
@@ -603,8 +611,8 @@ namespace Chari80.Controllers
                 }
                 catch (Exception ex)
                 {
-
-                    return new APIResult<LoginResponse>(ResultType.fail, null, ex.Message + "get dbuser");
+                    throw ex;
+                   // return new APIResult<LoginResponse>(ResultType.fail, null, ex.Message + "get dbuser");
 
                 }
                 tbl_images img = ctx.tbl_images.Where(a => a.model_name == "tbl_accounts" && a.model_id == dbuser.id && a.model_tag == "main").FirstOrDefault();

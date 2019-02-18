@@ -16,21 +16,21 @@ namespace Chari80.DAL
     {
         public int id { get; set; }
         public string first_name { get; set; }
-        public string second_name { get; set; }
-        public string third_name { get; set; }
         public string last_name { get; set; }
         public Nullable<System.DateTime> date_of_birth { get; set; }
         public string mobile { get; set; }
         public string email { get; set; }
         public Nullable<System.DateTime> register_time { get; set; }
         public Nullable<bool> is_deleted { get; set; }
-        public Nullable<int> country_id { get; set; }
-        public Nullable<int> city_id { get; set; }
         public Nullable<int> gender_id { get; set; }
-        public string phone { get; set; }
+        public string id_no { get; set; }
+        public string driver_license_no { get; set; }
+        public Nullable<int> city_id { get; set; }
+        public Nullable<int> country_id { get; set; }
     
         public virtual sec_users sec_users { get; set; }
         public virtual tbl_cities tbl_cities { get; set; }
+        public virtual tbl_countries tbl_countries { get; set; }
         public virtual tbl_genders tbl_genders { get; set; }
     }
 }
