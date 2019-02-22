@@ -1,11 +1,11 @@
-﻿using Chari80.BLL.Security;
-using Chari80.DAL;
+﻿using Chari80Admin.BLL.Security;
+using Chari80Admin.DAL;
 using System;
 using System.Linq;
 using System.Net.Http;
 using System.Web;
 
-namespace Chari80.Requests
+namespace Chari80Admin.Requests
 {
     public  class APIRequest
     {

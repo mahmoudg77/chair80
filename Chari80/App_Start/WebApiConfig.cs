@@ -18,17 +18,20 @@ namespace Chari80
             //    routeTemplate: "{controller}/{Action}/{id}",
             //    defaults: new { id = RouteParameter.Optional , Action = RouteParameter.Optional }
             //);
+            //config.Routes.MapHttpRoute(
+            //    name: "ImageUrl",
+            //    routeTemplate: "{controller}/{model}/{model_id}/{size}/{model_tag}-{index}.jpg",
+            //    defaults: new { controller = "Image" , action = "Item" }
+            //);
             config.Routes.MapHttpRoute(
                 name: "DefaultApi",
                 routeTemplate: "{controller}/{id}",
-                defaults: new { id = RouteParameter.Optional }
+                defaults: new {id = RouteParameter.Optional }
             );
-           // config.Routes.MapHttpRoute(
-           //    name: "AdminApi",
-           //    routeTemplate: "AdminApi/{controller}/{id}",
-           //    defaults: new { id = RouteParameter.Optional }
-           //);
-            config.Formatters.XmlFormatter.SupportedMediaTypes.Add(new System.Net.Http.Headers.MediaTypeHeaderValue("multipart/form-data"));
+
+            GlobalConfiguration.Configuration.Formatters.XmlFormatter.SupportedMediaTypes.Clear();
+            GlobalConfiguration.Configuration.Formatters.XmlFormatter.SupportedMediaTypes.Add(new System.Net.Http.Headers.MediaTypeHeaderValue("multipart/form-data"));
+
 
         }
     }

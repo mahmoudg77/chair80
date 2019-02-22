@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Chari80.DAL
+namespace Chari80Admin.DAL
 {
     using System;
     using System.Data.Entity;

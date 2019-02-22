@@ -25,22 +25,31 @@ namespace Chari80.Libs
             return items;
 
         }
-        public static List<string> ClassMethods(string ControllerName)
+        public static List<KeyValuePair<string,string>> ClassMethods(string ControllerName)
         {
             Assembly asm = Assembly.GetExecutingAssembly();
-            List<string> items = new List<string>();
+            var items = new List<KeyValuePair<string, string>>();
+
+            string attrName = "AuthFilter";
 
             var lst = asm.GetTypes()
                    .Where(type => typeof(ApiController).IsAssignableFrom(type) && type.Name == ControllerName + "Controller") //filter controllers
                    .SelectMany(type => type.GetMethods())
-                   .Where(method => method.ReturnType.Name.Contains("APIResult") && (method.CustomAttributes.Where(a => a.AttributeType.Name == "AuthFilter").Count() > 0 || method.DeclaringType.CustomAttributes.Where(a => a.AttributeType.Name == "AuthFilter").Count() > 0));//
+                   .Where(method => method.ReturnType.Name.Contains("APIResult") && (method.CustomAttributes.Where(a => a.AttributeType.Name == attrName).Count() > 0 || method.DeclaringType.CustomAttributes.Where(a => a.AttributeType.Name == attrName).Count() > 0));//
             foreach (MethodInfo item in lst)
             {
-                items.Add(item.Name);
+                var attr = item.CustomAttributes.Where(a => a.AttributeType.Name == attrName).FirstOrDefault();
+                if( attr ==null) attr=item.DeclaringType.CustomAttributes.Where(a => a.AttributeType.Name == attrName).FirstOrDefault();
+
+
+                string v = attr.ConstructorArguments.Count()>0 ? attr.ConstructorArguments.First().Value.ToString(): item.Name;
+                string k = attr.ConstructorArguments.Count()>2 ? attr.ConstructorArguments.Last().Value.ToString(): item.Name ;
+                items.Add(new KeyValuePair<string, string>( k,v));
             }
 
             return items;
         }
 
     }
+    
 }

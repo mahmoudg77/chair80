@@ -2,9 +2,9 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Net.Http.Headers;
 using System.Web.Http.Description;
-using Chari80.Areas.HelpPage.ModelDescriptions;
+using Chari80Admin.Areas.HelpPage.ModelDescriptions;
 
-namespace Chari80.Areas.HelpPage.Models
+namespace Chari80Admin.Areas.HelpPage.Models
 {
     /// <summary>
     /// The model that represents an API displayed on the help page.

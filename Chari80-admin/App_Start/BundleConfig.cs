@@ -1,7 +1,7 @@
 ﻿using System.Web;
 using System.Web.Optimization;
 
-namespace Chari80
+namespace Chari80Admin
 {
     public class BundleConfig
     {

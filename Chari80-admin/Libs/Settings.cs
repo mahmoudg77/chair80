@@ -1,10 +1,10 @@
-﻿using Chari80.DAL;
+﻿using Chari80Admin.DAL;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace Chari80.Libs
+namespace Chari80Admin.Libs
 {
     public class Settings
     {

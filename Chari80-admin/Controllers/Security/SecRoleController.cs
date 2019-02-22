@@ -5,12 +5,12 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Web;
 using System.Web.Http;
-using Chari80.DAL;
-using Chari80.Filters;
-using Chari80.Libs;
-using Chari80.Requests;
+using Chari80Admin.DAL;
+using Chari80Admin.Filters;
+using Chari80Admin.Libs;
+using Chari80Admin.Requests;
 
-namespace Chari80.Controllers
+namespace Chari80Admin.Controllers
 {
     /// <summary>
     /// Roles and permissions control

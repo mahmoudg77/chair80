@@ -1,4 +1,4 @@
-﻿using Chari80.Filters;
+﻿using Chari80Admin.Filters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,7 +6,7 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 
-namespace Chari80.Controllers
+namespace Chari80Admin.Controllers
 {
     [AppFilter]
     [AuthFilter]

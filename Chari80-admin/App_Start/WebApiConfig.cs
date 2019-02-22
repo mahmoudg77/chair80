@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http;
 
-namespace Chari80
+namespace Chari80Admin
 {
     public static class WebApiConfig
     {

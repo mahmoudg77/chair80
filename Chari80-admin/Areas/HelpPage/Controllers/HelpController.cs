@@ -1,10 +1,10 @@
 using System;
 using System.Web.Http;
 using System.Web.Mvc;
-using Chari80.Areas.HelpPage.ModelDescriptions;
-using Chari80.Areas.HelpPage.Models;
+using Chari80Admin.Areas.HelpPage.ModelDescriptions;
+using Chari80Admin.Areas.HelpPage.Models;
 
-namespace Chari80.Areas.HelpPage.Controllers
+namespace Chari80Admin.Areas.HelpPage.Controllers
 {
     /// <summary>
     /// The controller that will handle requests for the help page.

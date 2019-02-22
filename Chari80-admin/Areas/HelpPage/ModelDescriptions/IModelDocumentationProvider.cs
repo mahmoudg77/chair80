@@ -1,7 +1,7 @@
 using System;
 using System.Reflection;
 
-namespace Chari80.Areas.HelpPage.ModelDescriptions
+namespace Chari80Admin.Areas.HelpPage.ModelDescriptions
 {
     public interface IModelDocumentationProvider
     {

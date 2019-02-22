@@ -4,7 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
-namespace Chari80.Controllers
+namespace Chari80Admin.Controllers
 {
     public class HomeController : Controller
     {

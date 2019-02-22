@@ -82,16 +82,6 @@ namespace Chari80.Controllers
             try
             {
 
-                //foreach(var i in decodedToken.Claims.Keys)
-                //{
-                //    email=i;
-                //}
-                //phone_number
-                //email
-                //firebase
-                //email_verified
-                //user_id
-                //auth_time
                 if (decodedToken.Claims.Keys.Contains("email")) email = decodedToken.Claims.FirstOrDefault(a => a.Key == "email").Value.ToString();
 
                 if (decodedToken.Claims.Keys.Contains("name")) name = decodedToken.Claims.FirstOrDefault(a => a.Key == "name").Value.ToString();
@@ -121,10 +111,6 @@ namespace Chari80.Controllers
                 return new APIResult<LoginResponse>(ResultType.fail, null, "Phone is required!");
 
             return await this.Auth(email,General.MD5(uid), f_name, l_name, c, picture, "email", uid, phone);
-
-
-
-
         }
 
         //[HttpPost]
@@ -194,6 +180,25 @@ namespace Chari80.Controllers
             }
         }
 
+        [HttpPost]
+        [Route("CheckPhone")]
+        public APIResult<bool> CheckPhone(string phone,string countryCode="20")
+        {
+            string validPhone = "";
+                if (!General.ValidateMobile(phone, out validPhone,countryCode)) return new APIResult<bool>(ResultType.fail, false, "Invalid mobile number !");
+
+            using (MainEntities ctx = new MainEntities())
+            {
+                int countAcc = ctx.tbl_accounts.Count(a => a.mobile.Contains(validPhone));
+
+                if (countAcc>0)
+                    return new APIResult<bool>(ResultType.success, true, "Phone already exists !");
+
+                return new APIResult<bool>(ResultType.success, false, "Phone not found !");
+
+            }
+        }
+
         //[AuthFilter]
         //[Route("AdminApi/User")]
         //public APIResult<Libs.DataTableResponse<sec_users>> Get()
@@ -213,7 +218,7 @@ namespace Chari80.Controllers
 
         //}
 
-        
+
 
         [HttpGet]
         [LoginFilter]
@@ -564,15 +569,9 @@ namespace Chari80.Controllers
                 {
 
                
-                    //if (email != "")
-                    //{
-                    //    dbuser = ctx.tbl_accounts.Include("sec_users").Where(a => a.email == email).FirstOrDefault();
-                    //}
-                    //else
-                    //if (FirebaseUID != "")
-                    //{
+                   
                         dbuser = ctx.tbl_accounts.Include("sec_users").Where(a => a.sec_users.firebase_uid == FirebaseUID).FirstOrDefault();
-                    //}
+                     
                     
                     if(dbuser==null)
                     {
@@ -594,19 +593,15 @@ namespace Chari80.Controllers
                             sec_user.mail_verified = true;
                             sec_user.firebase_uid = FirebaseUID;
 
-                        ctx.sec_users.Add(sec_user);
-                        ctx.SaveChanges();
+                            ctx.sec_users.Add(sec_user);
+                            ctx.SaveChanges();
                         }
-                        //catch (DbEntityValidationException e)
-                        //{
-                        //    return new APIResult<LoginResponse>(ResultType.fail, null, General.fetchEntityError(e));
-                        //}
                         catch (Exception ex)
                         {
                             return new APIResult<LoginResponse>(ResultType.fail, null, ex.Message + "save changes1");
                         }
 
-                        }
+                    }
 
                 }
                 catch (Exception ex)

@@ -12,7 +12,10 @@ namespace Chari80.Requests
         public string ID { get; set; }
 
         [Required(ErrorMessage = "driver_lisence is required!")]
-        public string driver_lisence { get; set; }
-
+        public string DL { get; set; }
+        [Required(ErrorMessage = "ID_Image is required!")]
+        public HttpPostedFileBase ID_Image { get; set; }
+        [Required(ErrorMessage = "DL_Image is required!")]
+        public HttpPostedFileBase DL_Image { get; set; }
     }
 }

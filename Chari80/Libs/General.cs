@@ -286,10 +286,14 @@ namespace Chari80.Libs
         
         public static bool ValidateMobile(string no,out string FixedNo,string perfix= "20")
         {
+
 	        no =no.Trim();
             //Clean number
             FixedNo = "";
+            try
+            {
 
+            
             string[] spechialChars = { "'", "\"", "\\", "/", ":", ".", "[", "]", "(", ")", "<", ">", "@", "!", "#", "", "%", "^", "&", "*", "-", "_", "+", "=", "~" };
 
             string[] items2 = no.Split().Where(x => spechialChars.Contains(x)==false).ToArray();
@@ -418,7 +422,12 @@ namespace Chari80.Libs
                     return true;
                 }
             }
+            }
+            catch (Exception ex)
+            {
 
+                return false;
+            }
             return false;
 
         }

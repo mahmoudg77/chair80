@@ -1,11 +1,11 @@
-﻿using Chari80.DAL;
-using Chari80.Libs;
+﻿using Chari80Admin.DAL;
+using Chari80Admin.Libs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace Chari80.Requests
+namespace Chari80Admin.Requests
 {
     public class UserRoleRequests
     {

@@ -1,5 +1,5 @@
-﻿using Chari80.DAL;
-using Chari80.Requests;
+﻿using Chari80Admin.DAL;
+using Chari80Admin.Requests;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -7,7 +7,7 @@ using System.Data;
 using System.Linq;
 using System.Web;
 
-namespace Chari80.Libs
+namespace Chari80Admin.Libs
 {
     public class DataTableResponse<T> where T :class
     {

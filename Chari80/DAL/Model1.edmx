@@ -121,6 +121,16 @@
           <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="name" Type="nvarchar" MaxLength="300" />
         </EntityType>
+        <EntityType Name="tbl_drivers_vehicles_rel">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="driver_id" Type="int" />
+          <Property Name="vehicle_id" Type="int" />
+          <Property Name="created_at" Type="datetime" />
+          <Property Name="created_by" Type="datetime" />
+        </EntityType>
         <EntityType Name="tbl_genders">
           <Key>
             <PropertyRef Name="id" />
@@ -164,6 +174,19 @@
           </Key>
           <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="name" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tbl_vehicles">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="model" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="color" Type="nvarchar" MaxLength="50" />
+          <Property Name="capacity" Type="int" Nullable="false" />
+          <Property Name="owner_id" Type="int" Nullable="false" />
+          <Property Name="created_at" Type="datetime" />
+          <Property Name="created_by" Type="int" Nullable="false" />
+          <Property Name="license_no" Type="nvarchar" MaxLength="50" Nullable="false" />
         </EntityType>
         <Association Name="FK_sec_access_right_sec_roles">
           <End Role="sec_roles" Type="Self.sec_roles" Multiplicity="1" />
@@ -277,6 +300,42 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_tbl_drivers_vechiles_rel_vechile">
+          <End Role="tbl_vehicles" Type="Self.tbl_vehicles" Multiplicity="0..1" />
+          <End Role="tbl_drivers_vehicles_rel" Type="Self.tbl_drivers_vehicles_rel" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_vehicles">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="tbl_drivers_vehicles_rel">
+              <PropertyRef Name="vehicle_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_drivers_vehicles_rel_driver">
+          <End Role="tbl_accounts" Type="Self.tbl_accounts" Multiplicity="0..1" />
+          <End Role="tbl_drivers_vehicles_rel" Type="Self.tbl_drivers_vehicles_rel" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_accounts">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="tbl_drivers_vehicles_rel">
+              <PropertyRef Name="driver_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_vehicles_tbl_accounts">
+          <End Role="tbl_accounts" Type="Self.tbl_accounts" Multiplicity="1" />
+          <End Role="tbl_vehicles" Type="Self.tbl_vehicles" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_accounts">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="tbl_vehicles">
+              <PropertyRef Name="owner_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <EntityContainer Name="MainModelStoreContainer">
           <EntitySet Name="sec_access_right" EntityType="Self.sec_access_right" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="sec_mobile_verify" EntityType="Self.sec_mobile_verify" Schema="dbo" store:Type="Tables" />
@@ -288,10 +347,12 @@
           <EntitySet Name="tbl_accounts" EntityType="Self.tbl_accounts" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_cities" EntityType="Self.tbl_cities" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_countries" EntityType="Self.tbl_countries" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_drivers_vehicles_rel" EntityType="Self.tbl_drivers_vehicles_rel" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_genders" EntityType="Self.tbl_genders" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_images" EntityType="Self.tbl_images" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_setting" EntityType="Self.tbl_setting" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_setting_types" EntityType="Self.tbl_setting_types" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_vehicles" EntityType="Self.tbl_vehicles" Schema="dbo" store:Type="Tables" />
           <AssociationSet Name="FK_sec_access_right_sec_roles" Association="Self.FK_sec_access_right_sec_roles">
             <End Role="sec_roles" EntitySet="sec_roles" />
             <End Role="sec_access_right" EntitySet="sec_access_right" />
@@ -327,6 +388,18 @@
           <AssociationSet Name="FK_tbl_cities_tbl_countries" Association="Self.FK_tbl_cities_tbl_countries">
             <End Role="tbl_countries" EntitySet="tbl_countries" />
             <End Role="tbl_cities" EntitySet="tbl_cities" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_drivers_vechiles_rel_vechile" Association="Self.FK_tbl_drivers_vechiles_rel_vechile">
+            <End Role="tbl_vehicles" EntitySet="tbl_vehicles" />
+            <End Role="tbl_drivers_vehicles_rel" EntitySet="tbl_drivers_vehicles_rel" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_drivers_vehicles_rel_driver" Association="Self.FK_tbl_drivers_vehicles_rel_driver">
+            <End Role="tbl_accounts" EntitySet="tbl_accounts" />
+            <End Role="tbl_drivers_vehicles_rel" EntitySet="tbl_drivers_vehicles_rel" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_vehicles_tbl_accounts" Association="Self.FK_tbl_vehicles_tbl_accounts">
+            <End Role="tbl_accounts" EntitySet="tbl_accounts" />
+            <End Role="tbl_vehicles" EntitySet="tbl_vehicles" />
           </AssociationSet>
         </EntityContainer>
       </Schema></edmx:StorageModels>
@@ -604,6 +677,20 @@
             <End Role="tbl_genders" EntitySet="tbl_genders" />
             <End Role="tbl_accounts" EntitySet="tbl_accounts" />
           </AssociationSet>
+          <EntitySet Name="tbl_drivers_vehicles_rel" EntityType="MainModel.tbl_drivers_vehicles_rel" />
+          <EntitySet Name="tbl_vehicles" EntityType="MainModel.tbl_vehicles" />
+          <AssociationSet Name="FK_tbl_drivers_vehicles_rel_driver" Association="MainModel.FK_tbl_drivers_vehicles_rel_driver">
+            <End Role="tbl_accounts" EntitySet="tbl_accounts" />
+            <End Role="tbl_drivers_vehicles_rel" EntitySet="tbl_drivers_vehicles_rel" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_vehicles_tbl_accounts" Association="MainModel.FK_tbl_vehicles_tbl_accounts">
+            <End Role="tbl_accounts" EntitySet="tbl_accounts" />
+            <End Role="tbl_vehicles" EntitySet="tbl_vehicles" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_drivers_vechiles_rel_vechile" Association="MainModel.FK_tbl_drivers_vechiles_rel_vechile">
+            <End Role="tbl_vehicles" EntitySet="tbl_vehicles" />
+            <End Role="tbl_drivers_vehicles_rel" EntitySet="tbl_drivers_vehicles_rel" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="tbl_accounts">
           <Key>
@@ -626,6 +713,8 @@
           <NavigationProperty Name="tbl_cities" Relationship="MainModel.FK_tbl_accounts_tbl_cities" FromRole="tbl_accounts" ToRole="tbl_cities" />
           <NavigationProperty Name="tbl_countries" Relationship="MainModel.FK_tbl_accounts_tbl_countries" FromRole="tbl_accounts" ToRole="tbl_countries" />
           <NavigationProperty Name="tbl_genders" Relationship="MainModel.FK_tbl_accounts_tbl_genders" FromRole="tbl_accounts" ToRole="tbl_genders" />
+          <NavigationProperty Name="tbl_drivers_vehicles_rel" Relationship="MainModel.FK_tbl_drivers_vehicles_rel_driver" FromRole="tbl_accounts" ToRole="tbl_drivers_vehicles_rel" />
+          <NavigationProperty Name="tbl_vehicles" Relationship="MainModel.FK_tbl_vehicles_tbl_accounts" FromRole="tbl_accounts" ToRole="tbl_vehicles" />
         </EntityType>
         <Association Name="FK_sec_users_tbl_accounts">
           <End Type="MainModel.tbl_accounts" Role="tbl_accounts" Multiplicity="1" />
@@ -672,6 +761,69 @@
             </Principal>
             <Dependent Role="tbl_accounts">
               <PropertyRef Name="gender_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="tbl_drivers_vehicles_rel">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="driver_id" Type="Int32" />
+          <Property Name="vehicle_id" Type="Int32" />
+          <Property Name="created_at" Type="DateTime" Precision="3" />
+          <Property Name="created_by" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="tbl_accounts" Relationship="MainModel.FK_tbl_drivers_vehicles_rel_driver" FromRole="tbl_drivers_vehicles_rel" ToRole="tbl_accounts" />
+          <NavigationProperty Name="tbl_vehicles" Relationship="MainModel.FK_tbl_drivers_vechiles_rel_vechile" FromRole="tbl_drivers_vehicles_rel" ToRole="tbl_vehicles" />
+        </EntityType>
+        <EntityType Name="tbl_vehicles">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="model" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="color" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="capacity" Type="Int32" Nullable="false" />
+          <Property Name="owner_id" Type="Int32" Nullable="false" />
+          <Property Name="created_at" Type="DateTime" Precision="3" />
+          <Property Name="created_by" Type="Int32" Nullable="false" />
+          <Property Name="license_no" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="tbl_accounts" Relationship="MainModel.FK_tbl_vehicles_tbl_accounts" FromRole="tbl_vehicles" ToRole="tbl_accounts" />
+          <NavigationProperty Name="tbl_drivers_vehicles_rel" Relationship="MainModel.FK_tbl_drivers_vechiles_rel_vechile" FromRole="tbl_vehicles" ToRole="tbl_drivers_vehicles_rel" />
+        </EntityType>
+        <Association Name="FK_tbl_drivers_vehicles_rel_driver">
+          <End Type="MainModel.tbl_accounts" Role="tbl_accounts" Multiplicity="0..1" />
+          <End Type="MainModel.tbl_drivers_vehicles_rel" Role="tbl_drivers_vehicles_rel" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_accounts">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="tbl_drivers_vehicles_rel">
+              <PropertyRef Name="driver_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_vehicles_tbl_accounts">
+          <End Type="MainModel.tbl_accounts" Role="tbl_accounts" Multiplicity="1" />
+          <End Type="MainModel.tbl_vehicles" Role="tbl_vehicles" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_accounts">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="tbl_vehicles">
+              <PropertyRef Name="owner_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_drivers_vechiles_rel_vechile">
+          <End Type="MainModel.tbl_vehicles" Role="tbl_vehicles" Multiplicity="0..1" />
+          <End Type="MainModel.tbl_drivers_vehicles_rel" Role="tbl_drivers_vehicles_rel" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_vehicles">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="tbl_drivers_vehicles_rel">
+              <PropertyRef Name="vehicle_id" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -851,6 +1003,31 @@
                 <ScalarProperty Name="date_of_birth" ColumnName="date_of_birth" />
                 <ScalarProperty Name="last_name" ColumnName="last_name" />
                 <ScalarProperty Name="first_name" ColumnName="first_name" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_drivers_vehicles_rel">
+            <EntityTypeMapping TypeName="MainModel.tbl_drivers_vehicles_rel">
+              <MappingFragment StoreEntitySet="tbl_drivers_vehicles_rel">
+                <ScalarProperty Name="created_by" ColumnName="created_by" />
+                <ScalarProperty Name="created_at" ColumnName="created_at" />
+                <ScalarProperty Name="vehicle_id" ColumnName="vehicle_id" />
+                <ScalarProperty Name="driver_id" ColumnName="driver_id" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_vehicles">
+            <EntityTypeMapping TypeName="MainModel.tbl_vehicles">
+              <MappingFragment StoreEntitySet="tbl_vehicles">
+                <ScalarProperty Name="license_no" ColumnName="license_no" />
+                <ScalarProperty Name="created_by" ColumnName="created_by" />
+                <ScalarProperty Name="created_at" ColumnName="created_at" />
+                <ScalarProperty Name="owner_id" ColumnName="owner_id" />
+                <ScalarProperty Name="capacity" ColumnName="capacity" />
+                <ScalarProperty Name="color" ColumnName="color" />
+                <ScalarProperty Name="model" ColumnName="model" />
                 <ScalarProperty Name="id" ColumnName="id" />
               </MappingFragment>
             </EntityTypeMapping>

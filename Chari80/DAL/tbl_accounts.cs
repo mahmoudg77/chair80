@@ -14,6 +14,13 @@ namespace Chari80.DAL
     
     public partial class tbl_accounts
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public tbl_accounts()
+        {
+            this.tbl_drivers_vehicles_rel = new HashSet<tbl_drivers_vehicles_rel>();
+            this.tbl_vehicles = new HashSet<tbl_vehicles>();
+        }
+    
         public int id { get; set; }
         public string first_name { get; set; }
         public string last_name { get; set; }
@@ -32,5 +39,9 @@ namespace Chari80.DAL
         public virtual tbl_cities tbl_cities { get; set; }
         public virtual tbl_countries tbl_countries { get; set; }
         public virtual tbl_genders tbl_genders { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<tbl_drivers_vehicles_rel> tbl_drivers_vehicles_rel { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<tbl_vehicles> tbl_vehicles { get; set; }
     }
 }

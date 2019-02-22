@@ -14,6 +14,12 @@ namespace Chari80
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
             routes.MapRoute(
+               name: "ImageUrl",
+               url: "img/{mode}/{model}/{model_id}/{size}/{model_tag}-{index}.gif",
+               defaults: new { controller = "Img", action = "Item"}
+            );
+
+            routes.MapRoute(
                 name: "Default",
                 url: "{controller}/{action}/{id}",
                 defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional }

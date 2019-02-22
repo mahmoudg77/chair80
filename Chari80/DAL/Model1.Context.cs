@@ -40,5 +40,7 @@ namespace Chari80.DAL
         public virtual DbSet<tbl_setting> tbl_setting { get; set; }
         public virtual DbSet<tbl_setting_types> tbl_setting_types { get; set; }
         public virtual DbSet<tbl_accounts> tbl_accounts { get; set; }
+        public virtual DbSet<tbl_drivers_vehicles_rel> tbl_drivers_vehicles_rel { get; set; }
+        public virtual DbSet<tbl_vehicles> tbl_vehicles { get; set; }
     }
 }

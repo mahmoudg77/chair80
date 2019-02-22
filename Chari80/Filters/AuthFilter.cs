@@ -16,12 +16,28 @@ namespace Chari80.Filters
 {
     public class AuthFilter : ActionFilterAttribute
     {
-        
+        public string Title { get; set; }
+        public string Method { get; private set; }
+
+        public AuthFilter(string Title, string Method )
+        {
+            this.Title = Title;
+            this.Method = Method;
+        }
+        public AuthFilter(string Title )
+        {
+            this.Title = Title;
+        }
+        public AuthFilter()
+        {
+        }
         public override void OnActionExecuting(HttpActionContext actionContext)
         {
-            
-            Users user = new Users();
+            if(string.IsNullOrEmpty(this.Method))this.Method = actionContext.ActionDescriptor.ActionName; 
+            if(string.IsNullOrEmpty(this.Title))this.Title=this.Method ; 
 
+            Users user = new Users();
+            
             bool Auth = true;
             if (!actionContext.Request.Headers.Contains("AUTH_KEY"))
             {
@@ -64,18 +80,18 @@ namespace Chari80.Filters
 
             }
 
-            string actionName = actionContext.ActionDescriptor.ActionName;
+           // string actionName = actionContext.ActionDescriptor.ActionName;
            
             string controllername = actionContext.ActionDescriptor.ControllerDescriptor.ControllerName;
 
 
 
-            if (!user.Allow(controllername, actionName))
+            if (!user.Allow(controllername, Method))
             {
 
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.Unauthorized)
                 {
-                    Content = new StringContent(JsonConvert.SerializeObject(new APIResult<int>(ResultType.fail, "API_ERROR_UNAUTHORIZED"))),//Json("{'type':0,'message':'result.error.E403'}"),
+                    Content = new StringContent(JsonConvert.SerializeObject(new APIResult<int>(ResultType.fail, "You dont have permission to " + Title))),//Json("{'type':0,'message':'result.error.E403'}"),
                     ReasonPhrase = "Critical Exception",
 
                 });
