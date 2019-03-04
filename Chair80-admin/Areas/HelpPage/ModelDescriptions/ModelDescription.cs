@@ -1,6 +1,6 @@
 using System;
 
-namespace Chari80Admin.Areas.HelpPage.ModelDescriptions
+namespace Chair80Admin.Areas.HelpPage.ModelDescriptions
 {
     /// <summary>
     /// Describes a type model.

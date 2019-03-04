@@ -1,10 +1,10 @@
-﻿using Chari80.DAL;
+﻿using Chair80.DAL;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace Chari80.Responses
+namespace Chair80.Responses
 {
     public class VehicleResponse
     {

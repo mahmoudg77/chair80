@@ -1,7 +1,7 @@
 using System;
 using System.Reflection;
 
-namespace Chari80.Areas.HelpPage.ModelDescriptions
+namespace Chair80.Areas.HelpPage.ModelDescriptions
 {
     public interface IModelDocumentationProvider
     {

@@ -5,7 +5,7 @@ using System.Reflection;
 using System.Web;
 using System.Web.Http;
 
-namespace Chari80Admin.Libs
+namespace Chair80Admin.Libs
 {
     public class Functions
     {

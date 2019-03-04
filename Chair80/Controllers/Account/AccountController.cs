@@ -1,9 +1,9 @@
-﻿using Chari80.BLL;
-using Chari80.DAL;
-using Chari80.Filters;
-using Chari80.Libs;
-using Chari80.Requests;
-using Chari80.Responses;
+﻿using Chair80.BLL;
+using Chair80.DAL;
+using Chair80.Filters;
+using Chair80.Libs;
+using Chair80.Requests;
+using Chair80.Responses;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +12,7 @@ using System.Net.Http;
 using System.Web;
 using System.Web.Http;
 
-namespace Chari80.Controllers.Account
+namespace Chair80.Controllers.Account
 {
     [AppFilter]
     public class AccountController : ApiController

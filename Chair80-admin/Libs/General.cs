@@ -14,7 +14,7 @@ using System.Web.Configuration;
 using System.Net.Configuration;
 using System.Web;
 
-namespace Chari80Admin.Libs
+namespace Chair80Admin.Libs
 {
     public class General
     {

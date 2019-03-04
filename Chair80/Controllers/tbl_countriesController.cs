@@ -6,9 +6,9 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
-using Chari80.DAL;
+using Chair80.DAL;
 
-namespace Chari80.Controllers
+namespace Chair80.Controllers
 {
     public class tbl_countriesController : Controller
     {

@@ -4,7 +4,7 @@ using System.Configuration;
 using System.Linq;
 using System.Web;
 
-namespace Chari80.Libs
+namespace Chair80.Libs
 {
     public static class Logger
     {

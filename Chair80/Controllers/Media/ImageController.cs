@@ -1,7 +1,7 @@
-﻿using Chari80.BLL;
-using Chari80.DAL;
-using Chari80.Filters;
-using Chari80.Libs;
+﻿using Chair80.BLL;
+using Chair80.DAL;
+using Chair80.Filters;
+using Chair80.Libs;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -11,7 +11,7 @@ using System.Net.Http;
 using System.Web;
 using System.Web.Http;
 
-namespace Chari80.Controllers.Account
+namespace Chair80.Controllers.Account
 {
     [AppFilter]
     public class ImageController : ApiController

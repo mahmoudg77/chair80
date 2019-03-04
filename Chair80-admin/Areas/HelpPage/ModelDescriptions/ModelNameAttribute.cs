@@ -1,6 +1,6 @@
 using System;
 
-namespace Chari80Admin.Areas.HelpPage.ModelDescriptions
+namespace Chair80Admin.Areas.HelpPage.ModelDescriptions
 {
     /// <summary>
     /// Use this attribute to change the name of the <see cref="ModelDescription"/> generated for a type.

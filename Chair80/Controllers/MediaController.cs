@@ -4,7 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
-namespace Chari80.Controllers
+namespace Chair80.Controllers
 {
     public class MediaController : Controller
     {

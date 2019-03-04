@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
-namespace Chari80Admin.Areas.HelpPage.ModelDescriptions
+namespace Chair80Admin.Areas.HelpPage.ModelDescriptions
 {
     public class ParameterDescription
     {

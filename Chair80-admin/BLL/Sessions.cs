@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Chari80Admin.DAL;
+using Chair80Admin.DAL;
 
-namespace Chari80Admin.BLL.Security
+namespace Chair80Admin.BLL.Security
 {
     public class Sessions  
     {

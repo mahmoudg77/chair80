@@ -1,4 +1,4 @@
-namespace Chari80Admin.Areas.HelpPage.ModelDescriptions
+namespace Chair80Admin.Areas.HelpPage.ModelDescriptions
 {
     public class EnumValueDescription
     {

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Web;
 
-namespace Chari80Admin.Libs
+namespace Chair80Admin.Libs
 {
     public static class ErrorHandler
     {

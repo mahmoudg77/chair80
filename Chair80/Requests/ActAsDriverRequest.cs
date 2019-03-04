@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 
-namespace Chari80.Requests
+namespace Chair80.Requests
 {
     public class ActAsDriverRequest : APIRequest
     {

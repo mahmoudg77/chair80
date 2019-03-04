@@ -1,4 +1,4 @@
-namespace Chari80Admin.Areas.HelpPage
+namespace Chair80Admin.Areas.HelpPage
 {
     /// <summary>
     /// Indicates whether the sample is used for request or response

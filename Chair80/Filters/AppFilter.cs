@@ -1,5 +1,5 @@
-﻿using Chari80.BLL.Security;
-using Chari80.Libs;
+﻿using Chair80.BLL.Security;
+using Chair80.Libs;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -12,7 +12,7 @@ using System.Web.Http;
 using System.Web.Http.Controllers;
 using System.Web.Http.Filters;
 
-namespace Chari80.Filters
+namespace Chair80.Filters
 {
     public class AppFilter : ActionFilterAttribute
     {

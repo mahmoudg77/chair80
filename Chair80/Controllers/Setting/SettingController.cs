@@ -1,15 +1,15 @@
-﻿using Chari80.Libs;
+﻿using Chair80.Libs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
-using Chari80.DAL;
+using Chair80.DAL;
 using System.Data;
-using Chari80.Filters;
+using Chair80.Filters;
 
-namespace Chari80.Controllers.Setting
+namespace Chair80.Controllers.Setting
 {
     [AppFilter]
     [RoutePrefix("Setting")]

@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using Chari80.DAL;
-namespace Chari80.Responses
+using Chair80.DAL;
+namespace Chair80.Responses
 {
     public class ActAsOwnerResponse
     {

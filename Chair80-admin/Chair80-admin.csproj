@@ -52,22 +52,22 @@
       <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
     <Reference Include="FirebaseAdmin">
-      <HintPath>..\..\..\FirebaseDLL\FirebaseAdmin.dll</HintPath>
+      <HintPath>..\..\Google DLL\FirebaseAdmin.dll</HintPath>
     </Reference>
     <Reference Include="Google.Apis">
-      <HintPath>..\..\..\FirebaseDLL\Google.Apis.dll</HintPath>
+      <HintPath>..\..\Google DLL\Google.Apis.dll</HintPath>
     </Reference>
     <Reference Include="Google.Apis.Auth">
-      <HintPath>..\..\..\FirebaseDLL\Google.Apis.Auth.dll</HintPath>
+      <HintPath>..\..\Google DLL\Google.Apis.Auth.dll</HintPath>
     </Reference>
     <Reference Include="Google.Apis.Auth.PlatformServices">
-      <HintPath>..\..\..\FirebaseDLL\Google.Apis.Auth.PlatformServices.dll</HintPath>
+      <HintPath>..\..\Google DLL\Google.Apis.Auth.PlatformServices.dll</HintPath>
     </Reference>
     <Reference Include="Google.Apis.Core">
-      <HintPath>..\..\..\FirebaseDLL\Google.Apis.Core.dll</HintPath>
+      <HintPath>..\..\Google DLL\Google.Apis.Core.dll</HintPath>
     </Reference>
     <Reference Include="Google.Apis.PlatformServices">
-      <HintPath>..\..\..\FirebaseDLL\Google.Apis.PlatformServices.dll</HintPath>
+      <HintPath>..\..\Google DLL\Google.Apis.PlatformServices.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />

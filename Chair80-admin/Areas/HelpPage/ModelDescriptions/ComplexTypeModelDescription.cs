@@ -1,6 +1,6 @@
 using System.Collections.ObjectModel;
 
-namespace Chari80Admin.Areas.HelpPage.ModelDescriptions
+namespace Chair80Admin.Areas.HelpPage.ModelDescriptions
 {
     public class ComplexTypeModelDescription : ModelDescription
     {

@@ -1,7 +1,7 @@
 ﻿using System.Web;
 using System.Web.Mvc;
 
-namespace Chari80Admin
+namespace Chair80Admin
 {
     public class FilterConfig
     {

@@ -1,11 +1,11 @@
-﻿using Chari80Admin.BLL.Security;
-using Chari80Admin.DAL;
+﻿using Chair80Admin.BLL.Security;
+using Chair80Admin.DAL;
 using System;
 using System.Linq;
 using System.Net.Http;
 using System.Web;
 
-namespace Chari80Admin.Requests
+namespace Chair80Admin.Requests
 {
     public  class APIRequest
     {

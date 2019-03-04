@@ -1,12 +1,12 @@
-﻿using Chari80.BLL.Security;
-using Chari80.DAL;
-using Chari80.Libs;
+﻿using Chair80.BLL.Security;
+using Chair80.DAL;
+using Chair80.Libs;
 using System;
 using System.Linq;
 using System.Net.Http;
 using System.Web;
 
-namespace Chari80.Requests
+namespace Chair80.Requests
 {
     public  class APIRequest
     {

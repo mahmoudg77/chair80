@@ -1,5 +1,5 @@
-﻿using Chari80Admin.DAL;
-using Chari80Admin.Libs;
+﻿using Chair80Admin.DAL;
+using Chair80Admin.Libs;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -9,7 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Web;
 
-namespace Chari80Admin.BLL
+namespace Chair80Admin.BLL
 {
     public class Images
     {

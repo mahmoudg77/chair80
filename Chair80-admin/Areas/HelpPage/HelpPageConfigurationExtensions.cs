@@ -11,10 +11,10 @@ using System.Net.Http.Headers;
 using System.Web.Http;
 using System.Web.Http.Controllers;
 using System.Web.Http.Description;
-using Chari80Admin.Areas.HelpPage.ModelDescriptions;
-using Chari80Admin.Areas.HelpPage.Models;
+using Chair80Admin.Areas.HelpPage.ModelDescriptions;
+using Chair80Admin.Areas.HelpPage.Models;
 
-namespace Chari80Admin.Areas.HelpPage
+namespace Chair80Admin.Areas.HelpPage
 {
     public static class HelpPageConfigurationExtensions
     {

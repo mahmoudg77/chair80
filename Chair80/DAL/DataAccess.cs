@@ -5,7 +5,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
 
-namespace Chari80.DAL
+namespace Chair80.DAL
 {
     public class DataAccess
     {

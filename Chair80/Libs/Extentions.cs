@@ -7,7 +7,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Web;
 
-namespace Chari80.Libs
+namespace Chair80.Libs
 {
     public static class Extentions
     {

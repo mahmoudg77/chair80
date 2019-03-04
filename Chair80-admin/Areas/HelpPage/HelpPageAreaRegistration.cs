@@ -1,7 +1,7 @@
 using System.Web.Http;
 using System.Web.Mvc;
 
-namespace Chari80Admin.Areas.HelpPage
+namespace Chair80Admin.Areas.HelpPage
 {
     public class HelpPageAreaRegistration : AreaRegistration
     {

@@ -5,7 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
 
-namespace Chari80
+namespace Chair80
 {
     public class RouteConfig
     {

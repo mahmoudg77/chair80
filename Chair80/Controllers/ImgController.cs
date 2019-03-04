@@ -1,4 +1,4 @@
-﻿using Chari80.DAL;
+﻿using Chair80.DAL;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -10,7 +10,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
-namespace Chari80.Controllers
+namespace Chair80.Controllers
 {
     public class ImgController : Controller
     {
@@ -20,7 +20,7 @@ namespace Chari80.Controllers
         public ActionResult Index(int width,int height)
         {
             //Response.Clear();
-            string filename = @"E:\Works\Chari80\backend\Chari80\Storage\Original\20190220231807-268275logo.png";
+            string filename = @"E:\Works\Chair80\backend\Chair80\Storage\Original\20190220231807-268275logo.png";
             var source= Image.FromFile(filename);
             
 

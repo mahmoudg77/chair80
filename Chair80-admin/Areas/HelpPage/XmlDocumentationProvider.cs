@@ -5,9 +5,9 @@ using System.Reflection;
 using System.Web.Http.Controllers;
 using System.Web.Http.Description;
 using System.Xml.XPath;
-using Chari80Admin.Areas.HelpPage.ModelDescriptions;
+using Chair80Admin.Areas.HelpPage.ModelDescriptions;
 
-namespace Chari80Admin.Areas.HelpPage
+namespace Chair80Admin.Areas.HelpPage
 {
     /// <summary>
     /// A custom <see cref="IDocumentationProvider"/> that reads the API documentation from an XML documentation file.

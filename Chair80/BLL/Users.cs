@@ -5,10 +5,10 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Web;
-using Chari80.DAL;
-using Chari80.Libs;
+using Chair80.DAL;
+using Chair80.Libs;
 
-namespace Chari80.BLL.Security
+namespace Chair80.BLL.Security
 {
     public class Users 
     {

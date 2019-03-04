@@ -7,19 +7,19 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
-using Chari80Admin.BLL.Security;
-using Chari80Admin.Libs;
-using Chari80Admin.Requests;
-using Chari80Admin.Responses;
+using Chair80Admin.BLL.Security;
+using Chair80Admin.Libs;
+using Chair80Admin.Requests;
+using Chair80Admin.Responses;
 using Newtonsoft.Json;
 using FirebaseAdmin;
 using FirebaseAdmin.Auth;
 using Google.Apis.Auth.OAuth2;
-using Chari80Admin.DAL;
+using Chair80Admin.DAL;
 using System.Configuration;
-using Chari80Admin.Filters;
+using Chair80Admin.Filters;
 
-namespace Chari80Admin.Controllers
+namespace Chair80Admin.Controllers
 {
     [AppFilter]
     [RoutePrefix("ClientApi/User")]

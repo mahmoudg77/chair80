@@ -5,12 +5,12 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Web;
 using System.Web.Http;
-using Chari80Admin.DAL;
-using Chari80Admin.Filters;
-using Chari80Admin.Libs;
-using Chari80Admin.Requests;
+using Chair80Admin.DAL;
+using Chair80Admin.Filters;
+using Chair80Admin.Libs;
+using Chair80Admin.Requests;
 
-namespace Chari80Admin.Controllers
+namespace Chair80Admin.Controllers
 {
     /// <summary>
     /// Roles and permissions control

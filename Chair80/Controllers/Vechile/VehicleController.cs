@@ -1,6 +1,6 @@
-﻿using Chari80.DAL;
-using Chari80.Filters;
-using Chari80.Libs;
+﻿using Chair80.DAL;
+using Chair80.Filters;
+using Chair80.Libs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +8,7 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 
-namespace Chari80.Controllers.vehicle
+namespace Chair80.Controllers.vehicle
 {
     [AppFilter]
     [AuthFilter]

@@ -7,19 +7,19 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
-using Chari80.BLL.Security;
-using Chari80.Libs;
-using Chari80.Requests;
-using Chari80.Responses;
+using Chair80.BLL.Security;
+using Chair80.Libs;
+using Chair80.Requests;
+using Chair80.Responses;
 using Newtonsoft.Json;
 using FirebaseAdmin;
 using FirebaseAdmin.Auth;
 using Google.Apis.Auth.OAuth2;
-using Chari80.DAL;
+using Chair80.DAL;
 using System.Configuration;
-using Chari80.Filters;
+using Chair80.Filters;
 
-namespace Chari80.Controllers
+namespace Chair80.Controllers
 {
     [AppFilter]
     [RoutePrefix("User")]
@@ -52,7 +52,7 @@ namespace Chari80.Controllers
                     Credential = GoogleCredential.FromFile(c.Server.MapPath("~/App_Data/firebase-config.json")),
 
                 }
-                    );
+                );
 
 
             }
@@ -78,7 +78,8 @@ namespace Chari80.Controllers
             string name = "";
             string picture = "";
             string phone = "";
-
+            phone = login.phoneNumber;
+            
             try
             {
 
@@ -110,7 +111,7 @@ namespace Chari80.Controllers
             if (phone == "")
                 return new APIResult<LoginResponse>(ResultType.fail, null, "Phone is required!");
 
-            return await this.Auth(email,General.MD5(uid), f_name, l_name, c, picture, "email", uid, phone);
+            return await this.Auth(email,login.password, f_name, l_name, c, picture, "email", uid, phone);
         }
 
         //[HttpPost]
@@ -618,7 +619,7 @@ namespace Chari80.Controllers
                             sec_user.id = dbuser.id;
                             sec_user.mail_verified = true;
                             sec_user.firebase_uid = FirebaseUID;
-
+                           
                             ctx.sec_users.Add(sec_user);
                             ctx.SaveChanges();
                         }

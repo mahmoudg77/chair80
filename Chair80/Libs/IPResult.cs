@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Chari80.Libs
+namespace Chair80.Libs
 {
     public class IPResult
     {
