@@ -194,6 +194,7 @@
     <Compile Include="BLL\Sessions.cs" />
     <Compile Include="BLL\Setting.cs" />
     <Compile Include="BLL\Users.cs" />
+    <Compile Include="BLL\Vechicle.cs" />
     <Compile Include="Controllers\Account\AccountController.cs" />
     <Compile Include="Controllers\IController\IApiController.cs" />
     <Compile Include="Controllers\MediaController.cs" />
@@ -285,6 +286,7 @@
     <Compile Include="Libs\Log.cs" />
     <Compile Include="Filters\LoginFilter.cs" />
     <Compile Include="Libs\PermissionMethod.cs" />
+    <Compile Include="Libs\ProfileResponse.cs" />
     <Compile Include="Libs\SettingFilter.cs" />
     <Compile Include="Libs\Settings.cs" />
     <Compile Include="Libs\UserAgent.cs" />
@@ -300,6 +302,7 @@
     <Compile Include="Requests\ActAsDriverRequest.cs" />
     <Compile Include="Requests\LoginRequest.cs" />
     <Compile Include="Requests\PasswordEditRequest.cs" />
+    <Compile Include="Requests\RegisterRequest.cs" />
     <Compile Include="Requests\SavePermissionRequest.cs" />
     <Compile Include="Requests\UserRoleRequest.cs" />
     <Compile Include="Responses\ActAsOwnerResponse.cs" />

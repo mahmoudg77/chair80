@@ -163,7 +163,7 @@ namespace Chair80.Controllers.Account
                     {
 
                    
-                    returned.vehicles = imgCtx.tbl_vehicles.Where(a => a.owner_id == acc.id)
+                    returned.vehicles = imgCtx.tbl_vehicles.AsParallel().Where(a => a.owner_id == acc.id)
                                         .Select(
                                                 c => new VehicleResponse()
                                                 {
@@ -189,6 +189,40 @@ namespace Chair80.Controllers.Account
                 }
             }
             
+        }
+
+        [LoginFilter]
+        //[Route("Account/Get")]
+        [HttpGet]
+        public APIResult<ProfileResponse> Get(int id)
+        {
+
+            using (var ctx = new DAL.MainEntities())
+            {
+                ProfileResponse profile = new ProfileResponse(ctx.tbl_accounts.Find(id));
+                
+                
+                profile.DL_Image = "/img/scale/tbl_accounts/" + profile.id + "/original/ID-last.gif";
+                profile.ID_Image = "/img/scale/tbl_accounts/" + profile.id + "/original/DL-last.gif";
+
+                profile.isDriver = ctx.sec_users_roles.Where(a => a.user_id == profile.id && a.role_id == 3).Count() > 0;
+                profile.isOwner = ctx.sec_users_roles.Where(a => a.user_id == profile.id && a.role_id == 2).Count() > 0;
+                profile.Vehicles = ctx.tbl_vehicles.Where(a => a.owner_id == profile.id)
+                                        .Select(
+                                                c => new VehicleResponse()
+                                                {
+                                                    data = c,
+                                                    
+                                                    images = new ImagesResponse()
+                                                    {
+                                                        Count = ctx.tbl_images.Where(d => d.model_name == "tbl_vehicles" && d.model_id == c.id && d.model_tag == "main").Count(),
+                                                        Url = (ctx.tbl_images.Where(d => d.model_name == "tbl_vehicles" && d.model_id == c.id && d.model_tag == "main").Count() == 0) ? "" : "/img/scale/tbl_vehicles/" + c.id + "/original/main-{index}.gif"
+                                                    }
+                                                    // .Select(b => "/img/scale/tbl_vehicles/"+ b.model_id + "/original/main-"++".gif").ToList(),
+                                                }).ToList();
+               
+            return new APIResult<ProfileResponse>(ResultType.success,profile,"Data getted success");
+            }
         }
     }
 }

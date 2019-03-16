@@ -582,6 +582,14 @@
             <param name="request"></param>
             <returns></returns>
         </member>
+        <member name="M:Chair80.Controllers.UserController.Register(Chair80.Requests.RegisterRequest,System.String)">
+            <summary>
+            
+            </summary>
+            <param name="request"></param>
+            <param name="otpcode"></param>
+            <returns></returns>
+        </member>
         <member name="M:Chair80.Controllers.UserController.Login(Chair80.Requests.LoginRequest)">
             <summary>
             

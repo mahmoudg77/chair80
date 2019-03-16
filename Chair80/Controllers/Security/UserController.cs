@@ -26,19 +26,45 @@ namespace Chair80.Controllers
     public class UserController : ApiController
     {
 
+
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="login"></param>
+        /// <param name="request"></param>
+        /// <param name="otpcode"></param>
         /// <returns></returns>
         [HttpPost]
-        [Route("Login")]
-        public async Task<APIResult<LoginResponse>> Login(LoginRequest  login )
+        [Route("Register")]
+        public async Task<APIResult<LoginResponse>> Register(RegisterRequest request, string otpcode)
         {
-
-            var v = login.isValid();
-            if (v.data == false) return new APIResult<LoginResponse>(ResultType.fail, null, v.message);
             var c = HttpContext.Current;
+            var v = request.isValid();
+            if (v.data == false) return new APIResult<LoginResponse>(ResultType.fail, null, v.message);
+
+
+
+            string trueMobile = "";
+
+            if (General.ValidateMobile(request.phoneNumber, out trueMobile))
+            {
+                request.phoneNumber = trueMobile;
+            }
+            else
+            {
+                return new APIResult<LoginResponse>(ResultType.fail, null, "Invalid mobile number!");
+            }
+
+
+            #region Verify Mobile
+            
+            var verify = Users.VerifyMobile(request.phoneNumber, otpcode);
+
+            if (verify.type == ResultType.fail) return new APIResult<LoginResponse>(ResultType.fail, null, verify.message);
+            
+            #endregion
+
+            #region Get User Data From Firebase
+
             try
             {
 
@@ -66,30 +92,23 @@ namespace Chair80.Controllers
             {
 
 
-                decodedToken = await FirebaseAuth.DefaultInstance.VerifyIdTokenAsync(login.access_token);
+                decodedToken = await FirebaseAuth.DefaultInstance.VerifyIdTokenAsync(request.access_token);
             }
             catch (Exception ex)
             {
 
                 throw new Exception(ErrorHandler.Message(ex));
             }
+
             string uid = decodedToken.Uid;
             string email = "";
-            string name = "";
-            string picture = "";
-            string phone = "";
-            phone = login.phoneNumber;
-            
+            string phone = request.phoneNumber;
+
             try
             {
 
                 if (decodedToken.Claims.Keys.Contains("email")) email = decodedToken.Claims.FirstOrDefault(a => a.Key == "email").Value.ToString();
 
-                if (decodedToken.Claims.Keys.Contains("name")) name = decodedToken.Claims.FirstOrDefault(a => a.Key == "name").Value.ToString();
-
-                if (decodedToken.Claims.Keys.Contains("picture")) picture = decodedToken.Claims.FirstOrDefault(a => a.Key == "picture").Value.ToString();
-
-                if (decodedToken.Claims.Keys.Contains("phone_number")) phone = decodedToken.Claims.FirstOrDefault(a => a.Key == "phone_number").Value.ToString();
 
             }
             catch (Exception ex)
@@ -98,20 +117,72 @@ namespace Chair80.Controllers
                 throw new Exception(ErrorHandler.Message(ex));
             }
 
-            var f_name = name.Split(' ')[0];
+            #endregion
 
-            var l_name = "";
+            var f_name = request.first_name;
 
-            if (name.Split(' ').Length > 1)
-                l_name = name.Substring(f_name.Length);
+            var l_name = request.last_name;
+
 
 
             if (email == "")
                 return new APIResult<LoginResponse>(ResultType.fail, null, "Email is required!");
             if (phone == "")
                 return new APIResult<LoginResponse>(ResultType.fail, null, "Phone is required!");
+            tbl_accounts acc = new tbl_accounts();
+            acc.city_id = request.city==0?null:request.city;
+            acc.country_id = request.country;
+            acc.date_of_birth = request.date_of_birth;
+            acc.email = email;
+            acc.first_name = request.first_name;
+            acc.gender_id = request.gender_id;
+            acc.last_name = request.last_name;
+            acc.mobile = phone;
+            acc.register_time = DateTime.Now;
 
-            return await this.Auth(email,login.password, f_name, l_name, c, picture, "email", uid, phone);
+
+            return Users.Register(acc, request.password, uid, c.Request.ServerVariables);
+        }
+
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="login"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("Login")]
+        public APIResult<LoginResponse> Login(LoginRequest login)
+        {
+            var c = HttpContext.Current;
+            var v = login.isValid();
+            if (v.data == false) return new APIResult<LoginResponse>(ResultType.fail, null, v.message);
+
+
+
+            string trueMobile = "";
+
+            if (General.ValidateMobile(login.phoneNumber, out trueMobile))
+            {
+                login.phoneNumber = trueMobile;
+            }
+            else
+            {
+                return new APIResult<LoginResponse>(ResultType.fail, null, "Invalid mobile number!");
+            }
+
+
+            #region Verify Mobile
+
+            var verify = Users.VerifyMobile(login.phoneNumber, login.otpcode);
+
+            if (verify.type == ResultType.fail) return new APIResult<LoginResponse>(ResultType.fail, null, verify.message);
+
+            #endregion
+
+            return Users.LoginByPhone(login.phoneNumber, login.otpcode,c.Request.ServerVariables);
+            
         }
 
         //[HttpPost]
@@ -149,18 +220,15 @@ namespace Chair80.Controllers
         //}
 
         [HttpPost]
+        [LoginFilter]
         [Route("Current")]
         public APIResult<LoginResponse> Current()
         {
 
-            if (!HttpContext.Current.Request.Headers.AllKeys.Contains("AUTH_KEY"))
-                return new APIResult<LoginResponse>(ResultType.fail, null, "API_ERROR_LOGIN");
-
+          
             var u = APIRequest.User(HttpContext.Current.Request);
 
-            if (u==null)
-                return new APIResult<LoginResponse>(ResultType.fail, null, "API_ERROR_LOGIN");
-
+           
             using (MainEntities ctx = new MainEntities())
             {
                 tbl_accounts acc = ctx.tbl_accounts.FirstOrDefault(a => a.id == u.Entity.id);
@@ -183,48 +251,54 @@ namespace Chair80.Controllers
 
         [HttpPost]
         [Route("CheckPhone")]
-        public APIResult<bool> CheckPhone(string phone,string countryCode="20")
+        public async Task<APIResult<bool>> CheckPhone(string phone, string countryCode = "20")
         {
             string validPhone = "";
-                if (!General.ValidateMobile(phone, out validPhone,countryCode)) return new APIResult<bool>(ResultType.fail, false, "Invalid mobile number !");
+            if (!General.ValidateMobile(phone, out validPhone, countryCode)) return new APIResult<bool>(ResultType.fail, false, "Invalid mobile number !");
 
             using (MainEntities ctx = new MainEntities())
             {
-                int countAcc = ctx.tbl_accounts.Count(a => a.mobile.Contains(validPhone));
+                int countAcc = ctx.tbl_accounts.Count(a => a.mobile==validPhone);
 
-                if (countAcc>0)
-                    return new APIResult<bool>(ResultType.success, true, "Phone already exists !");
+                if (countAcc > 0)
+                {
+                    var v = await SendVerifyCode(validPhone);
+                    if (v.type == ResultType.success)
+                        return new APIResult<bool>(ResultType.success, true, "Phone already exists, You will receive access code by SMS.");
+                    else
+                        return v;
+                }
 
                 return new APIResult<bool>(ResultType.success, false, "Phone not found !");
 
             }
         }
-        [HttpPost]
-        [Route("EditPhone")]
-        [LoginFilter]
-        public APIResult<bool> EditPhone(string phone, string countryCode = "20")
-        {
-            string validPhone = "";
-            if (!General.ValidateMobile(phone, out validPhone, countryCode)) return new APIResult<bool>(ResultType.fail, false, "Invalid mobile number !");
+        //[HttpPost]
+        //[Route("EditPhone")]
+        //[LoginFilter]
+        //public APIResult<bool> EditPhone(string phone, string countryCode = "20")
+        //{
+        //    string validPhone = "";
+        //    if (!General.ValidateMobile(phone, out validPhone, countryCode)) return new APIResult<bool>(ResultType.fail, false, "Invalid mobile number !");
 
 
-            
-            using (MainEntities ctx = new MainEntities())
-            {
-                var u = APIRequest.User(HttpContext.Current.Request).Entity;
-                var acc =ctx.tbl_accounts.Find(u.id);
-                acc.mobile = validPhone;
 
-                ctx.Entry(acc).State = System.Data.Entity.EntityState.Modified;
+        //    using (MainEntities ctx = new MainEntities())
+        //    {
+        //        var u = APIRequest.User(HttpContext.Current.Request).Entity;
+        //        var acc =ctx.tbl_accounts.Find(u.id);
+        //        acc.mobile = validPhone;
+
+        //        ctx.Entry(acc).State = System.Data.Entity.EntityState.Modified;
 
 
-                if (ctx.SaveChanges() > 0)
-                    return new APIResult<bool>(ResultType.success, true, "Phone saved success");
+        //        if (ctx.SaveChanges() > 0)
+        //            return new APIResult<bool>(ResultType.success, true, "Phone saved success");
 
-                return new APIResult<bool>(ResultType.success, false, "Error while saving!");
+        //        return new APIResult<bool>(ResultType.success, false, "Error while saving!");
 
-            }
-        }
+        //    }
+        //}
 
         //[AuthFilter]
         //[Route("AdminApi/User")]
@@ -255,16 +329,16 @@ namespace Chair80.Controllers
 
             var AuthKey = HttpContext.Current.Request.Headers.GetValues("AUTH_KEY");
 
-            using (MainEntities ctx =new MainEntities())
+            using (MainEntities ctx = new MainEntities())
             {
                 var ses = ctx.sec_sessions.Find(Guid.Parse(AuthKey.First().ToString()));
                 ses.end_time = DateTime.Now;
-                ctx.Entry(ses).State=System.Data.Entity.EntityState.Modified;
+                ctx.Entry(ses).State = System.Data.Entity.EntityState.Modified;
 
-                if ( ctx.SaveChanges()==0)
+                if (ctx.SaveChanges() == 0)
                     return new APIResult<bool>(ResultType.fail, false, "API_ERROR_BAD");
             }
-            
+
             return new APIResult<bool>(ResultType.success, true, "API_SUCCESS");
         }
         //[HttpPost]
@@ -275,7 +349,7 @@ namespace Chair80.Controllers
         //    {
         //        return new APIResult<bool>(ResultType.fail, false, "API_ERROR_BAD");
         //    }
-            
+
         //    var AuthKey = Request.Headers.FirstOrDefault(a => a.Key == "AUTH_KEY");
         //    using (MainEntities ctx = new MainEntities())
         //    {
@@ -297,7 +371,7 @@ namespace Chair80.Controllers
 
         //}
 
-        
+
         //[AuthFilter]
         //public APIResult<sec_users> Get(int id)
         //{
@@ -315,7 +389,7 @@ namespace Chair80.Controllers
 
         //    }
 
-           
+
         //    return new APIResult<sec_users>(ResultType.fail, null, "");
         //}
 
@@ -324,18 +398,18 @@ namespace Chair80.Controllers
         [Route("HasAccess")]
         public APIResult<Dictionary<string, Dictionary<string, bool>>> HasAccess(IEnumerable<HasAccessResponse> request)
         {
-            
+
 
 
             //var AuthKey = Request.Headers.FirstOrDefault(a => a.Key == "AUTH_KEY");
             using (MainEntities ctx = new MainEntities())
             {
-               
+
                 try
                 {
                     var u = APIRequest.User(HttpContext.Current.Request);
 
- 
+
                     if (u == null || u.Entity == null)
                         return new APIResult<Dictionary<string, Dictionary<string, bool>>>(ResultType.fail, null, "API_ERROR_BAD");
 
@@ -351,12 +425,12 @@ namespace Chair80.Controllers
                     {
                         //Dictionary<string, bool> row;
                         var AccessRights = ctx.sec_access_right.Where(a => a.model_name == item.Screen && roleIds.Contains(a.role_id) && a.method_name == item.Method);
-                       
-                     
+
+
                         bool allow = false;
                         if (AccessRights.Count() > 0) allow = true;
 
-                        if (rows.Keys !=null && rows.Keys.Contains(item.Screen))
+                        if (rows.Keys != null && rows.Keys.Contains(item.Screen))
                             rows[item.Screen].Add(item.Method, allow);
                         else
                         {
@@ -365,26 +439,26 @@ namespace Chair80.Controllers
                             rows.Add(item.Screen, row);
                         }
                     }
-                  
+
 
                     return new APIResult<Dictionary<string, Dictionary<string, bool>>>(ResultType.success, rows, "API_SUCCESS");
                 }
-            catch (DbEntityValidationException e)
-            {
-                Dictionary<string, Dictionary<string, bool>> i = new Dictionary<string, Dictionary<string, bool>>();
-                i.Add(General.fetchEntityError(e), null);
-                return new APIResult<Dictionary<string, Dictionary<string, bool>>>(ResultType.fail, i, "API_EXECPTION");
-            }
+                catch (DbEntityValidationException e)
+                {
+                    Dictionary<string, Dictionary<string, bool>> i = new Dictionary<string, Dictionary<string, bool>>();
+                    i.Add(General.fetchEntityError(e), null);
+                    return new APIResult<Dictionary<string, Dictionary<string, bool>>>(ResultType.fail, i, "API_EXECPTION");
+                }
                 catch (Exception ex)
-            {
-                Dictionary<string, Dictionary<string, bool>> i = new Dictionary<string, Dictionary<string, bool>>();
-                i.Add(ex.Message, null);
-                return new APIResult<Dictionary<string, Dictionary<string, bool>>>(ResultType.fail, i, "API_EXECPTION");
+                {
+                    Dictionary<string, Dictionary<string, bool>> i = new Dictionary<string, Dictionary<string, bool>>();
+                    i.Add(ex.Message, null);
+                    return new APIResult<Dictionary<string, Dictionary<string, bool>>>(ResultType.fail, i, "API_EXECPTION");
+                }
+
+
+
             }
-
-        
-
-        }
 
 
         }
@@ -459,7 +533,7 @@ namespace Chair80.Controllers
         //    {
         //        return new APIResult<bool>(ResultType.success, true, "API_SUCCESS");
         //    }
-            
+
         //}
 
 
@@ -501,356 +575,167 @@ namespace Chair80.Controllers
         //        return await this.Auth(user.emails.First().value, AccessToken, user.name.givenName, user.name.familyName, HttpContext.Current);
         //    }
         //}
-       //[HttpPost]
-       // public async Task<APIResult<LoginResponse>> FirebaseOAuth(string network, string AccessToken)
-       // {
-       //     var c = HttpContext.Current;
-       //     try
-       //     {
+        //[HttpPost]
+        // public async Task<APIResult<LoginResponse>> FirebaseOAuth(string network, string AccessToken)
+        // {
+        //     var c = HttpContext.Current;
+        //     try
+        //     {
 
-       //         if (FirebaseApp.DefaultInstance != null)
-       //             FirebaseApp.DefaultInstance.Delete();
+        //         if (FirebaseApp.DefaultInstance != null)
+        //             FirebaseApp.DefaultInstance.Delete();
 
-       //         //{
+        //         //{
 
-       //         FirebaseApp.Create(new AppOptions()
-       //         {
-       //             Credential = GoogleCredential.FromFile(HttpContext.Current.Server.MapPath("~/App_Data/metookey-219517-de58b500e4bb.json")),
+        //         FirebaseApp.Create(new AppOptions()
+        //         {
+        //             Credential = GoogleCredential.FromFile(HttpContext.Current.Server.MapPath("~/App_Data/metookey-219517-de58b500e4bb.json")),
 
-       //         }
-       //             );
-
-
-       //     }
-       //     catch (Exception ex)
-       //     {
-
-       //         throw new Exception(ex.Message + " Line : 412");
-       //     }
-       //     FirebaseToken decodedToken;
-       //     try
-       //     {
+        //         }
+        //             );
 
 
-       //         decodedToken = await FirebaseAuth.DefaultInstance.VerifyIdTokenAsync(AccessToken);
-       //     }
-       //     catch (Exception ex)
-       //     {
+        //     }
+        //     catch (Exception ex)
+        //     {
 
-       //         throw new Exception(ex.Message + " Line : 424");
-       //     }
-       //     string uid = decodedToken.Uid;
-       //     string email = "";
-       //     string name = "";
-       //     string picture = "";
-       //     try
-       //     {
+        //         throw new Exception(ex.Message + " Line : 412");
+        //     }
+        //     FirebaseToken decodedToken;
+        //     try
+        //     {
 
 
+        //         decodedToken = await FirebaseAuth.DefaultInstance.VerifyIdTokenAsync(AccessToken);
+        //     }
+        //     catch (Exception ex)
+        //     {
 
-       //         if (decodedToken.Claims.Keys.Contains("email")) email = decodedToken.Claims.FirstOrDefault(a => a.Key == "email").Value.ToString();
-
-       //         if (decodedToken.Claims.Keys.Contains("name")) name = decodedToken.Claims.FirstOrDefault(a => a.Key == "name").Value.ToString();
-
-       //         if (decodedToken.Claims.Keys.Contains("picture")) picture = decodedToken.Claims.FirstOrDefault(a => a.Key == "picture").Value.ToString();
-
-       //     }
-       //     catch (Exception ex)
-       //     {
-
-       //         throw new Exception(ex.Message + " Line : 445");
-       //     }
-
-       //     //try
-       //     //{
-
-       //     //return new APIResult<LoginResponse>(ResultType.fail, null, "API_ERROR_BAD");
-
-       //     var f_name = name.Split(' ')[0];
-
-       //     var l_name = "";
-
-       //     if (name.Split(' ').Length > 1)
-       //         l_name = name.Substring(f_name.Length);
+        //         throw new Exception(ex.Message + " Line : 424");
+        //     }
+        //     string uid = decodedToken.Uid;
+        //     string email = "";
+        //     string name = "";
+        //     string picture = "";
+        //     try
+        //     {
 
 
-       //     return await this.Auth(email, uid, f_name, l_name, c, picture, network, uid);
-       //     //}
-       //     //catch (Exception ex)
-       //     //{
 
-       //     //    throw new Exception(ex.Message +  " Name:" + name + " Email:" + email + " uid:"+uid);
-       //     //}
-       // }
+        //         if (decodedToken.Claims.Keys.Contains("email")) email = decodedToken.Claims.FirstOrDefault(a => a.Key == "email").Value.ToString();
 
-        private async Task<APIResult<LoginResponse>> Auth(string email, string password, string first_name, string last_name,HttpContext http, string pic = "", string network = "", string FirebaseUID = "", string phone="")
-        {
-            using (MainEntities ctx = new MainEntities())
-            {
-                //try
-                //{
+        //         if (decodedToken.Claims.Keys.Contains("name")) name = decodedToken.Claims.FirstOrDefault(a => a.Key == "name").Value.ToString();
 
+        //         if (decodedToken.Claims.Keys.Contains("picture")) picture = decodedToken.Claims.FirstOrDefault(a => a.Key == "picture").Value.ToString();
 
-                    tbl_accounts dbuser = null;
-                try
-                {
+        //     }
+        //     catch (Exception ex)
+        //     {
 
-               
-                   
-                        dbuser = ctx.tbl_accounts.Include("sec_users").Where(a => a.sec_users.firebase_uid == FirebaseUID).FirstOrDefault();
-                     
-                    
-                    if(dbuser==null)
-                    {
-                        dbuser = new tbl_accounts();
-                        dbuser.email = email;
-                        dbuser.first_name = first_name;
-                        dbuser.last_name = last_name;
-                        dbuser.register_time = DateTime.Now;
-                        dbuser.mobile = phone;
-                        
-                        ctx.tbl_accounts.Add(dbuser);
-                        try
-                        {
-                            ctx.SaveChanges();
-                            sec_users sec_user = new sec_users();
+        //         throw new Exception(ex.Message + " Line : 445");
+        //     }
 
-                            sec_user.pwd = password;
-                            sec_user.id = dbuser.id;
-                            sec_user.mail_verified = true;
-                            sec_user.firebase_uid = FirebaseUID;
-                           
-                            ctx.sec_users.Add(sec_user);
-                            ctx.SaveChanges();
-                        }
-                        catch (Exception ex)
-                        {
-                            return new APIResult<LoginResponse>(ResultType.fail, null, ex.Message + "save changes1");
-                        }
+        //     //try
+        //     //{
 
-                    }
+        //     //return new APIResult<LoginResponse>(ResultType.fail, null, "API_ERROR_BAD");
 
-                }
-                catch (Exception ex)
-                {
-                    throw ex;
-                   // return new APIResult<LoginResponse>(ResultType.fail, null, ex.Message + "get dbuser");
+        //     var f_name = name.Split(' ')[0];
 
-                }
-                tbl_images img = ctx.tbl_images.Where(a => a.model_name == "tbl_accounts" && a.model_id == dbuser.id && a.model_tag == "main").FirstOrDefault();
-                    if (pic != "" && img == null)
-                    {
-                        
-                        img = new tbl_images();
+        //     var l_name = "";
 
-                        try
-                        {
-
-                        img.original = "/Storage/Original/" + DateTime.Now.ToString("yyyyMMddhhmmss") + "_" + network + ".jpg";
-                        string imgPath =ConfigurationManager.AppSettings["mediaServer_Path"] + img.original.Replace("/", "\\");
-                        img.large = img.original;
-                        img.thumb = img.original;
-                        img.meduim = img.original;
-                        img.model_id = dbuser.id;
-                        img.model_name = "tbl_accounts";
-                        img.model_tag = "profile";
-                        System.Net.WebClient webClient = new System.Net.WebClient();
-
-                        webClient.Encoding = System.Text.Encoding.UTF8;
-
-                        
-                            webClient.DownloadFile(pic, imgPath);
-                            ctx.tbl_images.Add(img);
-
-                        }
-                        catch (Exception ex)
-                        {
-                            return new APIResult<LoginResponse>(ResultType.fail, null, ex.Message + "Save Image");
-                        }
-                        try
-                        {
-
-                            ctx.SaveChanges();
-                        }
-                        //catch (DbEntityValidationException e)
-                        //{
-
-                        //    return new APIResult<LoginResponse>(ResultType.fail, null, General.fetchEntityError(e));
-                        //}
-                        catch (Exception ex)
-                        {
-                            return new APIResult<LoginResponse>(ResultType.fail, null, ex.Message + "save changes2");
-                        }
-
-                    }
-
-                    tbl_accounts acc = null;
-                    using (MainEntities itmCtx = new MainEntities())
-                    {
-                        acc = itmCtx.tbl_accounts.FirstOrDefault(a => a.id == dbuser.id);
-                    }
-
-                var returned = new LoginResponse { account = acc };
-                IPResult s = new IPResult();
-
-                string ip = "";
-                string agent = "";
-                IPResult iploc = new IPResult();
+        //     if (name.Split(' ').Length > 1)
+        //         l_name = name.Substring(f_name.Length);
 
 
-                //if(HttpContext.Current == null) return new APIResult<LoginResponse>(ResultType.fail, null, "Null HTTPContext");
-                if (http.Request == null) return new APIResult<LoginResponse>(ResultType.fail, null, "Null HTTPRequest");
-                if (http.Request.ServerVariables == null) return new APIResult<LoginResponse>(ResultType.fail, null, "Null ServerVariables");
-                if (http.Request.ServerVariables.Count == 0) return new APIResult<LoginResponse>(ResultType.fail, null, "Empty ServerVariables");
-                if (!http.Request.ServerVariables.AllKeys.Contains("REMOTE_ADDR")) return new APIResult<LoginResponse>(ResultType.fail, null, "REMOTE_ADDR Not in ServerVariables");
-                if (!http.Request.ServerVariables.AllKeys.Contains("HTTP_USER_AGENT")) return new APIResult<LoginResponse>(ResultType.fail, null, "HTTP_USER_AGENT No in ServerVariables");
-                try
-                {
-                    ip = http.Request.ServerVariables.Get("REMOTE_ADDR");
-                    agent = http.Request.ServerVariables.Get("HTTP_USER_AGENT");
+        //     return await this.Auth(email, uid, f_name, l_name, c, picture, network, uid);
+        //     //}
+        //     //catch (Exception ex)
+        //     //{
 
-                    iploc = General.GetResponse("http://ip-api.com/json/" + ip);
-                }
-                catch (Exception ex)
-                {
-                    return new APIResult<LoginResponse>(ResultType.fail, null, ex.Message + "get location ip:" + ip + " agent:" + agent);
-                }
+        //     //    throw new Exception(ex.Message +  " Name:" + name + " Email:" + email + " uid:"+uid);
+        //     //}
+        // }
 
-                try
-                {
-
-                    //&& a.ip == ip && a.agent == agent
-                    var userSessions = ctx.sec_sessions.Where(a => a.user_id == dbuser.id && a.end_time == null ).FirstOrDefault();
-                    if (userSessions == null)
-                    {
-                        Sessions ses = new Sessions();
-                        ses.Entity.user_id = dbuser.id;
-                        ses.Entity.ip = ip;
-                        ses.Entity.isp = iploc.isp;
-                        ses.Entity.lat = iploc.lat;
-                        ses.Entity.lon = iploc.lon;
-                        ses.Entity.timezone = iploc.timezone;
-                        ses.Entity.city = iploc.city;
-                        ses.Entity.country = iploc.country;
-                        ses.Entity.country_code = iploc.countryCode;
-                        ses.Entity.agent = agent;
-
-
-                        ctx.sec_sessions.Add(ses.Entity);
-                        ctx.SaveChanges();
-
-                        dbuser.sec_users.sec_sessions = new List<sec_sessions>() { ses.Entity };
-                        returned.token = ses.Entity.id;
-                    }
-                    else
-                    {
-                        returned.token = userSessions.id;
-                    }
-
-                    returned.roles = ctx.sec_users_roles.Include("sec_roles").Where(a => a.user_id == acc.id).Select(b => b.sec_roles.role_key).ToArray();
-                    return new APIResult<LoginResponse>(ResultType.success, returned, "Login Success");
-
-                }
-                catch (DbEntityValidationException e)
-                {
-
-                    return new APIResult<LoginResponse>(ResultType.fail, null, General.fetchEntityError(e));
-                }
-                catch (Exception ex)
-                {
-
-                    return new APIResult<LoginResponse>(ResultType.fail, null, ex.Message+" Save Session" );
-
-                }
-
-                //}
-                //catch (Exception ex)
-                //{
-
-                //    throw new Exception( ex.Message + "Auth");
-                //}
-
-            }
-        }
+     
         //[SettingFilter("verify_mobile")]
         //[LoginFilter]
-        //[HttpPost]
-        //[Route("User/SendVerifyCode")]
-        //public async Task<APIResult<bool>> SendVerifyCode(string Mobile)
-        //{
-        //            int uid= APIRequest.User(HttpContext.Current.Request).Entity.id;
-        //    using (MainEntities ctx = new MainEntities())
-        //    {
-        //        string trueMobile = Mobile;
-        //        if(General.ValidateMobile(Mobile, out trueMobile))
-        //        {
-        //            Mobile = trueMobile;
-        //        }
-        //        else
-        //        {
-        //            return new APIResult<bool>(ResultType.fail, false, "Invalid mobile number!");
-        //        }
+        [HttpPost]
+        [Route("SendVerifyCode")]
+        public async Task<APIResult<bool>> SendVerifyCode(string Mobile)
+        {
+            //int uid = APIRequest.User(HttpContext.Current.Request).Entity.id;
+            using (MainEntities ctx = new MainEntities())
+            {
+                string trueMobile = Mobile;
+                if (General.ValidateMobile(Mobile, out trueMobile))
+                {
+                    Mobile = trueMobile;
+                }
+                else
+                {
+                    return new APIResult<bool>(ResultType.fail, false, "Invalid mobile number!");
+                }
 
 
-        //        var dublicated = ctx.tbl_accounts.Include("sec_users").Where(a => a.mobile == Mobile && a.sec_users.phone_verified==true && a.id!=uid).Count();
+                var dublicated = ctx.tbl_accounts.Include("sec_users").Where(a => a.mobile == Mobile && a.sec_users.phone_verified == true ).Count();
 
-        //        if (dublicated > 0)
-        //            return new APIResult<bool>(ResultType.fail, false, "This mobile is already exists in our database!");
-        //    }
+                if (dublicated > 0)
+                    return new APIResult<bool>(ResultType.fail, false, "This mobile is already exists in our database!");
+            }
 
-        //    var sms_url = Settings.AppSetting.FirstOrDefault(a => a.setting_key == "sms_url").setting_value;
-        //    if (sms_url!=null && sms_url != "")
-        //    {
-        //        using (var client = new HttpClient())
-        //        {
-        //            Random random = new Random();
-        //            var code= random.Next(100000, 999999);
+            var sms_url = Settings.AppSetting.FirstOrDefault(a => a.setting_key == "sms_url").setting_value;
+            if (sms_url != null && sms_url != "")
+            {
+                using (var client = new HttpClient())
+                {
+                    Random random = new Random();
+                    var code = random.Next(100000, 999999);
 
-        //            using (MainEntities ctx = new MainEntities())
-        //            {
-        //                DateTime expiredTime = DateTime.Now.Add(new TimeSpan(0, -10, 0));
+                    using (MainEntities ctx = new MainEntities())
+                    {
+                        DateTime expiredTime = DateTime.Now.Add(new TimeSpan(0, -10, 0));
 
-        //                sec_mobile_verify vm = ctx.sec_mobile_verify.Where(a => a.mobile == Mobile && a.user_id == uid && a.is_used==false && a.created_at> expiredTime).OrderByDescending(a => a.id).FirstOrDefault();
-        //                if (vm != null)
-        //                {
-        //                    code = int.Parse(vm.code);
-        //                    vm.created_at = DateTime.Now;
-        //                    ctx.Entry(vm).State = System.Data.Entity.EntityState.Modified;
+                        sec_mobile_verify vm = ctx.sec_mobile_verify.Where(a => a.mobile == Mobile  && a.is_used == false && a.created_at > expiredTime).OrderByDescending(a => a.id).FirstOrDefault();
+                        if (vm != null)
+                        {
+                            code = int.Parse(vm.code);
+                            vm.created_at = DateTime.Now;
+                            ctx.Entry(vm).State = System.Data.Entity.EntityState.Modified;
 
-        //                }
-        //                else
-        //                {
-        //                    vm = new sec_mobile_verify();
-        //                    vm.mobile = Mobile;
-        //                    vm.user_id = APIRequest.User(HttpContext.Current.Request).Entity.id;
-        //                    vm.code = code.ToString();
-        //                    vm.created_at = DateTime.Now;
-        //                    ctx.sec_mobile_verify.Add(vm);
-        //                }
+                        }
+                        else
+                        {
+                            vm = new sec_mobile_verify();
+                            vm.mobile = Mobile;
+                            vm.code = code.ToString();
+                            vm.created_at = DateTime.Now;
+                            ctx.sec_mobile_verify.Add(vm);
+                        }
 
 
-        //                if (ctx.SaveChanges() > 0)
-        //                {
-        //                    var uri = new Uri(sms_url.Replace("##mobile##", Mobile).Replace("##code##", code.ToString()));
-        //                    var response = await client.PostAsJsonAsync(uri, "");
+                        if (ctx.SaveChanges() > 0)
+                        {
+                            var uri = new Uri(sms_url.Replace("##mobile##", Mobile).Replace("##code##", code.ToString()));
+                            var response = await client.PostAsJsonAsync(uri, "");
 
-        //                    var smsResult = await response.Content.ReadAsStringAsync();
+                            var smsResult = await response.Content.ReadAsStringAsync();
 
-        //                    if (response.IsSuccessStatusCode && smsResult.Contains("success"))
-        //                    {
-        //                        return new APIResult<bool>(ResultType.success, true, "API_SUCCESS");
-        //                    }
-        //                    else
-        //                    {
-        //                          Logger.log(string.Format("SMSErorr: Code={0},Mobile={1} \r\n {2}", code, Mobile, smsResult));
-        //                    }
-        //                }
-        //            }
-        //            return new APIResult<bool>(ResultType.fail, false, "API_ERROR_BAD");
-        //        }
-        //    }
-        //    return new APIResult<bool>(ResultType.fail, false, "API_SUCCESS");
-        //}
+                            if (response.IsSuccessStatusCode && smsResult.Contains("success"))
+                            {
+                                return new APIResult<bool>(ResultType.success, true, "API_SUCCESS");
+                            }
+                            else
+                            {
+                                Logger.log(string.Format("SMSErorr: Code={0},Mobile={1} \r\n {2}", code, Mobile, smsResult));
+                            }
+                        }
+                    }
+                    return new APIResult<bool>(ResultType.fail, false, "Bad Request!");
+                }
+            }
+            return new APIResult<bool>(ResultType.fail, false, "API_SUCCESS");
+        }
 
         //[SettingFilter("verify_mobile")]
         //[LoginFilter]
@@ -870,28 +755,15 @@ namespace Chair80.Controllers
         //    using (MainEntities ctx = new MainEntities())
         //    {
 
-        //        int uid = APIRequest.User(HttpContext.Current.Request).Entity.id;
-        //        var vm=ctx.sec_mobile_verify.Where(a => a.mobile == Mobile && a.code == Code && a.user_id == uid).OrderByDescending(a => a.id).FirstOrDefault();
-        //        if(vm==null) return new APIResult<bool>(ResultType.fail, false, "Invalid code or mobile number !!");
-        //        if(vm.is_used==true) return new APIResult<bool>(ResultType.fail, false, "This code is already used !!");
-        //        if(vm.created_at< DateTime.Now.Add(new TimeSpan(0, -10, 0))) return new APIResult<bool>(ResultType.fail, false, "This code expired !!");
+        //        var vm = ctx.sec_mobile_verify.Where(a => a.mobile == Mobile && a.code == Code ).OrderByDescending(a => a.id).FirstOrDefault();
+        //        if (vm == null) return new APIResult<bool>(ResultType.fail, false, "Invalid code or mobile number !!");
+        //        if (vm.is_used == true) return new APIResult<bool>(ResultType.fail, false, "This code is already used !!");
+        //        if (vm.created_at < DateTime.Now.Add(new TimeSpan(0, -10, 0))) return new APIResult<bool>(ResultType.fail, false, "This code expired !!");
 
         //        vm.is_used = true;
-        //        tbl_accounts acc=ctx.tbl_accounts.Find(uid);
 
-
-
-
-        //        acc.mobile = Mobile;
-
-        //        sec_users usr = ctx.sec_users.Find(uid);
-
-        //        usr.phone_verified = true;
 
         //        ctx.Entry(vm).State = System.Data.Entity.EntityState.Modified;
-        //        ctx.Entry(acc).State = System.Data.Entity.EntityState.Modified;
-        //        ctx.Entry(usr).State = System.Data.Entity.EntityState.Modified;
-
 
         //        if (ctx.SaveChanges() > 0)
         //        {
@@ -904,7 +776,7 @@ namespace Chair80.Controllers
 
         //        }
 
-        //    }   
+        //    }
 
         //}
 
@@ -934,7 +806,7 @@ namespace Chair80.Controllers
         //    }
         //}
 
-       
+
     }
 
     //class FacebookUser

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Chair80.Libs;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http;
@@ -28,7 +29,7 @@ namespace Chair80
                 routeTemplate: "{controller}/{id}",
                 defaults: new {id = RouteParameter.Optional }
             );
-
+            Settings.Load();
             GlobalConfiguration.Configuration.Formatters.XmlFormatter.SupportedMediaTypes.Clear();
             GlobalConfiguration.Configuration.Formatters.XmlFormatter.SupportedMediaTypes.Add(new System.Net.Http.Headers.MediaTypeHeaderValue("multipart/form-data"));
 
