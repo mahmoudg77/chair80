@@ -1,55 +1,107 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Web;
 namespace Chair80.Libs
 {
     public class APIResult<T> 
     {
-        public ResultType type { get; set; }
+        public bool isSuccess { get; set; }
+        public ResponseCode code { get; set; }
         public string message { get; set; }
         public T data { get; set; }
         public APIResult()
         {
 
         }
-        public APIResult(ResultType type)
+
+
+        public static APIResult<T> Error(ResponseCode code, string message)
         {
-            this.type = type;
-          
+            return new APIResult<T>() { isSuccess = false, code = code, message = Locales.Locales.translate(message) };
         }
-      
-        public APIResult(ResultType type, T data)
+
+        public static APIResult<T> Error(ResponseCode code, string message,T data)
         {
-            this.type = type;
-            this.data = data;
+            return new APIResult<T>() { isSuccess = false, code = code, message = Locales.Locales.translate(message), data=data };
         }
-        public APIResult(ResultType type, string msg)
+        public static APIResult<T> Success(T Data, string message="")
         {
-            this.type = type;
-            this.message = msg;
+            return new APIResult<T>() { isSuccess = true, code = ResponseCode.Success, message = Locales.Locales.translate( message),data=Data };
         }
-        public APIResult(ResultType type, string msg, T data)
-        {
-            this.type = type;
-            this.message = msg;
-            this.data = data;
-        }
-        public APIResult(ResultType type, T data, string msg)
-        {
-            this.type = type;
-            this.message = msg;
-            this.data = data;
-        }
+
+
 
 
     }
 
-    public enum ResultType
+    /// <summary>
+    /// 
+    /// </summary>
+    public enum ResponseCode
     {
-        fail = 0,
-        success = 1,
-        warning = -1,
+        /// <summary>
+        /// 
+        /// </summary>
+        Success=200,
+        /// <summary>
+        /// 
+        /// </summary>
+        UserForbidden=1403,
+        /// <summary>
+        /// 
+        /// </summary>
+        UserUnauthorized = 1401,
+        /// <summary>
+        /// 
+        /// </summary>
+        UserNotFound = 1404,
+        /// <summary>
+        /// 
+        /// </summary>
+        UserRequestTimeout = 1408,
+        /// <summary>
+        /// 
+        /// </summary>
+        UserNotAcceptable =1406,
+        /// <summary>
+        /// 
+        /// </summary>
+        UserUnVerified=1407,
+        /// <summary>
+        /// 
+        /// </summary>
+        UserValidationField=1408,
+        /// <summary>
+        /// 
+        /// </summary>
+        UserDoublicate=1409,
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        DevBadGeteway=2503,
+        /// <summary>
+        /// 
+        /// </summary>
+        DevNotFound = 2404,
+
+        /// <summary>
+        /// 
+        /// </summary>
+        BackendServerRequest = 3400,
+        /// <summary>
+        /// 
+        /// </summary>
+        BackendInternalServer =3500,
+        /// <summary>
+        /// 
+        /// </summary>
+        BackendDatabase=3600,
+
     }
 
+  
 }

@@ -12,18 +12,24 @@ namespace Chair80.DAL
     using System;
     using System.Collections.Generic;
     
-    public partial class tbl_genders
+    public partial class tbl_genders:BLL.GenderTranslate
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public tbl_genders()
         {
             this.tbl_accounts = new HashSet<tbl_accounts>();
+            this.trip_request_details = new HashSet<trip_request_details>();
+            this.trip_share_details = new HashSet<trip_share_details>();
         }
     
         public int id { get; set; }
-        public string name { get; set; }
+        //public string name { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<tbl_accounts> tbl_accounts { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<trip_request_details> trip_request_details { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<trip_share_details> trip_share_details { get; set; }
     }
 }

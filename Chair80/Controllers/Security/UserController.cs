@@ -22,11 +22,10 @@ using Chair80.Filters;
 namespace Chair80.Controllers
 {
     [AppFilter]
-    [RoutePrefix("User")]
+    [RoutePrefix("{lang}/User")]
     public class UserController : ApiController
     {
-
-
+        
         /// <summary>
         /// 
         /// </summary>
@@ -35,12 +34,11 @@ namespace Chair80.Controllers
         /// <returns></returns>
         [HttpPost]
         [Route("Register")]
-        public async Task<APIResult<LoginResponse>> Register(RegisterRequest request, string otpcode)
+        public async Task<APIResult<LoginResponse>> Register(RegisterRequest request)
         {
             var c = HttpContext.Current;
             var v = request.isValid();
-            if (v.data == false) return new APIResult<LoginResponse>(ResultType.fail, null, v.message);
-
+            if (v.data == false) return APIResult<LoginResponse>.Error(v.code, v.message);
 
 
             string trueMobile = "";
@@ -51,18 +49,13 @@ namespace Chair80.Controllers
             }
             else
             {
-                return new APIResult<LoginResponse>(ResultType.fail, null, "Invalid mobile number!");
+                return APIResult<LoginResponse>.Error(ResponseCode.UserValidationField, "Invalid mobile number!");
             }
 
-
-            #region Verify Mobile
+            var verified = Users.MobileVerified(request.phoneNumber,request.verification_id);
+            if (!verified.data)
+                return APIResult<LoginResponse>.Error(ResponseCode.UserUnVerified, "Your phone still not verified!");
             
-            var verify = Users.VerifyMobile(request.phoneNumber, otpcode);
-
-            if (verify.type == ResultType.fail) return new APIResult<LoginResponse>(ResultType.fail, null, verify.message);
-            
-            #endregion
-
             #region Get User Data From Firebase
 
             try
@@ -126,9 +119,9 @@ namespace Chair80.Controllers
 
 
             if (email == "")
-                return new APIResult<LoginResponse>(ResultType.fail, null, "Email is required!");
+                return APIResult<LoginResponse>.Error(ResponseCode.UserValidationField, "Email is required!");
             if (phone == "")
-                return new APIResult<LoginResponse>(ResultType.fail, null, "Phone is required!");
+                return APIResult<LoginResponse>.Error(ResponseCode.UserValidationField, "Phone is required!");
             tbl_accounts acc = new tbl_accounts();
             acc.city_id = request.city==0?null:request.city;
             acc.country_id = request.country;
@@ -145,7 +138,6 @@ namespace Chair80.Controllers
         }
 
 
-
         /// <summary>
         /// 
         /// </summary>
@@ -157,7 +149,7 @@ namespace Chair80.Controllers
         {
             var c = HttpContext.Current;
             var v = login.isValid();
-            if (v.data == false) return new APIResult<LoginResponse>(ResultType.fail, null, v.message);
+            if (v.data == false) return APIResult<LoginResponse>.Error(v.code, v.message);
 
 
 
@@ -169,7 +161,7 @@ namespace Chair80.Controllers
             }
             else
             {
-                return new APIResult<LoginResponse>(ResultType.fail, null, "Invalid mobile number!");
+                return APIResult<LoginResponse>.Error(ResponseCode.UserValidationField, "Invalid mobile number!");
             }
 
 
@@ -177,12 +169,33 @@ namespace Chair80.Controllers
 
             var verify = Users.VerifyMobile(login.phoneNumber, login.otpcode);
 
-            if (verify.type == ResultType.fail) return new APIResult<LoginResponse>(ResultType.fail, null, verify.message);
+            if (!verify.isSuccess) return APIResult<LoginResponse>.Error(ResponseCode.UserValidationField, verify.message);
 
             #endregion
 
             return Users.LoginByPhone(login.phoneNumber, login.otpcode,c.Request.ServerVariables);
             
+        }
+
+        [AppFilter]
+        [HttpPost]
+        [Route("WebLogin")]
+        public APIResult<LoginResponse> Login(WebLoginRequest login)
+        {
+            var c = HttpContext.Current;
+            var v = login.isValid();
+            if (v.data == false) return APIResult<LoginResponse>.Error(v.code, v.message);
+
+
+
+            if (!General.EmailIsValid(login.email))
+                return APIResult<LoginResponse>.Error(ResponseCode.UserValidationField, "Invalid Email Address!");
+             
+
+
+
+            return Users.LoginByEmail(login.email, login.password, c.Request.ServerVariables);
+
         }
 
         //[HttpPost]
@@ -200,11 +213,11 @@ namespace Chair80.Controllers
         //            u.mail_verified = true;
         //            ctx.Entry(u).State = System.Data.Entity.EntityState.Modified;
         //            ctx.SaveChanges();
-        //            return new APIResult<bool>(ResultType.success, true, "API_SUCCESS_CONFIRM");
+        //            return APIResult<bool>(ResultType.success, true, "API_SUCCESS_CONFIRM");
         //        }
         //        else
         //        {
-        //            return new APIResult<bool>(ResultType.fail, false, "API_ERROR_CONFIRM");
+        //            return APIResult<bool>(ResultType.fail, false, "API_ERROR_CONFIRM");
         //        }
         //    }
         //    //if (result != null)
@@ -213,10 +226,10 @@ namespace Chair80.Controllers
         //    //    l.account = result;
         //    //    l.token = result.sec_users.sec_sessions.First().id;
         //    //    l.account.sec_users = null;
-        //    //    return new APIResult<LoginResponse>(ResultType.success, l, "API_SUCCESS");
+        //    //    return APIResult<LoginResponse>(ResultType.success, l, "API_SUCCESS");
 
         //    //}
-        //    //return new APIResult<LoginResponse>(ResultType.fail, null, "API_ERROR_LOGIN");
+        //    //return APIResult<LoginResponse>(ResultType.fail, null, "API_ERROR_LOGIN");
         //}
 
         [HttpPost]
@@ -234,7 +247,7 @@ namespace Chair80.Controllers
                 tbl_accounts acc = ctx.tbl_accounts.FirstOrDefault(a => a.id == u.Entity.id);
 
                 if (u == null || acc == null)
-                    return new APIResult<LoginResponse>(ResultType.fail, null, "API_ERROR_LOGIN");
+                    return APIResult<LoginResponse>.Error(ResponseCode.UserForbidden, "API_ERROR_LOGIN");
 
                 var AuthKey = HttpContext.Current.Request.Headers.GetValues("AUTH_KEY");
                 LoginResponse l = new LoginResponse();
@@ -245,7 +258,7 @@ namespace Chair80.Controllers
                     l.roles = dal.sec_users_roles.Include("sec_roles").Where(a => a.user_id == acc.id).Select(b => b.sec_roles.role_key).ToArray();
                 }
 
-                return new APIResult<LoginResponse>(ResultType.success, l, "API_SUCCESS");
+                return APIResult<LoginResponse>.Success(l, "API_SUCCESS");
             }
         }
 
@@ -254,7 +267,7 @@ namespace Chair80.Controllers
         public async Task<APIResult<bool>> CheckPhone(string phone, string countryCode = "20")
         {
             string validPhone = "";
-            if (!General.ValidateMobile(phone, out validPhone, countryCode)) return new APIResult<bool>(ResultType.fail, false, "Invalid mobile number !");
+            if (!General.ValidateMobile(phone, out validPhone, countryCode)) return APIResult<bool>.Error(ResponseCode.UserValidationField, "Invalid mobile number !");
 
             using (MainEntities ctx = new MainEntities())
             {
@@ -262,14 +275,14 @@ namespace Chair80.Controllers
 
                 if (countAcc > 0)
                 {
-                    var v = await SendVerifyCode(validPhone);
-                    if (v.type == ResultType.success)
-                        return new APIResult<bool>(ResultType.success, true, "Phone already exists, You will receive access code by SMS.");
-                    else
-                        return v;
+                    //var v = await SendVerifyCode(validPhone);
+                    //if (v.isSuccess)
+                        return APIResult<bool>.Success(true, "Phone already exists");
+                    //else
+                    //    return v;
                 }
 
-                return new APIResult<bool>(ResultType.success, false, "Phone not found !");
+                return APIResult<bool>.Error(ResponseCode.DevNotFound, "Phone not found !",false);
 
             }
         }
@@ -279,7 +292,7 @@ namespace Chair80.Controllers
         //public APIResult<bool> EditPhone(string phone, string countryCode = "20")
         //{
         //    string validPhone = "";
-        //    if (!General.ValidateMobile(phone, out validPhone, countryCode)) return new APIResult<bool>(ResultType.fail, false, "Invalid mobile number !");
+        //    if (!General.ValidateMobile(phone, out validPhone, countryCode)) return APIResult<bool>(ResultType.fail, false, "Invalid mobile number !");
 
 
 
@@ -293,9 +306,9 @@ namespace Chair80.Controllers
 
 
         //        if (ctx.SaveChanges() > 0)
-        //            return new APIResult<bool>(ResultType.success, true, "Phone saved success");
+        //            return APIResult<bool>(ResultType.success, true, "Phone saved success");
 
-        //        return new APIResult<bool>(ResultType.success, false, "Error while saving!");
+        //        return APIResult<bool>(ResultType.success, false, "Error while saving!");
 
         //    }
         //}
@@ -309,17 +322,15 @@ namespace Chair80.Controllers
         //        var users = ctx.sec_users.Include("tbl_accounts");
         //        if (users == null)
         //        {
-        //            return new APIResult<Libs.DataTableResponse<sec_users>>(ResultType.fail, null, "API_ERROR_BAD");
+        //            return APIResult<Libs.DataTableResponse<sec_users>>(ResultType.fail, null, "API_ERROR_BAD");
         //        }
         //        Libs.DataTableResponse<sec_users> dt = new Libs.DataTableResponse<sec_users>(0, users.Count(), users.Count(), users);
 
-        //        return new APIResult<Libs.DataTableResponse<sec_users>>(ResultType.success, dt, "API_SUCCESS");
+        //        return APIResult<Libs.DataTableResponse<sec_users>>(ResultType.success, dt, "API_SUCCESS");
 
         //    }
 
         //}
-
-
 
         [HttpGet]
         [LoginFilter]
@@ -336,10 +347,10 @@ namespace Chair80.Controllers
                 ctx.Entry(ses).State = System.Data.Entity.EntityState.Modified;
 
                 if (ctx.SaveChanges() == 0)
-                    return new APIResult<bool>(ResultType.fail, false, "API_ERROR_BAD");
+                    return APIResult<bool>.Error(ResponseCode.BackendDatabase, "API_ERROR_BAD",false);
             }
 
-            return new APIResult<bool>(ResultType.success, true, "API_SUCCESS");
+            return APIResult<bool>.Success( true, "API_SUCCESS");
         }
         //[HttpPost]
         //[LoginFilter]
@@ -347,7 +358,7 @@ namespace Chair80.Controllers
         //{
         //    if (string.IsNullOrEmpty(Screen) || string.IsNullOrEmpty(Method))
         //    {
-        //        return new APIResult<bool>(ResultType.fail, false, "API_ERROR_BAD");
+        //        return APIResult<bool>(ResultType.fail, false, "API_ERROR_BAD");
         //    }
 
         //    var AuthKey = Request.Headers.FirstOrDefault(a => a.Key == "AUTH_KEY");
@@ -356,14 +367,14 @@ namespace Chair80.Controllers
 
         //        sec_sessions user = ctx.sec_sessions.Find(Guid.Parse(AuthKey.Value.First().ToString()));
         //        if (user == null || user.end_time != null)
-        //            return new APIResult<bool>(ResultType.fail, false, "API_ERROR_BAD");
+        //            return APIResult<bool>(ResultType.fail, false, "API_ERROR_BAD");
 
         //        Users users = new Users(user.user_id);
 
         //        if (users.Entity == null)
-        //            return new APIResult<bool>(ResultType.fail, false, "API_ERROR_BAD");
+        //            return APIResult<bool>(ResultType.fail, false, "API_ERROR_BAD");
 
-        //        return new APIResult<bool>(ResultType.success, users.Allow(Screen, Method), "API_SUCCESS");
+        //        return APIResult<bool>(ResultType.success, users.Allow(Screen, Method), "API_SUCCESS");
 
         //    }
 
@@ -382,7 +393,7 @@ namespace Chair80.Controllers
         //        sec_users rec = ctx.sec_users.Find(id);
         //        if (rec != null)
         //        {
-        //            return new APIResult<sec_users>(ResultType.success, rec, "API_SUCCESS");
+        //            return APIResult<sec_users>(ResultType.success, rec, "API_SUCCESS");
         //        }
 
 
@@ -390,7 +401,7 @@ namespace Chair80.Controllers
         //    }
 
 
-        //    return new APIResult<sec_users>(ResultType.fail, null, "");
+        //    return APIResult<sec_users>(ResultType.fail, null, "");
         //}
 
         [HttpPost]
@@ -411,7 +422,7 @@ namespace Chair80.Controllers
 
 
                     if (u == null || u.Entity == null)
-                        return new APIResult<Dictionary<string, Dictionary<string, bool>>>(ResultType.fail, null, "API_ERROR_BAD");
+                        return APIResult<Dictionary<string, Dictionary<string, bool>>>.Error(ResponseCode.UserForbidden, "API_ERROR_BAD");
 
 
                     var roleIds = ctx.sec_users_roles.Where(a => a.user_id == u.Entity.id).Select(b => b.role_id);
@@ -441,19 +452,19 @@ namespace Chair80.Controllers
                     }
 
 
-                    return new APIResult<Dictionary<string, Dictionary<string, bool>>>(ResultType.success, rows, "API_SUCCESS");
+                    return APIResult<Dictionary<string, Dictionary<string, bool>>>.Success( rows, "API_SUCCESS");
                 }
                 catch (DbEntityValidationException e)
                 {
                     Dictionary<string, Dictionary<string, bool>> i = new Dictionary<string, Dictionary<string, bool>>();
                     i.Add(General.fetchEntityError(e), null);
-                    return new APIResult<Dictionary<string, Dictionary<string, bool>>>(ResultType.fail, i, "API_EXECPTION");
+                    return APIResult<Dictionary<string, Dictionary<string, bool>>>.Error(ResponseCode.BackendDatabase, "API_EXECPTION");
                 }
                 catch (Exception ex)
                 {
                     Dictionary<string, Dictionary<string, bool>> i = new Dictionary<string, Dictionary<string, bool>>();
                     i.Add(ex.Message, null);
-                    return new APIResult<Dictionary<string, Dictionary<string, bool>>>(ResultType.fail, i, "API_EXECPTION");
+                    return APIResult<Dictionary<string, Dictionary<string, bool>>>.Error(ResponseCode.BackendInternalServer, "API_EXECPTION");
                 }
 
 
@@ -480,18 +491,18 @@ namespace Chair80.Controllers
 
         //            if (r != null)
         //            {
-        //                return new APIResult<UserRoleResponse>(ResultType.success, r, "API_SUCCESS");
+        //                return APIResult<UserRoleResponse>(ResultType.success, r, "API_SUCCESS");
         //            }
         //        }
         //    }
         //    catch (Exception ex)
         //    {
 
-        //        return new APIResult<UserRoleResponse>(ResultType.fail, null,ex.Message);
+        //        return APIResult<UserRoleResponse>(ResultType.fail, null,ex.Message);
         //    }
 
 
-        //    return new APIResult<UserRoleResponse>(ResultType.fail, null, "");
+        //    return APIResult<UserRoleResponse>(ResultType.fail, null, "");
         //}
 
         //[AuthFilter]
@@ -512,11 +523,11 @@ namespace Chair80.Controllers
         //        if (ctx.SaveChanges()>0)
         //        {
 
-        //            return new APIResult<UserRoleResponse>(ResultType.success, user, "API_SUCCESS");
+        //            return APIResult<UserRoleResponse>(ResultType.success, user, "API_SUCCESS");
         //        }
         //    }
 
-        //    return new APIResult<UserRoleResponse>(ResultType.fail, user, "");
+        //    return APIResult<UserRoleResponse>(ResultType.fail, user, "");
         //}
 
         //[HttpPost]
@@ -527,11 +538,11 @@ namespace Chair80.Controllers
         //    bool result = usr.resetPassword(ResetPwdKey, NewPassword);
         //    if (result==false)
         //    {
-        //        return new APIResult<bool>(ResultType.fail, false, "API_ERROR_BAD");
+        //        return APIResult<bool>(ResultType.fail, false, "API_ERROR_BAD");
         //    }
         //    else
         //    {
-        //        return new APIResult<bool>(ResultType.success, true, "API_SUCCESS");
+        //        return APIResult<bool>(ResultType.success, true, "API_SUCCESS");
         //    }
 
         //}
@@ -551,7 +562,7 @@ namespace Chair80.Controllers
         //        string textResult = await response.Content.ReadAsStringAsync();
 
         //        var user = JsonConvert.DeserializeObject<FacebookUser>(textResult);
-        //        if (user == null) return new APIResult<LoginResponse>(ResultType.fail,null,"API_ERROR_BAD");
+        //        if (user == null) return APIResult<LoginResponse>(ResultType.fail,null,"API_ERROR_BAD");
 
         //        return await  this.Auth(user.email, AccessToken, user.name, user.name, HttpContext.Current, user.picture.data.url);
         //    }
@@ -570,7 +581,7 @@ namespace Chair80.Controllers
         //        string textResult = await response.Content.ReadAsStringAsync();
 
         //        var user = JsonConvert.DeserializeObject<GoogleUser>(textResult);
-        //        if (user == null) return new APIResult<LoginResponse>(ResultType.fail,null,"API_ERROR_BAD");
+        //        if (user == null) return APIResult<LoginResponse>(ResultType.fail,null,"API_ERROR_BAD");
 
         //        return await this.Auth(user.emails.First().value, AccessToken, user.name.givenName, user.name.familyName, HttpContext.Current);
         //    }
@@ -638,7 +649,7 @@ namespace Chair80.Controllers
         //     //try
         //     //{
 
-        //     //return new APIResult<LoginResponse>(ResultType.fail, null, "API_ERROR_BAD");
+        //     //return APIResult<LoginResponse>(ResultType.fail, null, "API_ERROR_BAD");
 
         //     var f_name = name.Split(' ')[0];
 
@@ -665,8 +676,8 @@ namespace Chair80.Controllers
         public async Task<APIResult<bool>> SendVerifyCode(string Mobile)
         {
             //int uid = APIRequest.User(HttpContext.Current.Request).Entity.id;
-            using (MainEntities ctx = new MainEntities())
-            {
+            //using (MainEntities ctx = new MainEntities())
+            //{
                 string trueMobile = Mobile;
                 if (General.ValidateMobile(Mobile, out trueMobile))
                 {
@@ -674,15 +685,15 @@ namespace Chair80.Controllers
                 }
                 else
                 {
-                    return new APIResult<bool>(ResultType.fail, false, "Invalid mobile number!");
+                    return APIResult<bool>.Error(ResponseCode.UserValidationField, "Invalid mobile number!");
                 }
 
 
-                var dublicated = ctx.tbl_accounts.Include("sec_users").Where(a => a.mobile == Mobile && a.sec_users.phone_verified == true ).Count();
+                //var dublicated = ctx.tbl_accounts.Include("sec_users").Where(a => a.mobile == Mobile && a.sec_users.phone_verified == true ).Count();
 
-                if (dublicated > 0)
-                    return new APIResult<bool>(ResultType.fail, false, "This mobile is already exists in our database!");
-            }
+                //if (dublicated > 0)
+                //    return APIResult<bool>.Error(ResponseCode.UserDoublicate, "This mobile is already exists in our database!");
+            //}
 
             var sms_url = Settings.AppSetting.FirstOrDefault(a => a.setting_key == "sms_url").setting_value;
             if (sms_url != null && sms_url != "")
@@ -713,7 +724,7 @@ namespace Chair80.Controllers
                             ctx.sec_mobile_verify.Add(vm);
                         }
 
-
+                       
                         if (ctx.SaveChanges() > 0)
                         {
                             var uri = new Uri(sms_url.Replace("##mobile##", Mobile).Replace("##code##", code.ToString()));
@@ -723,7 +734,7 @@ namespace Chair80.Controllers
 
                             if (response.IsSuccessStatusCode && smsResult.Contains("success"))
                             {
-                                return new APIResult<bool>(ResultType.success, true, "API_SUCCESS");
+                                return APIResult<bool>.Success( true, "API_SUCCESS");
                             }
                             else
                             {
@@ -731,54 +742,32 @@ namespace Chair80.Controllers
                             }
                         }
                     }
-                    return new APIResult<bool>(ResultType.fail, false, "Bad Request!");
+                    return APIResult<bool>.Error(ResponseCode.BackendInternalServer, "Bad Request!");
                 }
             }
-            return new APIResult<bool>(ResultType.fail, false, "API_SUCCESS");
+            return APIResult<bool>.Error(ResponseCode.BackendInternalServer, "API_SUCCESS");
         }
 
         //[SettingFilter("verify_mobile")]
         //[LoginFilter]
-        //[HttpPost]
-        //[Route("User/VerifyMobile")]
-        //public async Task<APIResult<bool>> VerifyMobile(string Mobile, string Code)
-        //{
-        //    string trueMobile = Mobile;
-        //    if (General.ValidateMobile(Mobile, out trueMobile))
-        //    {
-        //        Mobile = trueMobile;
-        //    }
-        //    else
-        //    {
-        //        return new APIResult<bool>(ResultType.fail, false, "Invalid mobile number!");
-        //    }
-        //    using (MainEntities ctx = new MainEntities())
-        //    {
+        [HttpPost]
+        [Route("VerifyMobile")]
+        public async Task<APIResult<MobileVerifyResponse>> VerifyMobile(string Mobile, string Code)
+        {
+            string trueMobile = Mobile;
+            if (General.ValidateMobile(Mobile, out trueMobile))
+            {
+                Mobile = trueMobile;
+            }
+            else
+            {
+                return APIResult<MobileVerifyResponse>.Error(ResponseCode.UserValidationField, "Invalid mobile number!");
+            }
 
-        //        var vm = ctx.sec_mobile_verify.Where(a => a.mobile == Mobile && a.code == Code ).OrderByDescending(a => a.id).FirstOrDefault();
-        //        if (vm == null) return new APIResult<bool>(ResultType.fail, false, "Invalid code or mobile number !!");
-        //        if (vm.is_used == true) return new APIResult<bool>(ResultType.fail, false, "This code is already used !!");
-        //        if (vm.created_at < DateTime.Now.Add(new TimeSpan(0, -10, 0))) return new APIResult<bool>(ResultType.fail, false, "This code expired !!");
-
-        //        vm.is_used = true;
-
-
-        //        ctx.Entry(vm).State = System.Data.Entity.EntityState.Modified;
-
-        //        if (ctx.SaveChanges() > 0)
-        //        {
-        //            return new APIResult<bool>(ResultType.success, true, "API_SUCCESS");
-
-        //        }
-        //        else
-        //        {
-        //            return new APIResult<bool>(ResultType.fail, false, "API_ERORR_SAVE");
-
-        //        }
-
-        //    }
-
-        //}
+            var verify = Users.VerifyMobile(Mobile, Code);
+            return verify;
+ 
+        }
 
         //[LoginFilter]
         //[HttpPost]
@@ -787,24 +776,144 @@ namespace Chair80.Controllers
         //{
         //    var u = APIRequest.User(HttpContext.Current.Request).Entity;
 
-        //    if (request.password != request.cpassword) return new APIResult<bool>(ResultType.fail, false, "Password and confirm not matches !!");
-        //    if (request.password.Length<5) return new APIResult<bool>(ResultType.fail, false, "Very short password min (5 chars) !!");
-        //    if (General.MD5(request.current)!=u.pwd) return new APIResult<bool>(ResultType.fail, false, "Invalid current password !!");
+        //    if (request.password != request.cpassword) return APIResult<bool>(ResultType.fail, false, "Password and confirm not matches !!");
+        //    if (request.password.Length<5) return APIResult<bool>(ResultType.fail, false, "Very short password min (5 chars) !!");
+        //    if (General.MD5(request.current)!=u.pwd) return APIResult<bool>(ResultType.fail, false, "Invalid current password !!");
 
         //    using(MainEntities ctx=new MainEntities())
         //    {
         //        var user=ctx.sec_users.Find(u.id);
-        //        if(General.MD5(request.password)==user.pwd) return new APIResult<bool>(ResultType.fail, false, "Cannot save new password, It is the same 'Current Password'!!");
+        //        if(General.MD5(request.password)==user.pwd) return APIResult<bool>(ResultType.fail, false, "Cannot save new password, It is the same 'Current Password'!!");
         //        user.pwd = General.MD5(request.password);
 
         //        ctx.Entry(user).State = System.Data.Entity.EntityState.Modified;
         //        if (ctx.SaveChanges()>0)
         //        {
-        //            return new APIResult<bool>(ResultType.success, true, "API_SUCCESS");
+        //            return APIResult<bool>(ResultType.success, true, "API_SUCCESS");
         //        }
-        //        return new APIResult<bool>(ResultType.fail, false, "Cannot save password !!");
+        //        return APIResult<bool>(ResultType.fail, false, "Cannot save password !!");
         //    }
         //}
+
+
+        [HttpPost]
+        [Route("Delete")]
+        public APIResult<bool> Delete(string phone)
+            {
+            string trueMobile = phone;
+            if (General.ValidateMobile(phone, out trueMobile))
+            {
+                phone = trueMobile;
+            }
+            else
+            {
+                return APIResult<bool>.Error(ResponseCode.UserValidationField, "Invalid mobile number!");
+            }
+
+            using(var ctx=new MainEntities())
+            {
+                var acc = ctx.tbl_accounts.Where(a => a.mobile == phone).FirstOrDefault();
+                if(acc ==null)  return APIResult<bool>.Error(ResponseCode.DevNotFound, "Account not found!");
+                //roles=ctx.sec_users_roles.Where(a => a.user_id == acc.id);
+
+                ctx.tbl_accounts.Remove(acc);
+                try
+                {
+
+                    ctx.SaveChanges();
+
+                    return APIResult<bool>.Success(true);
+
+                }
+                catch (DbEntityValidationException e)
+                {
+                    return APIResult<bool>.Error(ResponseCode.BackendInternalServer, General.fetchEntityError(e));
+                }
+                catch (Exception ex)
+                {
+                    return APIResult<bool>.Error(ResponseCode.UserValidationField, "Invalid mobile number!");
+
+                }
+            }
+        }
+
+        [HttpPost]
+        [LoginFilter]
+        [Route("SaveNewDeviceID")]
+        public APIResult<bool> SaveNewDeviceID(String device_id)
+        {
+
+
+            var log = new Sessions(Guid.Parse(HttpContext.Current.Request.Headers.Get("AUTH_KEY")));
+
+
+
+            log.Entity.device_id = device_id;
+            using (var ctx = new MainEntities())
+            {
+                ctx.Entry(log.Entity).State = System.Data.Entity.EntityState.Modified;
+                try
+                {
+                    ctx.SaveChanges();
+                }
+                catch (Exception ex)
+                {
+
+                    return APIResult<bool>.Error(ResponseCode.BackendDatabase, ex.Message);
+
+                }
+            }
+            return APIResult<bool>.Success(true);
+        }
+
+        [HttpGet]
+        [LoginFilter]
+        [Route("Invite")]
+        public APIResult<bool> Invite(string email, string name)
+        {
+            using (var ctx=new DAL.MainEntities())
+            {
+
+                var u = APIRequest.User(HttpContext.Current.Request);
+                var acc = ctx.tbl_accounts.Find(u.Entity.id);
+                System.Net.WebClient webClient = new System.Net.WebClient();
+
+                webClient.Encoding = System.Text.Encoding.UTF8;
+
+                var html = webClient.DownloadString(Settings.Get("site_url") + "/MailBody/Invite?id=" + acc.id + "&email=" + email + "&name=" + name);
+
+
+                Libs.General.SendMail(email, "Chari80 Invitaion from your frind", html, "Chari80", "", "", "", true);
+
+                return APIResult<bool>.Success(true);
+            }
+
+        }
+        
+        [HttpPost]
+        [Route("ChangePassword")]
+        public APIResult<bool> ChangePassword(PasswordEditRequest request)
+        {
+            var u = APIRequest.User(HttpContext.Current.Request).Entity;
+
+            //if (request.password != request.cpassword) return APIResult<bool>.Error(ResponseCode.UserValidationField, "Password and confirm not matches !!");
+            if (request.password.Length < 6) return APIResult<bool>.Error(ResponseCode.UserValidationField, "Very short password min (6 chars) !!");
+            if (request.current != u.pwd) return APIResult<bool>.Error(ResponseCode.UserValidationField, "Invalid current password !!");
+
+            using (var ctx = new DAL.MainEntities())
+            {
+                var user = ctx.sec_users.Find(u.id);
+                if (request.password == user.pwd) return APIResult<bool>.Error(ResponseCode.UserValidationField, "Cannot save new password, It is the same 'Current Password'!!");
+                user.pwd = request.password;
+
+                ctx.Entry(user).State = System.Data.Entity.EntityState.Modified;
+                if (ctx.SaveChanges() > 0)
+                {
+                    return APIResult<bool>.Error(ResponseCode.UserValidationField, "API_SUCCESS");
+                }
+                return  APIResult<bool>.Error(ResponseCode.UserValidationField, "Cannot save password !!");
+            }
+        }
 
 
     }
@@ -837,7 +946,7 @@ namespace Chair80.Controllers
     //{
     //    public string familyName { get; set; }
     //    public string givenName { get; set; }
-       
+
 
     //}
 
@@ -848,8 +957,8 @@ namespace Chair80.Controllers
 
 
     //}
-    
-     
+
+
 }
    
 

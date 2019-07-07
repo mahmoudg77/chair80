@@ -14,6 +14,7 @@ using System.Web.Http;
 namespace Chair80.Controllers.Account
 {
     [AppFilter]
+    [RoutePrefix("{lang}/Image")]
     public class ImageController : ApiController
     {
         /// <summary>
@@ -25,7 +26,7 @@ namespace Chair80.Controllers.Account
         /// <param name="model_tag">Image name </param>
         /// <returns></returns>
         [HttpPost]
-        [Route("Image/Upload")]
+        [Route("Upload")]
         [AuthFilter("Upload Image")]
         public APIResult<List<APIResult<tbl_images>>> Upload(string model, int model_id, string model_tag = "main")
         {
@@ -40,8 +41,8 @@ namespace Chair80.Controllers.Account
             catch (Exception ex)
             {
                 string res = string.Format(ex.Message);
-                dict.Add(new APIResult<tbl_images>(ResultType.fail, null, res));
-                return new APIResult<List<APIResult<tbl_images>>>(ResultType.fail, res, dict);
+                dict.Add(APIResult<tbl_images>.Error(ResponseCode.BackendDatabase, res));
+                return APIResult<List<APIResult<tbl_images>>>.Error(ResponseCode.BackendDatabase, res, dict);
             }
 
         }
@@ -59,10 +60,10 @@ namespace Chair80.Controllers.Account
                 tbl_images img = ctx.tbl_images.Where(a => a.id == id).FirstOrDefault();
                 if (img != null)
                 {
-                    return new APIResult<tbl_images>(ResultType.success, img, "API_SUCCESS");
+                    return APIResult<tbl_images>.Success( img, "API_SUCCESS");
                 }
             }
-            return new APIResult<tbl_images>(ResultType.fail, null, "Bad Request!");
+            return APIResult<tbl_images>.Error(ResponseCode.BackendInternalServer, "Bad Request!");
         }
 
         public APIResult<List<tbl_images>> Get(string model, int model_id, string model_tag = "main")
@@ -75,12 +76,12 @@ namespace Chair80.Controllers.Account
                 var imgs = ctx.tbl_images.Where(a => a.model_id == model_id && a.model_name == model && a.model_tag == model_tag).ToList();
                 if (imgs != null)
                 {
-                    return new APIResult<List<tbl_images>>(ResultType.success, imgs, "API_SUCCESS");
+                    return APIResult<List<tbl_images>>.Success( imgs, "API_SUCCESS");
                 }
 
             }
 
-            return new APIResult<List<tbl_images>>(ResultType.fail, null, "API_ERROR_BAD");
+            return APIResult<List<tbl_images>>.Error(ResponseCode.BackendInternalServer, "API_ERROR_BAD");
         }
 
 
@@ -117,12 +118,12 @@ namespace Chair80.Controllers.Account
                     }
                   
 
-                    return new APIResult<bool>(ResultType.success, true, "API_SUCCESS");
+                    return APIResult<bool>.Success( true, "API_SUCCESS");
                 }
 
             }
 
-            return new APIResult<bool>(ResultType.fail, false, "API_ERROR_BAD");
+            return APIResult<bool>.Error(ResponseCode.BackendInternalServer, "API_ERROR_BAD");
         }
 
 

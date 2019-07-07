@@ -40,5 +40,7 @@ namespace Chair80Admin.DAL
         public virtual DbSet<tbl_images> tbl_images { get; set; }
         public virtual DbSet<tbl_setting> tbl_setting { get; set; }
         public virtual DbSet<tbl_setting_types> tbl_setting_types { get; set; }
+        public virtual DbSet<tbl_drivers_vehicles_rel> tbl_drivers_vehicles_rel { get; set; }
+        public virtual DbSet<tbl_vehicles> tbl_vehicles { get; set; }
     }
 }

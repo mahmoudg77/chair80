@@ -1,0 +1,8 @@
+﻿{
+  "You dont have permission to": "You dont have permission to",
+  "API_ERROR_FORBIDDEN": "You must login in the first !",
+  "Add": "Add",
+  "Edit": "Edit",
+  "Delete": "Delete",
+  "API_SUCCESS": "Success"
+}

@@ -27,6 +27,12 @@
         <AssociationConnector Association="MainModel.FK_tbl_accounts_tbl_cities" ManuallyRouted="false" />
         <AssociationConnector Association="MainModel.FK_tbl_accounts_tbl_genders" ManuallyRouted="false" />
         <AssociationConnector Association="MainModel.FK_tbl_cities_tbl_countries" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="MainModel.tbl_drivers_vehicles_rel" Width="1.5" PointX="11.75" PointY="10.625" />
+        <EntityTypeShape EntityType="MainModel.tbl_vehicles" Width="1.5" PointX="7.5" PointY="13" />
+        <AssociationConnector Association="MainModel.FK_tbl_accounts_tbl_countries" />
+        <AssociationConnector Association="MainModel.FK_tbl_drivers_vehicles_rel_driver" />
+        <AssociationConnector Association="MainModel.FK_tbl_vehicles_tbl_accounts" />
+        <AssociationConnector Association="MainModel.FK_tbl_drivers_vechiles_rel_vechile" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

@@ -14,11 +14,17 @@ namespace Chair80
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
             routes.MapRoute(
+              name: "EmailTemplates",
+              url: "MailBody/{action}",
+              defaults: new { lang = "en", controller = "MailBody", action = "Index" }
+           );
+
+            routes.MapRoute(
                name: "ImageUrl",
                url: "img/{mode}/{model}/{model_id}/{size}/{model_tag}-{index}.gif",
                defaults: new { controller = "Img", action = "Item"}
             );
-
+           
             routes.MapRoute(
                 name: "Default",
                 url: "{controller}/{action}/{id}",

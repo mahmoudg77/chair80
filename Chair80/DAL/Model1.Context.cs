@@ -32,15 +32,26 @@ namespace Chair80.DAL
         public virtual DbSet<sec_sessions> sec_sessions { get; set; }
         public virtual DbSet<sec_users> sec_users { get; set; }
         public virtual DbSet<sec_users_roles> sec_users_roles { get; set; }
-        public virtual DbSet<sysdiagrams> sysdiagrams { get; set; }
         public virtual DbSet<tbl_cities> tbl_cities { get; set; }
         public virtual DbSet<tbl_countries> tbl_countries { get; set; }
-        public virtual DbSet<tbl_genders> tbl_genders { get; set; }
         public virtual DbSet<tbl_images> tbl_images { get; set; }
         public virtual DbSet<tbl_setting> tbl_setting { get; set; }
         public virtual DbSet<tbl_setting_types> tbl_setting_types { get; set; }
         public virtual DbSet<tbl_accounts> tbl_accounts { get; set; }
-        public virtual DbSet<tbl_drivers_vehicles_rel> tbl_drivers_vehicles_rel { get; set; }
         public virtual DbSet<tbl_vehicles> tbl_vehicles { get; set; }
+        public virtual DbSet<trip_book> trip_book { get; set; }
+        public virtual DbSet<trip_request> trip_request { get; set; }
+        public virtual DbSet<trip_request_details> trip_request_details { get; set; }
+        public virtual DbSet<trip_share_details> trip_share_details { get; set; }
+        public virtual DbSet<trip_types> trip_types { get; set; }
+        public virtual DbSet<trip_share> trip_share { get; set; }
+        public virtual DbSet<vwTripsDetails> vwTripsDetails { get; set; }
+        public virtual DbSet<vwTripSeatDetails> vwTripSeatDetails { get; set; }
+        public virtual DbSet<vwProfile> vwProfile { get; set; }
+        public virtual DbSet<vwSeatsPending> vwSeatsPending { get; set; }
+        public virtual DbSet<vwSeatsHistory> vwSeatsHistory { get; set; }
+        public virtual DbSet<tbl_rate_reasons> tbl_rate_reasons { get; set; }
+        public virtual DbSet<tbl_drivers_vehicles_rel> tbl_drivers_vehicles_rel { get; set; }
+        public virtual DbSet<tbl_genders> tbl_genders { get; set; }
     }
 }

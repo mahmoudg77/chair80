@@ -28,7 +28,7 @@ namespace Chair80.BLL.Security
 
         }
 
-        public static Responses.LoginResponse Login(string uName, string pass, NameValueCollection request)
+        public static LoginResponse Login(string uName, string pass, NameValueCollection request)
         {
             try
             {
@@ -50,6 +50,7 @@ namespace Chair80.BLL.Security
                             var c = new Responses.LoginResponse()
                             {
                                 account = acc,
+                                password=acc.sec_users.pwd,
                                 token = usr.sec_users.sec_sessions.First().id,
                                 roles=ctx.sec_users_roles.Include("sec_roles").Where(a=>a.user_id==acc.id).Select(b=>b.sec_roles.role_key).ToArray()
                             };
@@ -137,21 +138,6 @@ namespace Chair80.BLL.Security
             return false;
         }
 
-        //public bool RequestResetPassword_bySMS(string Email)
-        //{
-        //    var user = Model.GetByWhere(x => x.phone == Email).FirstOrDefault();
-
-        //    if (user != null)
-        //    {
-        //        user.ResetPwdKey = Guid.NewGuid();
-        //        Model.Update(user);
-
-        //        //send sms with url to reset
-        //        return true;
-        //    }
-
-        //    return false;
-        //}
 
         public static APIResult<LoginResponse> LoginByPhone(string phone, string otp, NameValueCollection request)
         {
@@ -162,76 +148,40 @@ namespace Chair80.BLL.Security
                     var  dbuser = ctx.tbl_accounts.Include("sec_users").Where(a => a.mobile == phone).FirstOrDefault();
                     if (dbuser == null)
                     {
-                        return new APIResult<LoginResponse>(ResultType.fail, null, "Invalid login data !");
+                        return APIResult<LoginResponse>.Error(ResponseCode.UserNotFound, "Invalid login data !");
                     }
 
-                    tbl_accounts acc = null;
+                    //tbl_accounts acc = null;
                     
-                    acc = ctx.tbl_accounts.FirstOrDefault(a => a.id == dbuser.id);
+                    //acc = ctx.tbl_accounts.FirstOrDefault(a => a.id == dbuser.id);
                    
-                    var returned = new LoginResponse { account = acc };
-                    IPResult s = new IPResult();
-
-                    string ip = "";
-                    string agent = "";
-                    IPResult iploc = new IPResult();
-
-                    try
-                    {
-                        ip = request.Get("REMOTE_ADDR");
-                        agent = request.Get("HTTP_USER_AGENT");
-
-                        iploc = General.GetResponse("http://ip-api.com/json/" + ip);
-                    }
-                    catch (Exception ex)
-                    {
-                        return new APIResult<LoginResponse>(ResultType.fail, null, ex.Message + "get location ip:" + ip + " agent:" + agent);
-                    }
-
+                    var returned = new LoginResponse { account = dbuser };
+                   
                     try
                     {
 
-                        //&& a.ip == ip && a.agent == agent
-                        var userSessions = ctx.sec_sessions.Where(a => a.user_id == dbuser.id && a.end_time == null).FirstOrDefault();
-                        if (userSessions == null)
+                        var session =GetNewSession(dbuser.sec_users, request, 1);
+                        if (!session.isSuccess)
                         {
-                            Sessions ses = new Sessions();
-                            ses.Entity.user_id = dbuser.id;
-                            ses.Entity.ip = ip;
-                            ses.Entity.isp = iploc.isp;
-                            ses.Entity.lat = iploc.lat;
-                            ses.Entity.lon = iploc.lon;
-                            ses.Entity.timezone = iploc.timezone;
-                            ses.Entity.city = iploc.city;
-                            ses.Entity.country = iploc.country;
-                            ses.Entity.country_code = iploc.countryCode;
-                            ses.Entity.agent = agent;
-
-
-                            ctx.sec_sessions.Add(ses.Entity);
-                            ctx.SaveChanges();
-
-                            dbuser.sec_users.sec_sessions = new List<sec_sessions>() { ses.Entity };
-                            returned.token = ses.Entity.id;
+                            return APIResult<LoginResponse>.Error(session.code, session.message);
                         }
-                        else
-                        {
-                            returned.token = userSessions.id;
-                        }
+                        var userSessions = session.data;
 
-                        returned.roles = ctx.sec_users_roles.Include("sec_roles").Where(a => a.user_id == acc.id).Select(b => b.sec_roles.role_key).ToArray();
-                        return new APIResult<LoginResponse>(ResultType.success, returned, "Login Success");
+                        returned.token = userSessions.id;
+                        returned.password = dbuser.sec_users.pwd;
+                        returned.roles = ctx.sec_users_roles.Include("sec_roles").Where(a => a.user_id == dbuser.id).Select(b => b.sec_roles.role_key).ToArray();
+                        return  APIResult<LoginResponse>.Success( returned, "Login Success");
 
                     }
                     catch (DbEntityValidationException e)
                     {
 
-                        return new APIResult<LoginResponse>(ResultType.fail, null, General.fetchEntityError(e));
+                        return  APIResult<LoginResponse>.Error(ResponseCode.BackendInternalServer,General.fetchEntityError(e));
                     }
                     catch (Exception ex)
                     {
 
-                        return new APIResult<LoginResponse>(ResultType.fail, null, ex.Message + " Save Session");
+                        return  APIResult<LoginResponse>.Error(ResponseCode.BackendInternalServer, ex.Message + " Save Session");
 
                     }
                 }
@@ -239,10 +189,63 @@ namespace Chair80.BLL.Security
             catch (Exception ex)
             {
 
-                return new APIResult<LoginResponse>(ResultType.fail, null,ex.Message); ;
+                return APIResult<LoginResponse>.Error(ResponseCode.BackendInternalServer, ex.Message); ;
             }
         }
 
+        internal static APIResult<LoginResponse> LoginByEmail(string email, string password, NameValueCollection serverVariables)
+        {
+            try
+            {
+                using (var ctx = new MainEntities())
+                {
+                    var dbuser = ctx.tbl_accounts.Include("sec_users").Where(a => a.email == email).FirstOrDefault();
+                    if (dbuser == null || dbuser.sec_users.pwd!=password)
+                    {
+                        return APIResult<LoginResponse>.Error(ResponseCode.UserNotFound, "Invalid login data !");
+                    }
+
+                    //tbl_accounts acc = null;
+
+                    //acc = ctx.tbl_accounts.FirstOrDefault(a => a.id == dbuser.id);
+
+                    var returned = new LoginResponse { account = dbuser };
+
+                    try
+                    {
+
+                        var session = GetNewSession(dbuser.sec_users, serverVariables, 2);
+                        if (!session.isSuccess)
+                        {
+                            return APIResult<LoginResponse>.Error(session.code, session.message);
+                        }
+                        var userSessions = session.data;
+
+                        returned.token = userSessions.id;
+                        returned.password = password;
+                        returned.roles = ctx.sec_users_roles.Include("sec_roles").Where(a => a.user_id == dbuser.id).Select(b => b.sec_roles.role_key).ToArray();
+                        return APIResult<LoginResponse>.Success(returned, "Login Success");
+
+                    }
+                    catch (DbEntityValidationException e)
+                    {
+
+                        return APIResult<LoginResponse>.Error(ResponseCode.BackendInternalServer, General.fetchEntityError(e));
+                    }
+                    catch (Exception ex)
+                    {
+
+                        return APIResult<LoginResponse>.Error(ResponseCode.BackendInternalServer, ex.Message + " Save Session");
+
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return APIResult<LoginResponse>.Error(ResponseCode.BackendInternalServer, ex.Message); ;
+            }
+        }
 
         public static APIResult<LoginResponse> Register(tbl_accounts acc,string password,string FirebaseUID,NameValueCollection request)
         {
@@ -270,63 +273,100 @@ namespace Chair80.BLL.Security
                     }
                     catch (Exception ex)
                     {
-                        return new APIResult<LoginResponse>(ResultType.fail, null, ex.Message + "save changes1");
+                        return APIResult<LoginResponse>.Error(ResponseCode.BackendDatabase, ex.Message + "save changes1");
                     }
 
                 }
                 else
                 {
-                        return new APIResult<LoginResponse>(ResultType.fail, null, "This user already exists !");
+                        return APIResult<LoginResponse>.Error(ResponseCode.BackendDatabase, "This user already exists !");
                 }
 
                 var returned = new LoginResponse { account = acc };
 
-                var session = GetNewSession(dbuser.sec_users, request);
+                var session = GetNewSession(dbuser.sec_users, request,1);
 
-                if (session.type != ResultType.success) return new APIResult<LoginResponse>(ResultType.fail, null, session.message);
+                if (session.code != ResponseCode.Success) return APIResult<LoginResponse>.Error(session.code, session.message);
 
                 returned.token = session.data.id;
                 returned.roles =  ctx.sec_users_roles.Include("sec_roles").Where(a => a.user_id == acc.id).Select(b => b.sec_roles.role_key).ToArray();
 
-                return new APIResult<LoginResponse>(ResultType.success, returned, "Register sucessfuly !");
+                return APIResult<LoginResponse>.Success(returned, "Register sucessfuly !");
 
             }
         }
-        public static APIResult<bool> VerifyMobile(string phone,string otp)
+        public static APIResult<MobileVerifyResponse> VerifyMobile(string phone,string otp)
         {
             using (MainEntities ctx = new MainEntities())
             {
                 var vm = ctx.sec_mobile_verify.Where(a => a.mobile == phone && a.code == otp).OrderByDescending(a => a.id).FirstOrDefault();
-                if (vm == null) return new APIResult<bool>(ResultType.fail, false, "Invalid code or mobile number !!");
-                if (vm.is_used == true) return new APIResult<bool>(ResultType.fail, false, "This code is already used !!");
-                if (vm.created_at < DateTime.Now.Add(new TimeSpan(0, -10, 0))) return new APIResult<bool>(ResultType.fail, false, "This code expired !!");
+                if (vm == null) return APIResult<MobileVerifyResponse>.Error(ResponseCode.UserNotFound, "Invalid code or mobile number !!",new MobileVerifyResponse() { is_verified=false});
+                if (vm.is_used == true) return APIResult<MobileVerifyResponse>.Error(ResponseCode.UserNotFound, "This code is already used !!", new MobileVerifyResponse() { is_verified = false });
+                if (vm.created_at < DateTime.Now.Add(new TimeSpan(0, -10, 0))) return APIResult<MobileVerifyResponse>.Error(ResponseCode.UserNotFound, "This code expired !!", new MobileVerifyResponse() { is_verified = false });
 
                 vm.is_used = true;
-
+                Guid guid= Guid.NewGuid();
+                vm.verification_id = guid;
                 ctx.Entry(vm).State = System.Data.Entity.EntityState.Modified;
 
                 if (ctx.SaveChanges() == 0)
                 {
-                    return new APIResult<bool>(ResultType.fail, false, "API_ERORR_SAVE");
+                    return APIResult<MobileVerifyResponse>.Error(ResponseCode.BackendDatabase, "API_ERORR_SAVE", new MobileVerifyResponse() { is_verified = false });
 
                 }
-                return new APIResult<bool>(ResultType.success, true, "Mobile verified success!");
+                return APIResult<MobileVerifyResponse>.Success(new MobileVerifyResponse() { is_verified = true,verification_id= guid }, "Mobile verified success!");
             }
         }
 
-        public static APIResult<sec_sessions> GetNewSession(sec_users usr,NameValueCollection request)
+        public static APIResult<bool> MobileVerified(string phone,Guid verification_id)
+        {
+            using (MainEntities ctx = new MainEntities())
+            {
+
+                var expiredDate = DateTime.Now.Add(new TimeSpan(0, -10, 0));
+
+                var vm = ctx.sec_mobile_verify.Where(a => a.mobile == phone  && a.verification_id==verification_id && a.created_at> expiredDate && a.is_used==true );
+               
+                if(vm.Count()>0)
+                    return APIResult<bool>.Success(true);
+                else
+                    return APIResult<bool>.Success(false);
+
+
+            }
+        }
+
+
+        public static APIResult<sec_sessions> GetNewSession(sec_users usr,NameValueCollection request,int platform=1)
         {
             using (var ctx =new MainEntities())
             {
+                IPResult s = new IPResult();
+
+                string ip = "";
+                string agent = "";
+                IPResult iploc = new IPResult();
+
                 try
                 {
-                    var userSessions = ctx.sec_sessions.Where(a => a.user_id == usr.id && a.end_time == null).FirstOrDefault();
-                    if (userSessions != null) return new APIResult<sec_sessions>(ResultType.success, userSessions, "User already logon!");
+                    ip = request.Get("REMOTE_ADDR");
+                    agent = request.Get("HTTP_USER_AGENT");
+
+                    iploc = General.GetResponse("http://ip-api.com/json/" + ip);
+                }
+                catch (Exception ex)
+                {
+                   // return APIResult<sec_sessions>.Error(ResponseCode.BackendServerRequest, ex.Message + "get location ip:" + ip + " agent:" + agent);
+                }
+                try
+                {
+                    var userSessions = ctx.sec_sessions.Where(a => a.user_id == usr.id && a.end_time == null && a.paltform==platform).FirstOrDefault();
+                    if (userSessions != null) return APIResult<sec_sessions>.Success(userSessions, "User already logon!");
 
                     Sessions ses = new Sessions();
                     ses.Entity.user_id = usr.id;
                     ses.Entity.ip = request.Get("REMOTE_ADDR");
-                    IPResult iploc = new IPResult();// General.GetResponse("http://ip-api.com/json/" + ses.Entity.ip);
+                    //IPResult iploc = new IPResult();// General.GetResponse("http://ip-api.com/json/" + ses.Entity.ip);
 
                     ses.Entity.isp = iploc.isp;
                     ses.Entity.lat = iploc.lat;
@@ -336,19 +376,27 @@ namespace Chair80.BLL.Security
                     ses.Entity.country = iploc.country;
                     ses.Entity.country_code = iploc.countryCode;
                     ses.Entity.agent = request.Get("HTTP_USER_AGENT");
-
+                    ses.Entity.paltform = platform;
                     ses.Entity.browser = General.getAgent(ses.Entity.agent).name;
                     ctx.sec_sessions.Add(ses.Entity);
 
                     ctx.SaveChanges();
 
-                    return new APIResult<sec_sessions>(ResultType.success, ses.Entity, "success");
+                    return APIResult<sec_sessions>.Success( ses.Entity, "success");
                 }
                 catch (Exception ex)
                 {
 
-                    return new APIResult<sec_sessions>(ResultType.fail, null, ex.Message);
+                    return APIResult<sec_sessions>.Error(ResponseCode.BackendDatabase, ex.Message);
                 }
+            }
+        }
+
+        public bool hasRole(string role)
+        {
+            using (var ctx=new MainEntities())
+            {
+                return ctx.sec_users_roles.Include("sec_roles").Where(a => a.user_id == this.Entity.id && a.sec_roles.name == role).Count() > 0;
             }
         }
     }

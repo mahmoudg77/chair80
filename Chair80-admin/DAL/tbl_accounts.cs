@@ -14,6 +14,13 @@ namespace Chair80Admin.DAL
     
     public partial class tbl_accounts
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public tbl_accounts()
+        {
+            this.tbl_drivers_vehicles_rel = new HashSet<tbl_drivers_vehicles_rel>();
+            this.tbl_vehicles = new HashSet<tbl_vehicles>();
+        }
+    
         public int id { get; set; }
         public string first_name { get; set; }
         public string second_name { get; set; }
@@ -28,9 +35,16 @@ namespace Chair80Admin.DAL
         public Nullable<int> city_id { get; set; }
         public Nullable<int> gender_id { get; set; }
         public string phone { get; set; }
+        public string id_no { get; set; }
+        public string driver_license_no { get; set; }
     
         public virtual sec_users sec_users { get; set; }
         public virtual tbl_cities tbl_cities { get; set; }
         public virtual tbl_genders tbl_genders { get; set; }
+        public virtual tbl_countries tbl_countries { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<tbl_drivers_vehicles_rel> tbl_drivers_vehicles_rel { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<tbl_vehicles> tbl_vehicles { get; set; }
     }
 }

@@ -14,6 +14,7 @@ using System.Web.Http.Filters;
 
 namespace Chair80.Filters
 {
+    
     public class AuthFilter : ActionFilterAttribute
     {
         public string Title { get; set; }
@@ -33,81 +34,40 @@ namespace Chair80.Filters
         }
         public override void OnActionExecuting(HttpActionContext actionContext)
         {
+
+            var loginFilter = new LoginFilter();
+            loginFilter.OnActionExecuting(actionContext);
+
+
             if(string.IsNullOrEmpty(this.Method))this.Method = actionContext.ActionDescriptor.ActionName; 
             if(string.IsNullOrEmpty(this.Title))this.Title=this.Method ; 
 
             Users user = new Users();
-            
-            bool Auth = true;
-            if (!actionContext.Request.Headers.Contains("AUTH_KEY"))
-            {
-                Auth = false;
-                //return;
-            }
-            else
-            {
+
             var USER_ID = actionContext.Request.Headers.GetValues("AUTH_KEY");
-                string key = USER_ID.First();
-                Guid token;
-                if (!Guid.TryParse(key, out token))
-                {
-                    Auth = false;
-                }
-                else
-                {
+            string key = USER_ID.First();
 
-                    Sessions sessions = new Sessions(Guid.Parse(key));
-                    user = new Users(sessions.Entity.user_id);
-                    if (
-                        (sessions == null || sessions.Entity == null || sessions.Entity.end_time != null ||
-                        sessions.Entity.sec_users == null) ||
-                        sessions.Entity.sec_users.tbl_accounts.is_deleted == true)
-                    {
-                        Auth = false;
-                    }
-                }
-
-            }
-
-            if (!Auth)
-            {
-                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.Forbidden)
-                {
-                    Content = new StringContent(JsonConvert.SerializeObject(new APIResult<int>(ResultType.fail, "API_ERROR_FORBIDDEN"))),//Json("{'type':0,'message':'result.error.E403'}"),
-                    ReasonPhrase = "Critical Exception",
-
-                });
-
-            }
-
-           // string actionName = actionContext.ActionDescriptor.ActionName;
-           
+            Sessions sessions = new Sessions(Guid.Parse(key));
+            user = new Users(sessions.Entity.user_id);
+            
             string controllername = actionContext.ActionDescriptor.ControllerDescriptor.ControllerName;
-
-
-
+            
             if (!user.Allow(controllername, Method))
             {
 
-                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.Unauthorized)
+               throw  new HttpResponseException(new HttpResponseMessage(HttpStatusCode.OK)
                 {
-                    Content = new StringContent(JsonConvert.SerializeObject(new APIResult<int>(ResultType.fail, "You dont have permission to " + Title))),//Json("{'type':0,'message':'result.error.E403'}"),
+                    Content = new StringContent(
+                        JsonConvert.SerializeObject(
+                            APIResult<StringContent>.Error(ResponseCode.UserUnauthorized, Locales.Locales.translate("You dont have permission to") + " " + Locales.Locales.translate(Title))
+                            ),System.Text.Encoding.UTF8,"application/json"),
                     ReasonPhrase = "Critical Exception",
 
                 });
 
             }
 
-            try
-            {
-              
-            }
-            catch (Exception)
-            {
-
-
-            }
-
+           
         
         }
 

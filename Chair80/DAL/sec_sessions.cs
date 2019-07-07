@@ -28,6 +28,8 @@ namespace Chair80.DAL
         public Nullable<decimal> lat { get; set; }
         public Nullable<decimal> lon { get; set; }
         public string timezone { get; set; }
+        public Nullable<int> paltform { get; set; }
+        public string device_id { get; set; }
     
         public virtual sec_users sec_users { get; set; }
     }

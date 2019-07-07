@@ -4,17 +4,15 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="672540bbd72b4546a6f998f967de9660" Name="Diagram1">
+      <Diagram DiagramId="672540bbd72b4546a6f998f967de9660" Name="Diagram1" ZoomLevel="82">
         <EntityTypeShape EntityType="MainModel.sec_access_right" Width="1.5" PointX="12.75" PointY="7.75" IsExpanded="true" />
         <EntityTypeShape EntityType="MainModel.sec_mobile_verify" Width="1.5" PointX="0.75" PointY="8.125" IsExpanded="true" />
         <EntityTypeShape EntityType="MainModel.sec_roles" Width="1.5" PointX="10.5" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="MainModel.sec_sessions" Width="1.5" PointX="9.75" PointY="3.875" IsExpanded="true" />
         <EntityTypeShape EntityType="MainModel.sec_users" Width="1.5" PointX="7.5" PointY="4" IsExpanded="true" />
         <EntityTypeShape EntityType="MainModel.sec_users_roles" Width="1.5" PointX="12.75" PointY="4.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="MainModel.sysdiagrams" Width="1.5" PointX="2.75" PointY="9.125" IsExpanded="true" />
         <EntityTypeShape EntityType="MainModel.tbl_cities" Width="1.5" PointX="3" PointY="4.875" IsExpanded="true" />
         <EntityTypeShape EntityType="MainModel.tbl_countries" Width="1.5" PointX="0.75" PointY="5" IsExpanded="true" />
-        <EntityTypeShape EntityType="MainModel.tbl_genders" Width="1.5" PointX="3" PointY="2" IsExpanded="true" />
         <EntityTypeShape EntityType="MainModel.tbl_images" Width="1.5" PointX="4.75" PointY="9.125" IsExpanded="true" />
         <EntityTypeShape EntityType="MainModel.tbl_setting" Width="1.5" PointX="6.75" PointY="9.125" IsExpanded="true" />
         <EntityTypeShape EntityType="MainModel.tbl_setting_types" Width="1.5" PointX="8.75" PointY="9.125" IsExpanded="true" />
@@ -27,13 +25,37 @@
         <AssociationConnector Association="MainModel.FK_sec_users_tbl_accounts" />
         <AssociationConnector Association="MainModel.FK_tbl_accounts_tbl_cities" />
         <AssociationConnector Association="MainModel.FK_tbl_accounts_tbl_countries" />
-        <AssociationConnector Association="MainModel.FK_tbl_accounts_tbl_genders" />
-        <EntityTypeShape EntityType="MainModel.tbl_drivers_vehicles_rel" Width="1.5" PointX="12.75" PointY="2" />
         <EntityTypeShape EntityType="MainModel.tbl_vehicles" Width="1.5" PointX="7.5" PointY="0.75" />
-        <AssociationConnector Association="MainModel.FK_tbl_drivers_vehicles_rel_driver" />
         <AssociationConnector Association="MainModel.FK_tbl_vehicles_tbl_accounts" />
+        <EntityTypeShape EntityType="MainModel.trip_book" Width="1.5" PointX="17.25" PointY="13.375" />
+        <EntityTypeShape EntityType="MainModel.trip_request" Width="1.5" PointX="12.75" PointY="19.5" />
+        <EntityTypeShape EntityType="MainModel.trip_request_details" Width="1.5" PointX="15" PointY="18.75" />
+        <EntityTypeShape EntityType="MainModel.trip_share_details" Width="1.5" PointX="15" PointY="12.75" />
+        <EntityTypeShape EntityType="MainModel.trip_types" Width="1.5" PointX="10.5" PointY="21.125" />
+        <AssociationConnector Association="MainModel.FK_trip_book_trip_request_details" />
+        <AssociationConnector Association="MainModel.FK_trip_book_trip_share_details" />
+        <AssociationConnector Association="MainModel.FK_trip_request_details_trip_request" />
+        <AssociationConnector Association="MainModel.FK_trip_request_trip_types" />
+        <EntityTypeShape EntityType="MainModel.trip_share" Width="1.5" PointX="12.75" PointY="11.125" />
+        <AssociationConnector Association="MainModel.FK_trip_share_tbl_accounts" />
+        <AssociationConnector Association="MainModel.FK_trip_share_tbl_vehicles" />
+        <AssociationConnector Association="MainModel.FK_trip_share_details_trip_share" />
+        <AssociationConnector Association="MainModel.FK_trip_share_trip_types" />
+        <EntityTypeShape EntityType="MainModel.vwTripsDetails" Width="1.5" PointX="0.75" PointY="12.75" />
+        <EntityTypeShape EntityType="MainModel.vwTripSeatDetails" Width="1.5" PointX="3.375" PointY="13.75" />
+        <EntityTypeShape EntityType="MainModel.vwProfile" Width="1.5" PointX="9.375" PointY="11.75" />
+        <EntityTypeShape EntityType="MainModel.vwSeatsPending" Width="1.5" PointX="15.375" PointY="0.75" />
+        <EntityTypeShape EntityType="MainModel.vwSeatsHistory" Width="1.5" PointX="5.375" PointY="13.75" />
+        <EntityTypeShape EntityType="MainModel.tbl_rate_reasons" Width="1.5" PointX="15.375" PointY="6" />
+        <EntityTypeShape EntityType="MainModel.tbl_drivers_vehicles_rel" Width="1.5" PointX="12.75" PointY="0.75" />
+        <AssociationConnector Association="MainModel.FK_tbl_drivers_vehicles_rel_driver" />
         <AssociationConnector Association="MainModel.FK_tbl_drivers_vechiles_rel_vechile" />
-      </Diagram>
+        <AssociationConnector Association="MainModel.FK_trip_request_tbl_accounts" />
+        <EntityTypeShape EntityType="MainModel.tbl_genders" Width="1.5" PointX="0.75" PointY="12.375" />
+        <AssociationConnector Association="MainModel.FK_tbl_accounts_tbl_genders" />
+        <AssociationConnector Association="MainModel.FK_trip_request_details_tbl_genders" />
+        <AssociationConnector Association="MainModel.FK_trip_share_details_tbl_genders" />
+        </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
 </edmx:Edmx>

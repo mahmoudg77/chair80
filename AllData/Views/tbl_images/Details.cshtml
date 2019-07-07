@@ -1,0 +1,90 @@
+﻿@model AllData.Models.tbl_images
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>tbl_images</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.model_name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.model_name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.model_id)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.model_id)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.model_tag)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.model_tag)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.thumb)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.thumb)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.meduim)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.meduim)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.large)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.large)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.original)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.original)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.created_at)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.created_at)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.created_by)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.created_by)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

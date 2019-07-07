@@ -1,0 +1,98 @@
+﻿@model AllData.Models.trip_book
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Details</title>
+</head>
+<body>
+    <div>
+        <h4>trip_book</h4>
+        <hr />
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => model.booked_at)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.booked_at)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.start_at)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.start_at)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.end_at)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.end_at)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.driver_rate)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.driver_rate)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.rider_rate)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.rider_rate)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.trip_token)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.trip_token)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.seats)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.seats)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.trip_request_details.from_plc)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.trip_request_details.from_plc)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.trip_share_details.from_plc)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.trip_share_details.from_plc)
+            </dd>
+    
+        </dl>
+    </div>
+    <p>
+        @Html.ActionLink("Edit", "Edit", new { id = Model.id }) |
+        @Html.ActionLink("Back to List", "Index")
+    </p>
+</body>
+</html>

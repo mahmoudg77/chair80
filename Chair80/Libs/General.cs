@@ -608,5 +608,29 @@ namespace Chair80.Libs
 
             return sb.ToString();
         }
+
+        public static bool EmailIsValid(string emailaddress)
+        {
+
+            try
+            {
+                MailAddress m = new MailAddress(emailaddress);
+
+                return true;
+            }
+            catch (FormatException)
+            {
+                return false;
+            }
+        }
+
+        public static string ApplicationUrl()
+        {
+            return string.Format("{0}://{1}{2}", HttpContext.Current.Request.Url.Scheme, HttpContext.Current.Request.ServerVariables["HTTP_HOST"], HttpContext.Current.Request.ApplicationPath.Equals("/") ? string.Empty : HttpContext.Current.Request.ApplicationPath);
+        }
+        public static string HostUrl()
+        {
+            return string.Format("{0}://{1}", HttpContext.Current.Request.Url.Scheme, HttpContext.Current.Request.ServerVariables["HTTP_HOST"]);
+        }
     }
 }

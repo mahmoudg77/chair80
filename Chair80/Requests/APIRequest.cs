@@ -49,9 +49,9 @@ namespace Chair80.Requests
             var props=this.GetType().GetProperties().Where(a => a.CustomAttributes.Where(at => at.AttributeType.Name == "RequiredAttribute").Count() > 0);
             foreach (var item in props)
             {
-                if (item.GetValue(this) == null) return new APIResult<bool>(ResultType.fail, false, item.CustomAttributes.Where(at =>at.AttributeType.Name == "RequiredAttribute").FirstOrDefault().NamedArguments.First(a => a.MemberName == "ErrorMessage").TypedValue.Value.ToString());
+                if (item.GetValue(this) == null) return APIResult<bool>.Error(ResponseCode.BackendInternalServer, item.CustomAttributes.Where(at =>at.AttributeType.Name == "RequiredAttribute").FirstOrDefault().NamedArguments.First(a => a.MemberName == "ErrorMessage").TypedValue.Value.ToString());
             }
-            return new APIResult<bool>(ResultType.success,true,"");
+            return APIResult<bool>.Success(true);
         }
       
     }

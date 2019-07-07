@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="9fed8da204644ec5a4fd9e8c5c149ff3" Name="Diagram1">
+        <EntityTypeShape EntityType="chari80_dbModel.sec_access_right" Width="1.5" PointX="12.75" PointY="8.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="chari80_dbModel.sec_mobile_verify" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="chari80_dbModel.sec_roles" Width="1.5" PointX="10.5" PointY="8.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="chari80_dbModel.sec_sessions" Width="1.5" PointX="9.75" PointY="11.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="chari80_dbModel.sec_users" Width="1.5" PointX="7.5" PointY="11.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="chari80_dbModel.sec_users_roles" Width="1.5" PointX="12.75" PointY="12.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="chari80_dbModel.sysdiagrams" Width="1.5" PointX="2.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="chari80_dbModel.tbl_accounts" Width="1.5" PointX="5.25" PointY="12.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="chari80_dbModel.tbl_cities" Width="1.5" PointX="3" PointY="18.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="chari80_dbModel.tbl_countries" Width="1.5" PointX="0.75" PointY="9.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="chari80_dbModel.tbl_drivers_vehicles_rel" Width="1.5" PointX="9.75" PointY="16.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="chari80_dbModel.tbl_genders" Width="1.5" PointX="3" PointY="14.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="chari80_dbModel.tbl_images" Width="1.5" PointX="2.75" PointY="3.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="chari80_dbModel.tbl_setting" Width="1.5" PointX="4.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="chari80_dbModel.tbl_setting_types" Width="1.5" PointX="4.75" PointY="4.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="chari80_dbModel.tbl_vehicles" Width="1.5" PointX="7.5" PointY="19.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="chari80_dbModel.trip_book" Width="1.5" PointX="17.25" PointY="16" IsExpanded="true" />
+        <EntityTypeShape EntityType="chari80_dbModel.trip_request" Width="1.5" PointX="12.75" PointY="22.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="chari80_dbModel.trip_request_details" Width="1.5" PointX="15" PointY="21.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="chari80_dbModel.trip_share" Width="1.5" PointX="12.75" PointY="16" IsExpanded="true" />
+        <EntityTypeShape EntityType="chari80_dbModel.trip_share_details" Width="1.5" PointX="15" PointY="15.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="chari80_dbModel.trip_types" Width="1.5" PointX="10.5" PointY="19.75" IsExpanded="true" />
+        <AssociationConnector Association="chari80_dbModel.FK_sec_access_right_sec_roles" ManuallyRouted="false" />
+        <AssociationConnector Association="chari80_dbModel.FK_sec_users_roles_sec_roles" ManuallyRouted="false" />
+        <AssociationConnector Association="chari80_dbModel.FK_sec_sessions_sec_users" ManuallyRouted="false" />
+        <AssociationConnector Association="chari80_dbModel.FK_sec_users_roles_sec_users" ManuallyRouted="false" />
+        <AssociationConnector Association="chari80_dbModel.FK_sec_users_tbl_accounts" ManuallyRouted="false" />
+        <AssociationConnector Association="chari80_dbModel.FK_tbl_accounts_tbl_cities" ManuallyRouted="false" />
+        <AssociationConnector Association="chari80_dbModel.FK_tbl_accounts_tbl_countries" ManuallyRouted="false" />
+        <AssociationConnector Association="chari80_dbModel.FK_tbl_accounts_tbl_genders" ManuallyRouted="false" />
+        <AssociationConnector Association="chari80_dbModel.FK_tbl_drivers_vehicles_rel_driver" ManuallyRouted="false" />
+        <AssociationConnector Association="chari80_dbModel.FK_tbl_vehicles_tbl_accounts" ManuallyRouted="false" />
+        <AssociationConnector Association="chari80_dbModel.FK_trip_share_tbl_accounts" ManuallyRouted="false" />
+        <AssociationConnector Association="chari80_dbModel.FK_tbl_cities_tbl_countries" ManuallyRouted="false" />
+        <AssociationConnector Association="chari80_dbModel.FK_tbl_drivers_vechiles_rel_vechile" ManuallyRouted="false" />
+        <AssociationConnector Association="chari80_dbModel.FK_trip_share_tbl_vehicles" ManuallyRouted="false" />
+        <AssociationConnector Association="chari80_dbModel.FK_trip_book_trip_request_details" ManuallyRouted="false" />
+        <AssociationConnector Association="chari80_dbModel.FK_trip_book_trip_share_details" ManuallyRouted="false" />
+        <AssociationConnector Association="chari80_dbModel.FK_trip_request_details_trip_request" ManuallyRouted="false" />
+        <AssociationConnector Association="chari80_dbModel.FK_trip_request_trip_types" ManuallyRouted="false" />
+        <AssociationConnector Association="chari80_dbModel.FK_trip_share_details_trip_share" ManuallyRouted="false" />
+        <AssociationConnector Association="chari80_dbModel.FK_trip_share_trip_types" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

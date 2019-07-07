@@ -12,7 +12,7 @@ using Chair80.Filters;
 namespace Chair80.Controllers.Setting
 {
     [AppFilter]
-    [RoutePrefix("Setting")]
+    [RoutePrefix("{lang}/Setting")]
     public class SettingController : ApiController
     {
        
@@ -28,7 +28,7 @@ namespace Chair80.Controllers.Setting
                 
                 if (settings == null)
                 {
-                    return new APIResult<Dictionary<string, object>>(ResultType.fail, null, "API_ERROR_BAD");
+                    return APIResult<Dictionary<string, object>>.Error(ResponseCode.BackendDatabase, "API_ERROR_BAD");
                 }
 
             Dictionary<string, object> rows = new Dictionary<string, object>();
@@ -36,7 +36,7 @@ namespace Chair80.Controllers.Setting
             {
                     rows.Add((string)item["setting_key"], (string)item["setting_value"]);    
             }
-            return new APIResult<Dictionary<string, object>>(ResultType.success, rows, "API_SUCCESS");
+            return APIResult<Dictionary<string, object>>.Success( rows, "API_SUCCESS");
              
         }
 
@@ -50,7 +50,7 @@ namespace Chair80.Controllers.Setting
                 var settings = Libs.Settings.AppSetting.Where(a => a.setting_group == group).ToList();
                 if (settings == null)
                 {
-                    return new APIResult<Dictionary<string, object>>(ResultType.fail, null, "API_ERROR_BAD");
+                    return APIResult<Dictionary<string, object>>.Error(ResponseCode.BackendDatabase, "API_ERROR_BAD");
                 }
 
                 Dictionary<string, object> rows = new Dictionary<string, object>();
@@ -58,7 +58,7 @@ namespace Chair80.Controllers.Setting
                 {
                     rows.Add((string)item.setting_key, item.setting_value);
                 }
-                return new APIResult<Dictionary<string, object>>(ResultType.success, rows, "API_SUCCESS");
+                return APIResult<Dictionary<string, object>>.Success( rows, "API_SUCCESS");
             }
         }
 
@@ -75,9 +75,9 @@ namespace Chair80.Controllers.Setting
 
                 if (settings == null)
                 {
-                    return new APIResult<List<IGrouping<string, tbl_setting>>>(ResultType.fail, null, "API_ERROR_BAD");
+                    return APIResult<List<IGrouping<string, tbl_setting>>>.Error(ResponseCode.BackendDatabase, "API_ERROR_BAD");
                 }
-                return new APIResult<List<IGrouping<string, tbl_setting>>>(ResultType.success, settings);
+                return APIResult<List<IGrouping<string, tbl_setting>>>.Success(settings);
             }
         }
 
@@ -99,11 +99,11 @@ namespace Chair80.Controllers.Setting
 
                 if (ctx.SaveChanges() ==0)
                 {
-                    return new APIResult<List<tbl_setting>>(ResultType.fail, null, "API_ERROR_BAD");
+                    return APIResult<List<tbl_setting>>.Error(ResponseCode.BackendDatabase, "API_ERROR_BAD");
                 }
                 Libs.Settings.Load();
 
-                return new APIResult<List<tbl_setting>>(ResultType.success, request, "API_SUCCESS");
+                return APIResult<List<tbl_setting>>.Success(request, "API_SUCCESS");
             }
         }
     }

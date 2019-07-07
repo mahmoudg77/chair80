@@ -20,5 +20,6 @@ namespace Chair80.DAL
         public string code { get; set; }
         public Nullable<bool> is_used { get; set; }
         public Nullable<System.DateTime> created_at { get; set; }
+        public Nullable<System.Guid> verification_id { get; set; }
     }
 }

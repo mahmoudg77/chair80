@@ -1,0 +1,90 @@
+﻿@model AllData.Models.tbl_setting
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>tbl_setting</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.setting_key)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.setting_key)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.setting_name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.setting_name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.setting_value)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.setting_value)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.setting_type)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.setting_type)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.datasource_url)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.datasource_url)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.datasource_json)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.datasource_json)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.setting_group)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.setting_group)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.display)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.display)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.sequance)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.sequance)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

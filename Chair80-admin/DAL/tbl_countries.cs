@@ -18,6 +18,7 @@ namespace Chair80Admin.DAL
         public tbl_countries()
         {
             this.tbl_cities = new HashSet<tbl_cities>();
+            this.tbl_accounts = new HashSet<tbl_accounts>();
         }
     
         public int id { get; set; }
@@ -25,5 +26,7 @@ namespace Chair80Admin.DAL
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<tbl_cities> tbl_cities { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<tbl_accounts> tbl_accounts { get; set; }
     }
 }

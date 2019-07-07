@@ -11,15 +11,14 @@ namespace Chair80.DAL
 {
     using System;
     using System.Collections.Generic;
-    using System.ComponentModel.DataAnnotations.Schema;
-
+    
     public partial class tbl_vehicles
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public tbl_vehicles()
         {
-            this.tbl_drivers_vehicles_rel =new HashSet<tbl_drivers_vehicles_rel>();
-            //this.tbl_accounts = null;
+            this.trip_share = new HashSet<trip_share>();
+            this.tbl_drivers_vehicles_rel = new HashSet<tbl_drivers_vehicles_rel>();
         }
     
         public int id { get; set; }
@@ -30,9 +29,11 @@ namespace Chair80.DAL
         public Nullable<System.DateTime> created_at { get; set; }
         public int created_by { get; set; }
         public string license_no { get; set; }
-        [NotMapped]
+        public bool is_delete { get; set; }
+    
         public virtual tbl_accounts tbl_accounts { get; set; }
-        [NotMapped]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<trip_share> trip_share { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<tbl_drivers_vehicles_rel> tbl_drivers_vehicles_rel { get; set; }
     }

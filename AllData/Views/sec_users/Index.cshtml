@@ -1,0 +1,93 @@
+﻿@model IEnumerable<AllData.Models.sec_users>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.pwd)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.reset_pwd_token)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.facebook_token)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.twitter_token)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.google_token)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.instagram_token)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.confirm_mail_token)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.mail_verified)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.phone_verified)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.firebase_uid)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.tbl_accounts.first_name)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.pwd)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.reset_pwd_token)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.facebook_token)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.twitter_token)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.google_token)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.instagram_token)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.confirm_mail_token)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.mail_verified)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.phone_verified)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.firebase_uid)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.tbl_accounts.first_name)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.id }) |
+            @Html.ActionLink("Details", "Details", new { id=item.id }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.id })
+        </td>
+    </tr>
+}
+
+</table>

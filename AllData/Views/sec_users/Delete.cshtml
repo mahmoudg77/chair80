@@ -1,0 +1,112 @@
+﻿@model AllData.Models.sec_users
+
+@{
+    ViewBag.Title = "Delete";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>sec_users</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.pwd)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.pwd)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.reset_pwd_token)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.reset_pwd_token)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.facebook_token)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.facebook_token)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.twitter_token)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.twitter_token)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.google_token)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.google_token)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.instagram_token)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.instagram_token)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.confirm_mail_token)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.confirm_mail_token)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.mail_verified)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.mail_verified)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.phone_verified)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.phone_verified)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.firebase_uid)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.firebase_uid)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.tbl_accounts.first_name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.tbl_accounts.first_name)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Delete" class="btn btn-default" /> |
+            @Html.ActionLink("Back to List", "Index")
+        </div>
+    }
+</div>

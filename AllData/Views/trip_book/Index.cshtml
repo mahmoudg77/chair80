@@ -1,0 +1,89 @@
+﻿@model IEnumerable<AllData.Models.trip_book>
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+</head>
+<body>
+    <p>
+        @Html.ActionLink("Create New", "Create")
+    </p>
+    <table class="table">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.booked_at)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.start_at)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.end_at)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.driver_rate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.rider_rate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.trip_token)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.seats)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.trip_request_details.from_plc)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.trip_share_details.from_plc)
+            </th>
+            <th></th>
+        </tr>
+    
+    @foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.booked_at)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.start_at)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.end_at)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.driver_rate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.rider_rate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.trip_token)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.seats)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.trip_request_details.from_plc)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.trip_share_details.from_plc)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id=item.id }) |
+                @Html.ActionLink("Details", "Details", new { id=item.id }) |
+                @Html.ActionLink("Delete", "Delete", new { id=item.id })
+            </td>
+        </tr>
+    }
+    
+    </table>
+</body>
+</html>

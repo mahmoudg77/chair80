@@ -1,0 +1,81 @@
+﻿@model IEnumerable<AllData.Models.tbl_images>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.model_name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.model_id)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.model_tag)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.thumb)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.meduim)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.large)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.original)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.created_at)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.created_by)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.model_name)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.model_id)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.model_tag)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.thumb)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.meduim)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.large)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.original)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.created_at)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.created_by)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.id }) |
+            @Html.ActionLink("Details", "Details", new { id=item.id }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.id })
+        </td>
+    </tr>
+}
+
+</table>

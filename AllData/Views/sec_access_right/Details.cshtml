@@ -1,0 +1,50 @@
+﻿@model AllData.Models.sec_access_right
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>sec_access_right</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.model_name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.model_name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.method_name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.method_name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.force_filter)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.force_filter)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.sec_roles.name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.sec_roles.name)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

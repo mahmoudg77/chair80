@@ -26,10 +26,12 @@ namespace Chair80
             //);
             config.Routes.MapHttpRoute(
                 name: "DefaultApi",
-                routeTemplate: "{controller}/{id}",
-                defaults: new {id = RouteParameter.Optional }
+                routeTemplate: "{lang}/{controller}/{id}",
+                defaults: new {lang="en",id = RouteParameter.Optional }
             );
             Settings.Load();
+            Locales.Locales.Load();
+
             GlobalConfiguration.Configuration.Formatters.XmlFormatter.SupportedMediaTypes.Clear();
             GlobalConfiguration.Configuration.Formatters.XmlFormatter.SupportedMediaTypes.Add(new System.Net.Http.Headers.MediaTypeHeaderValue("multipart/form-data"));
 

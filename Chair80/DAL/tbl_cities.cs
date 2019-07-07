@@ -12,7 +12,7 @@ namespace Chair80.DAL
     using System;
     using System.Collections.Generic;
     
-    public partial class tbl_cities
+    public partial class tbl_cities:BLL.CityTranslate
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public tbl_cities()
@@ -22,7 +22,7 @@ namespace Chair80.DAL
     
         public int id { get; set; }
         public int country_id { get; set; }
-        public string name { get; set; }
+        //public string name { get; set; }
     
         public virtual tbl_countries tbl_countries { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

@@ -1,0 +1,152 @@
+﻿@model AllData.Models.trip_share_details
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Delete</title>
+</head>
+<body>
+    <h3>Are you sure you want to delete this?</h3>
+    <div>
+        <h4>trip_share_details</h4>
+        <hr />
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => model.seats)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.seats)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.start_at_date)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.start_at_date)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.start_at_time)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.start_at_time)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.from_lat)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.from_lat)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.from_lng)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.from_lng)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.from_plc)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.from_plc)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.to_lat)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.to_lat)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.to_lng)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.to_lng)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.to_plc)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.to_plc)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.gender_id)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.gender_id)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.booked_seats)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.booked_seats)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.seat_cost)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.seat_cost)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.trip_direction)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.trip_direction)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.is_active)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.is_active)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.trip_share.id)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.trip_share.id)
+            </dd>
+    
+        </dl>
+    
+        @using (Html.BeginForm()) {
+            @Html.AntiForgeryToken()
+    
+            <div class="form-actions no-color">
+                <input type="submit" value="Delete" class="btn btn-default" /> |
+                @Html.ActionLink("Back to List", "Index")
+            </div>
+        }
+    </div>
+</body>
+</html>

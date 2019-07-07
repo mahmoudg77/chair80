@@ -17,8 +17,10 @@ namespace Chair80.DAL
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public tbl_accounts()
         {
-            this.tbl_drivers_vehicles_rel = new HashSet<tbl_drivers_vehicles_rel>();
             this.tbl_vehicles = new HashSet<tbl_vehicles>();
+            this.trip_share = new HashSet<trip_share>();
+            this.tbl_drivers_vehicles_rel = new HashSet<tbl_drivers_vehicles_rel>();
+            this.trip_request = new HashSet<trip_request>();
         }
     
         public int id { get; set; }
@@ -34,14 +36,19 @@ namespace Chair80.DAL
         public string driver_license_no { get; set; }
         public Nullable<int> city_id { get; set; }
         public Nullable<int> country_id { get; set; }
+        public Nullable<bool> active { get; set; }
     
         public virtual sec_users sec_users { get; set; }
         public virtual tbl_cities tbl_cities { get; set; }
         public virtual tbl_countries tbl_countries { get; set; }
-        public virtual tbl_genders tbl_genders { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<tbl_vehicles> tbl_vehicles { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<trip_share> trip_share { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<tbl_drivers_vehicles_rel> tbl_drivers_vehicles_rel { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<tbl_vehicles> tbl_vehicles { get; set; }
+        public virtual ICollection<trip_request> trip_request { get; set; }
+        public virtual tbl_genders tbl_genders { get; set; }
     }
 }

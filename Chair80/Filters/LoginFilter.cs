@@ -58,9 +58,11 @@ namespace Chair80.Filters
 
             if (!Auth)
             {
-                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.Forbidden)
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.OK)
                 {
-                    Content = new StringContent(JsonConvert.SerializeObject(new APIResult<object>(ResultType.fail, USER_ID, "API_ERROR_FORBIDDEN"))),//Json("{'type':0,'message':'result.error.E403'}"),
+                    Content = new StringContent(JsonConvert.SerializeObject(APIResult<StringContent>.Error(ResponseCode.UserForbidden,Locales.Locales.translate("API_ERROR_FORBIDDEN"))),
+                    System.Text.Encoding.UTF8,"application/json"
+                    ),
                     ReasonPhrase = "Critical Exception",
 
                 });

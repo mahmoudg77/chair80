@@ -1,0 +1,8 @@
+﻿{
+  "You dont have permission to": "ليس لديك صلاحية لعمل",
+  "API_ERROR_FORBIDDEN": "يجب عليك تسجيل الدخول أولا",
+  "Add": "إضافة",
+  "Edit": "تعديل",
+  "Delete": "حذف",
+  "API_SUCCESS": "تمت بنجاح"
+}

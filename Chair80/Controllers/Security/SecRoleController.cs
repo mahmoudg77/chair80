@@ -16,7 +16,7 @@ namespace Chair80.Controllers
     /// Roles and permissions control
     /// </summary>
     [AppFilter]
-    [RoutePrefix("SecRole")]
+    [RoutePrefix("{lang}/SecRole")]
     public class SecRoleController : ApiController
     {
         /// <summary>
@@ -31,9 +31,9 @@ namespace Chair80.Controllers
         {
             Libs.DataTableResponse<sec_roles> response = Libs.DataTableResponse<sec_roles>.getDataTable(Libs.General.getDataTabe(request, "sec_roles"));
             if (response.data == null)
-                return new APIResult<Libs.DataTableResponse<sec_roles>>(ResultType.fail, null, "API_ERROR_BAD");
+                return APIResult<Libs.DataTableResponse<sec_roles>>.Error(ResponseCode.BackendInternalServer, "API_ERROR_BAD");
 
-            return new APIResult<Libs.DataTableResponse<sec_roles>>(ResultType.success, response, "API_SUCCESS");
+            return APIResult<Libs.DataTableResponse<sec_roles>>.Success( response, "API_SUCCESS");
         }
 
         /// <summary>
@@ -52,13 +52,13 @@ namespace Chair80.Controllers
                 if (ctx.SaveChanges()>0)
                 {
 
-                    return new APIResult<sec_roles>(ResultType.success, request, "API_SUCCESS");
+                    return APIResult<sec_roles>.Success( request, "API_SUCCESS");
                 }
 
             }
            
 
-            return new APIResult<sec_roles>(ResultType.fail, null, "API_ERROR_BAD");
+            return APIResult<sec_roles>.Error(ResponseCode.BackendInternalServer, "API_ERROR_BAD");
         }
         /// <summary>
         /// Edit Specific Role by ID (AuthFilter)
@@ -80,12 +80,12 @@ namespace Chair80.Controllers
                 if (ctx.SaveChanges() > 0)
                 {
 
-                    return new APIResult<sec_roles>(ResultType.success, request, "API_SUCCESS");
+                    return APIResult<sec_roles>.Success( request, "API_SUCCESS");
                 }
 
             }
 
-            return new APIResult<sec_roles>(ResultType.fail, null, "API_ERROR_BAD");
+            return APIResult<sec_roles>.Error(ResponseCode.BackendDatabase, "API_ERROR_BAD");
         }
         /// <summary>
         /// Delete Specific Role By ID (AuthFilter)
@@ -103,12 +103,12 @@ namespace Chair80.Controllers
                 if (ctx.SaveChanges() > 0)
                 {
 
-                    return new APIResult<bool>(ResultType.success, true, "API_SUCCESS");
+                    return APIResult<bool>.Success( true, "API_SUCCESS");
                 }
 
             }
 
-            return new APIResult<bool>(ResultType.fail, false, "API_ERROR_BAD");
+            return APIResult<bool>.Error(ResponseCode.BackendDatabase, "API_ERROR_BAD",false);
         }
 
         /// <summary>
@@ -124,11 +124,11 @@ namespace Chair80.Controllers
                 var sec_roles = ctx.sec_roles.Find(id);
                 if (sec_roles != null)
                 {
-                    return new APIResult<sec_roles>(ResultType.success, sec_roles, "API_SUCCESS");
+                    return APIResult<sec_roles>.Success(sec_roles, "API_SUCCESS");
                 }
             }
            
-            return new APIResult<sec_roles>(ResultType.fail, null, "API_ERROR_BAD");
+            return APIResult<sec_roles>.Error(ResponseCode.BackendDatabase, "API_ERROR_BAD");
         }
         /// <summary>
         /// Get All System Screen (AuthFilter)
@@ -139,7 +139,7 @@ namespace Chair80.Controllers
         [AuthFilter("View All Screens")]
         public APIResult<List<string>> Screens()
         {
-            return new APIResult<List<string>>(ResultType.success, Functions.NameSpaceClasses(), "API_SUCCESS");
+            return APIResult<List<string>>.Success( Functions.NameSpaceClasses(), "API_SUCCESS");
         }
         /// <summary>
         /// Get All Methods on specific screen (AuthFilter)
@@ -152,7 +152,7 @@ namespace Chair80.Controllers
         public APIResult<List<KeyValuePair<string, string>>> Methods(string screen)
         {
             var lst = Functions.ClassMethods(screen);
-            return new APIResult<List<KeyValuePair<string, string>>>(ResultType.success,lst, "API_SUCCESS");
+            return APIResult<List<KeyValuePair<string, string>>>.Success(lst, "API_SUCCESS");
         }
         /// <summary>
         /// Get Methods Name in Specific screen witch Allowed for Specific Role (AuthFilter) 
@@ -168,7 +168,7 @@ namespace Chair80.Controllers
             MainEntities ctx = new MainEntities();
 
             var lst = ctx.sec_access_right.Where(a=>a.model_name==screen && a.role_id==role).Select(b=>b.method_name).ToList();
-            return new APIResult<List<string>>(ResultType.success, lst, "API_SUCCESS");
+            return APIResult<List<string>>.Success( lst, "API_SUCCESS");
         }
 
         /// <summary>
@@ -204,14 +204,14 @@ namespace Chair80.Controllers
                     }
                     if (ctx.SaveChanges() > 0)
                     {
-                        return new APIResult<bool>(ResultType.success, true, "API_SUCCESS");
+                        return APIResult<bool>.Success( true, "API_SUCCESS");
                     }
                  
 
             }
 
 
-            return new APIResult<bool>(ResultType.fail, false, "API_ERROR_BAD");
+            return APIResult<bool>.Error(ResponseCode.BackendDatabase, "API_ERROR_BAD",false);
         }
     }
 }

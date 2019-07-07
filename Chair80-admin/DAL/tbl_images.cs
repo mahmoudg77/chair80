@@ -22,5 +22,7 @@ namespace Chair80Admin.DAL
         public string meduim { get; set; }
         public string large { get; set; }
         public string original { get; set; }
+        public Nullable<System.DateTime> created_at { get; set; }
+        public Nullable<int> created_by { get; set; }
     }
 }

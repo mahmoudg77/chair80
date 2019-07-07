@@ -1,0 +1,81 @@
+﻿@model IEnumerable<AllData.Models.tbl_setting>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.setting_key)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.setting_name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.setting_value)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.setting_type)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.datasource_url)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.datasource_json)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.setting_group)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.display)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.sequance)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.setting_key)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.setting_name)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.setting_value)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.setting_type)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.datasource_url)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.datasource_json)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.setting_group)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.display)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.sequance)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.id }) |
+            @Html.ActionLink("Details", "Details", new { id=item.id }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.id })
+        </td>
+    </tr>
+}
+
+</table>

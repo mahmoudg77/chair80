@@ -189,16 +189,10 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\SampleDirection.cs" />
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
-    <Compile Include="BLL\Images.cs" />
-    <Compile Include="BLL\Sessions.cs" />
-    <Compile Include="BLL\Setting.cs" />
-    <Compile Include="BLL\Users.cs" />
-    <Compile Include="Controllers\AdminApiController.cs" />
+    <Compile Include="Controllers\CURDController.cs" />
     <Compile Include="Controllers\ClientApiController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\AdminApi\LookUpController.cs" />
-    <Compile Include="Controllers\Security\SecRoleController.cs" />
-    <Compile Include="Controllers\Security\UserController.cs" />
+    <Compile Include="Controllers\LookUpController.cs" />
     <Compile Include="DAL\DataAccess.cs" />
     <Compile Include="DAL\Model1.Context.cs">
       <AutoGen>True</AutoGen>
@@ -245,6 +239,9 @@
     <Compile Include="DAL\tbl_countries.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
+    <Compile Include="DAL\tbl_drivers_vehicles_rel.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
     <Compile Include="DAL\tbl_genders.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
@@ -255,6 +252,9 @@
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
     <Compile Include="DAL\tbl_setting_types.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DAL\tbl_vehicles.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
     <Compile Include="Filters\AuthFilter.cs" />
@@ -368,7 +368,7 @@
     <Content Include="Views\Shared\_Layout.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Controllers\ClientApi\" />
+    <Folder Include="BLL\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />

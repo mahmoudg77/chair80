@@ -52,6 +52,9 @@
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
+    <Reference Include="FCM.Net, Version=1.0.5.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\FCM.Net.1.0.5\lib\net452\FCM.Net.dll</HintPath>
+    </Reference>
     <Reference Include="FirebaseAdmin">
       <HintPath>..\..\Google DLL\FirebaseAdmin.dll</HintPath>
     </Reference>
@@ -77,6 +80,12 @@
     </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http.Extensions, Version=2.2.29.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Net.Http.2.2.29\lib\net45\System.Net.Http.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http.Primitives, Version=4.2.29.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Net.Http.2.2.29\lib\net45\System.Net.Http.Primitives.dll</HintPath>
+    </Reference>
     <Reference Include="System.Security" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -190,13 +199,17 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\SampleDirection.cs" />
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
+    <Compile Include="BLL\GlobalRequestData.cs" />
     <Compile Include="BLL\Images.cs" />
     <Compile Include="BLL\Sessions.cs" />
     <Compile Include="BLL\Setting.cs" />
+    <Compile Include="BLL\Translatable.cs" />
     <Compile Include="BLL\Users.cs" />
     <Compile Include="BLL\Vechicle.cs" />
     <Compile Include="Controllers\Account\AccountController.cs" />
-    <Compile Include="Controllers\IController\IApiController.cs" />
+    <Compile Include="Controllers\CURDController.cs" />
+    <Compile Include="Controllers\LookUpController.cs" />
+    <Compile Include="Controllers\MailBodyController.cs" />
     <Compile Include="Controllers\MediaController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ImgController.cs" />
@@ -204,7 +217,9 @@
     <Compile Include="Controllers\Security\SecRoleController.cs" />
     <Compile Include="Controllers\Security\UserController.cs" />
     <Compile Include="Controllers\Setting\SettingController.cs" />
-    <Compile Include="Controllers\tbl_countriesController.cs" />
+    <Compile Include="Controllers\Trips\GoogleController.cs" />
+    <Compile Include="Controllers\Trips\SeatController.cs" />
+    <Compile Include="Controllers\Trips\TripController.cs" />
     <Compile Include="Controllers\Vechile\VehicleController.cs" />
     <Compile Include="DAL\DataAccess.cs" />
     <Compile Include="DAL\Model1.Context.cs">
@@ -240,9 +255,6 @@
     <Compile Include="DAL\sec_users_roles.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
-    <Compile Include="DAL\sysdiagrams.cs">
-      <DependentUpon>Model1.tt</DependentUpon>
-    </Compile>
     <Compile Include="DAL\tbl_accounts.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
@@ -261,6 +273,9 @@
     <Compile Include="DAL\tbl_images.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
+    <Compile Include="DAL\tbl_rate_reasons.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
     <Compile Include="DAL\tbl_setting.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
@@ -268,6 +283,39 @@
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
     <Compile Include="DAL\tbl_vehicles.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DAL\trip_book.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DAL\trip_request.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DAL\trip_request_details.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DAL\trip_share.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DAL\trip_share_details.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DAL\trip_types.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DAL\vwProfile.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DAL\vwSeatsHistory.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DAL\vwSeatsPending.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DAL\vwTripsDetails.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DAL\vwTripSeatDetails.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
     <Compile Include="Filters\AuthFilter.cs" />
@@ -280,6 +328,7 @@
     <Compile Include="Libs\DataTableResponse.cs" />
     <Compile Include="Libs\ErrorHandler.cs" />
     <Compile Include="Libs\Extentions.cs" />
+    <Compile Include="Libs\FirebaseNotifications.cs" />
     <Compile Include="Libs\Functions.cs" />
     <Compile Include="Libs\General.cs" />
     <Compile Include="Libs\IPResult.cs" />
@@ -290,6 +339,7 @@
     <Compile Include="Libs\SettingFilter.cs" />
     <Compile Include="Libs\Settings.cs" />
     <Compile Include="Libs\UserAgent.cs" />
+    <Compile Include="Locales\Locales.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -300,6 +350,11 @@
     <Compile Include="Requests\DataTableRequest.cs" />
     <Compile Include="Requests\HasAccessResponse.cs" />
     <Compile Include="Requests\ActAsDriverRequest.cs" />
+    <Compile Include="Requests\RateRequest.cs" />
+    <Compile Include="Requests\NeedSeatRequest.cs" />
+    <Compile Include="Requests\SearchTripRequest.cs" />
+    <Compile Include="Requests\ShareSeatRequest.cs" />
+    <Compile Include="Requests\WebLoginRequest.cs" />
     <Compile Include="Requests\LoginRequest.cs" />
     <Compile Include="Requests\PasswordEditRequest.cs" />
     <Compile Include="Requests\RegisterRequest.cs" />
@@ -309,7 +364,10 @@
     <Compile Include="Responses\ActAsDriverResponse.cs" />
     <Compile Include="Responses\CityResponse.cs" />
     <Compile Include="Responses\CountryResponse.cs" />
+    <Compile Include="Responses\DriverCurrentTrips.cs" />
+    <Compile Include="Responses\MobileVerifyResponse.cs" />
     <Compile Include="Responses\LoginResponse.cs" />
+    <Compile Include="Responses\SearchTripResponse.cs" />
     <Compile Include="Responses\UserRoleResponse.cs" />
     <Compile Include="Responses\VehicleResponse.cs" />
   </ItemGroup>
@@ -320,6 +378,9 @@
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\EmailTemplates\Invite.html" />
+    <Content Include="Content\imgs\no-image\any.png" />
+    <Content Include="Content\imgs\no-image\tbl_accounts.png" />
     <Content Include="DAL\Model1.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Model1.Context.cs</LastGenOutput>
@@ -362,6 +423,8 @@
       <DependentUpon>Model1.edmx</DependentUpon>
     </Content>
     <Content Include="App_Data\firebase-config.json" />
+    <Content Include="Locales\en.json" />
+    <Content Include="Locales\ar.json" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -394,12 +457,15 @@
     <Content Include="Views\tbl_countries\Details.cshtml" />
     <Content Include="Views\tbl_countries\Edit.cshtml" />
     <Content Include="Views\tbl_countries\Index.cshtml" />
+    <Content Include="Views\MailBody\RestPassword.cshtml" />
+    <Content Include="Views\MailBody\Invite.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Storage\Large\" />
     <Folder Include="Storage\Medium\" />
     <Folder Include="Storage\Original\" />
     <Folder Include="Storage\Thumb\" />
+    <Folder Include="Views\Google\" />
     <Folder Include="Views\Img\" />
   </ItemGroup>
   <ItemGroup>
@@ -467,11 +533,13 @@
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.0\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.0\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets'))" />
   </Target>
   <PropertyGroup>
     <PostBuildEvent>
     </PostBuildEvent>
   </PropertyGroup>
+  <Import Project="..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

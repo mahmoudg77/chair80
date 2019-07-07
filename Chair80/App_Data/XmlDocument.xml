@@ -582,7 +582,7 @@
             <param name="request"></param>
             <returns></returns>
         </member>
-        <member name="M:Chair80.Controllers.UserController.Register(Chair80.Requests.RegisterRequest,System.String)">
+        <member name="M:Chair80.Controllers.UserController.Register(Chair80.Requests.RegisterRequest)">
             <summary>
             
             </summary>
@@ -602,6 +602,81 @@
             Get general setting
             </summary>
             <returns></returns>
+        </member>
+        <member name="T:Chair80.Libs.ResponseCode">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Chair80.Libs.ResponseCode.Success">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Chair80.Libs.ResponseCode.UserForbidden">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Chair80.Libs.ResponseCode.UserUnauthorized">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Chair80.Libs.ResponseCode.UserNotFound">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Chair80.Libs.ResponseCode.UserRequestTimeout">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Chair80.Libs.ResponseCode.UserNotAcceptable">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Chair80.Libs.ResponseCode.UserUnVerified">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Chair80.Libs.ResponseCode.UserValidationField">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Chair80.Libs.ResponseCode.UserDoublicate">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Chair80.Libs.ResponseCode.DevBadGeteway">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Chair80.Libs.ResponseCode.DevNotFound">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Chair80.Libs.ResponseCode.BackendServerRequest">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Chair80.Libs.ResponseCode.BackendInternalServer">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Chair80.Libs.ResponseCode.BackendDatabase">
+            <summary>
+            
+            </summary>
         </member>
         <member name="M:Chair80.Libs.Extentions.CloneJson``1(``0)">
             <summary>
@@ -633,6 +708,216 @@
             <param name="attachmentsFiles"></param>
             <returns></returns>
             <remarks></remarks>
+        </member>
+        <member name="T:Chair80.Requests.NeedSeatRequest">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Chair80.Requests.NeedSeatRequest.trip_type">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Chair80.Requests.NeedSeatRequest.seats">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Chair80.Requests.NeedSeatRequest.from">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Chair80.Requests.NeedSeatRequest.to">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Chair80.Requests.NeedSeatRequest.start_at">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Chair80.Requests.NeedSeatRequest.gender_id">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Chair80.Requests.NeedSeatRequest.round_at">
+            <summary>
+            If trip type =2
+            </summary>
+        </member>
+        <member name="P:Chair80.Requests.NeedSeatRequest.shuttle_at">
+            <summary>
+            If trip type =3
+            </summary>
+        </member>
+        <member name="P:Chair80.Requests.NeedSeatRequest.seat_cost_from">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Chair80.Requests.SearchTripRequest">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Chair80.Requests.SearchTripRequest.firebase_ids">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Chair80.Requests.SearchTripRequest.trip_type">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Chair80.Requests.SearchTripRequest.from">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Chair80.Requests.SearchTripRequest.to">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Chair80.Requests.SearchTripRequest.start_at">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Chair80.Requests.SearchTripRequest.gender_id">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Chair80.Requests.SearchTripRequest.round_at">
+            <summary>
+            If trip type =2
+            </summary>
+        </member>
+        <member name="P:Chair80.Requests.SearchTripRequest.shuttle_at">
+            <summary>
+            If trip type =3
+            </summary>
+        </member>
+        <member name="P:Chair80.Requests.SearchTripRequest.seat_cost_from">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Chair80.Requests.ShareSeatRequest">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Chair80.Requests.ShareSeatRequest.trip_type">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Chair80.Requests.ShareSeatRequest.seats">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Chair80.Requests.ShareSeatRequest.from">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Chair80.Requests.ShareSeatRequest.to">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Chair80.Requests.ShareSeatRequest.start_at">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Chair80.Requests.ShareSeatRequest.gender_id">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Chair80.Requests.ShareSeatRequest.round_at">
+            <summary>
+            If trip type =2
+            </summary>
+        </member>
+        <member name="P:Chair80.Requests.ShareSeatRequest.shuttle_at">
+            <summary>
+            If trip type =3
+            </summary>
+        </member>
+        <member name="P:Chair80.Requests.ShareSeatRequest.seat_cost">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Chair80.Requests.ShareSeatRequest.vehicle_id">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Chair80.Requests.TripTypes">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Chair80.Requests.TripTypes.OneWay">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Chair80.Requests.TripTypes.Round">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Chair80.Requests.TripTypes.Shuttle">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Chair80.Requests.MapPlace">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Chair80.Requests.MapPlace.lng">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Chair80.Requests.MapPlace.lat">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Chair80.Requests.MapPlace.country">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Chair80.Requests.MapPlace.city">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Chair80.Requests.MapPlace.street">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Chair80.Requests.MapPlace.governorate">
+            <summary>
+            
+            </summary>
         </member>
     </members>
 </doc>

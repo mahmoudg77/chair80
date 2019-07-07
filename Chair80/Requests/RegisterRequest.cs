@@ -29,7 +29,11 @@ namespace Chair80.Requests
         [Required(ErrorMessage = "Phone Number is required!")]
         public string phoneNumber { get; set; }
 
+        [Required(ErrorMessage = "verification_id is required!")]
+        public Guid verification_id { get; set; }
+
         public int? country { get; set; }
         public int? city { get; set; }
+
     }
 }

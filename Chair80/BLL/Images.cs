@@ -1,5 +1,6 @@
 ﻿using Chair80.DAL;
 using Chair80.Libs;
+using Chair80.Requests;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -56,31 +57,34 @@ namespace Chair80.BLL
         {
             List<APIResult<tbl_images>> dict = new List<APIResult<tbl_images>>();
 
-
+            int success_count = 0;
             foreach (string file in httpRequest.Files)
             {
                 var postedFile = httpRequest.Files[file];
 
                 var result = SaveImageFromFile(postedFile, model, model_id, model_tag);
-                if(result.type==ResultType.success) dict.Add(result);
+                if (result.code == ResponseCode.Success) success_count++ ;
+                    dict.Add(result);
             }
-            if (dict.Count == 0)
+            if (success_count==0)
             {
-                return new APIResult<List<APIResult<tbl_images>>>(ResultType.fail,"");
+                return  APIResult<List<APIResult<tbl_images>>>.Error(ResponseCode.BackendInternalServer,"No Image Uploaded");
             }
 
-            return new APIResult<List<APIResult<tbl_images>>>(ResultType.success, dict, string.Format("({0}) File\\s uploaded success.",dict.Count));
+            return  APIResult<List<APIResult<tbl_images>>>.Success(dict, string.Format("({0}) File/s uploaded from {1} File/s sent.", success_count,dict.Count));
         }
 
 
         public static APIResult<tbl_images> SaveImageFromFile(HttpPostedFile postedFile,string model,int model_id,string model_tag = "main")
         {
+            var u = APIRequest.User(HttpContext.Current.Request);
+
             if (postedFile != null && postedFile.ContentLength > 0)
             {
 
                 int MaxContentLength = 1024 * 1024 * 1; //Size = 1 MB  
 
-                List<string> AllowedFileExtensions = new List<string> { ".jpg", ".gif", ".png" };
+                List<string> AllowedFileExtensions = new List<string> { ".jpg", ".gif", ".png", ".jpeg", ".bmp" };
                 var ext = postedFile.FileName.Substring(postedFile.FileName.LastIndexOf('.'));
                 var extension = ext.ToLower();
                 if (!AllowedFileExtensions.Contains(extension))
@@ -88,14 +92,14 @@ namespace Chair80.BLL
 
                     var message = string.Format("Please Upload image of type .jpg,.gif,.png.");
 
-                     return new APIResult<tbl_images>(ResultType.fail, null, message);
+                     return APIResult<tbl_images>.Error(ResponseCode.UserNotAcceptable, message);
                 }
                 else if (postedFile.ContentLength > MaxContentLength)
                 {
 
                     var message = string.Format("Please Upload a file upto 1 mb.");
 
-                    return new APIResult<tbl_images>(ResultType.fail, null, message);
+                    return APIResult<tbl_images>.Error(ResponseCode.UserNotAcceptable, message);
                 }
                 else
                 {
@@ -128,17 +132,18 @@ namespace Chair80.BLL
                         img.model_name = model;
                         img.model_id = model_id;
                         img.model_tag = model_tag;
-
+                        img.created_at = DateTime.Now;
+                        img.created_by = u.Entity.id;
                         ctx.tbl_images.Add(img);
                         ctx.SaveChanges();
 
-                        return new APIResult<tbl_images>(ResultType.success, img, "Uploaded success.");
+                        return APIResult<tbl_images>.Success( img, "Uploaded success.");
                     }
 
 
                 }
             }
-            return new APIResult<tbl_images>(ResultType.fail, null, "Error while uploading!");
+            return APIResult<tbl_images>.Error(ResponseCode.BackendInternalServer, "Error while uploading!");
         }
 
         /// <summary>

@@ -33,7 +33,7 @@ namespace Chair80.Controllers
          }
         // GET: Img
         [HttpGet]
-        public ActionResult Item(string model, int model_id, string model_tag = "main", string size = "original", string index = "0", string mode="scaled")
+        public ActionResult Item(string model, int model_id, string model_tag = "main", string size = "original", string index = "0", string mode="scale")
         {
 
 
@@ -72,9 +72,13 @@ namespace Chair80.Controllers
                         
                     break;
             }
+
             using (MainEntities ctx = new MainEntities())
             {
                 var imgs = ctx.tbl_images.Where(a => a.model_id == model_id && a.model_name == model && a.model_tag == model_tag).OrderBy(a => a.id).ToList();
+
+
+                if (imgs==null || imgs.Count==0) goto noImageHandler;
                 int vIndex = 0;
                 if (int.TryParse(index,out vIndex))
                 {
@@ -87,52 +91,72 @@ namespace Chair80.Controllers
                 {
                     vIndex = 0;
                 }
-                if (vIndex >= imgs.Count) return null;
+
+                if (vIndex >= imgs.Count) goto noImageHandler;
+                if (imgs.Count == 0) goto noImageHandler;
                 var img = imgs.ToArray()[vIndex];
-                if (imgs != null)
+                  
+                string filePath = img.original;
+                    
+                if (filePath == "") goto noImageHandler;
+
+                filePath = ConfigurationManager.AppSettings["mediaServer_Path"] + filePath.Replace("/", "\\");
+
+                if (!System.IO.File.Exists(filePath)) goto noImageHandler;
+                
+                imageHandler:
+
+                var source=Image.FromFile(filePath);
+
+                if (width * height == 0)
                 {
-                    string filePath = filePath = img.original;
-                    
-                    if (filePath == "") return null;
-
-                    filePath = ConfigurationManager.AppSettings["mediaServer_Path"] + filePath.Replace("/", "\\");
-
-                    if (!System.IO.File.Exists(filePath)) return null;
-                    var source=Image.FromFile(filePath);
-
-                    if (width * height == 0)
+                    using (var ms = new MemoryStream())
                     {
-                        using (var ms = new MemoryStream())
-                        {
-                            source.Save(ms, ImageFormat.Png);
-                            return base.File(ms.ToArray(), "image/jpeg");
-                        }
+                        source.Save(ms, ImageFormat.Png);
+                        return base.File(ms.ToArray(), "image/jpeg");
                     }
-                    Image target;
-                    if(mode == "crope")
-                    {
-
-                     target=BLL.Images.ResizeImageKeepAspectRatio(source, width, height);
-                        using (var ms = new MemoryStream())
-                        {
-                            target.Save(ms, ImageFormat.Png);
-                            return base.File(ms.ToArray(), "image/jpeg");
-                        }
-                    }
-                    else if(mode == "scale")
-                    {
-                     target=BLL.Images.resize(source, width, height);
-                        using (var ms = new MemoryStream())
-                        {
-                            target.Save(ms, ImageFormat.Png);
-                            return base.File(ms.ToArray(), "image/jpeg");
-                        }
-                    }
-                     
-                        return null;
-                    
-                    
                 }
+                Image target;
+                if(mode == "crope")
+                {
+
+                    target=BLL.Images.ResizeImageKeepAspectRatio(source, width, height);
+                    using (var ms = new MemoryStream())
+                    {
+                        target.Save(ms, ImageFormat.Png);
+                        return base.File(ms.ToArray(), "image/jpeg");
+                    }
+                }
+                else if(mode == "scale")
+                {
+                    target=BLL.Images.resize(source, width, height);
+                    using (var ms = new MemoryStream())
+                    {
+                        target.Save(ms, ImageFormat.Png);
+                        return base.File(ms.ToArray(), "image/jpeg");
+                    }
+                }
+
+                using (var ms = new MemoryStream())
+                {
+                    source.Save(ms, ImageFormat.Png);
+                    return base.File(ms.ToArray(), "image/jpeg");
+                }
+               
+                     
+
+            noImageHandler:
+
+                if (System.IO.File.Exists(Server.MapPath("~/Content/imgs/no-image/" + model + "-"+model_tag+".png"))) {
+                    filePath = Server.MapPath("~/Content/imgs/no-image/" + model + "-" + model_tag + ".png");
+                    goto imageHandler;
+                }
+                if (System.IO.File.Exists(Server.MapPath("~/Content/imgs/no-image/any.png"))) {
+                    filePath = Server.MapPath("~/Content/imgs/no-image/any.png");
+                    goto imageHandler;
+                }
+
+
 
             }
 

@@ -1,0 +1,138 @@
+﻿@model AllData.Models.sec_sessions
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>sec_sessions</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.start_time)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.start_time)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.end_time)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.end_time)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ip)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ip)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.agent)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.agent)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.browser)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.browser)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.country)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.country)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.city)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.city)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.country_code)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.country_code)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.isp)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.isp)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.lat)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.lat)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.lon)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.lon)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.timezone)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.timezone)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.paltform)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.paltform)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.device_id)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.device_id)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.sec_users.pwd)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.sec_users.pwd)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

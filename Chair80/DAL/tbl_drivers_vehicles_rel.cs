@@ -18,7 +18,8 @@ namespace Chair80.DAL
         public Nullable<int> driver_id { get; set; }
         public Nullable<int> vehicle_id { get; set; }
         public Nullable<System.DateTime> created_at { get; set; }
-        public Nullable<System.DateTime> created_by { get; set; }
+        public Nullable<int> created_by { get; set; }
+        public Nullable<int> status { get; set; }
     
         public virtual tbl_accounts tbl_accounts { get; set; }
         public virtual tbl_vehicles tbl_vehicles { get; set; }

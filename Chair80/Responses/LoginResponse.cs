@@ -12,6 +12,7 @@ namespace Chair80.Responses
     public class LoginResponse
     {
         public tbl_accounts account { get; set; }
+        public string password { get; set; }
         public Guid token { get; set; }
         public string[] roles { get; set; }
 

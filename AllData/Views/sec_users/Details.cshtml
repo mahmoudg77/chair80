@@ -1,0 +1,106 @@
+﻿@model AllData.Models.sec_users
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>sec_users</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.pwd)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.pwd)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.reset_pwd_token)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.reset_pwd_token)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.facebook_token)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.facebook_token)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.twitter_token)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.twitter_token)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.google_token)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.google_token)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.instagram_token)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.instagram_token)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.confirm_mail_token)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.confirm_mail_token)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.mail_verified)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.mail_verified)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.phone_verified)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.phone_verified)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.firebase_uid)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.firebase_uid)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.tbl_accounts.first_name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.tbl_accounts.first_name)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>
