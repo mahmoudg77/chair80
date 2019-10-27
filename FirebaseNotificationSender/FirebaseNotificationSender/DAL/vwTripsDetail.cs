@@ -7,12 +7,12 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Chair80.DAL
+namespace FirebaseNotificationSender.DAL
 {
     using System;
     using System.Collections.Generic;
     
-    public partial class vwTripsDetails:BLL.vwTripsDetailsTranslate
+    public partial class vwTripsDetail
     {
         public Nullable<int> seats { get; set; }
         public Nullable<System.DateTime> start_at_date { get; set; }
@@ -38,7 +38,7 @@ namespace Chair80.DAL
         public int car_capacity { get; set; }
         public string car_license_no { get; set; }
         public Nullable<int> trip_type_id { get; set; }
-        //public string trip_type { get; set; }
+        public string trip_type { get; set; }
         public string acc_firebase_uid { get; set; }
         public string acc_first_name { get; set; }
         public string acc_last_name { get; set; }
@@ -51,11 +51,11 @@ namespace Chair80.DAL
         public string acc_driver_license_no { get; set; }
         public Nullable<int> acc_city_id { get; set; }
         public Nullable<int> acc_country_id { get; set; }
-        //public string acc_gender { get; set; }
-        //public string acc_city { get; set; }
-        //public string acc_country { get; set; }
-        public int trip_id { get; set; }
+        public string acc_gender { get; set; }
+        public string acc_city { get; set; }
+        public string acc_country { get; set; }
         public string trip_gender_name { get; set; }
+        public int trip_id { get; set; }
         public Nullable<System.Guid> guid { get; set; }
         public Nullable<int> started_seats { get; set; }
         public Nullable<int> ended_seats { get; set; }

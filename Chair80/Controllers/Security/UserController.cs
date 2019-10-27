@@ -344,6 +344,7 @@ namespace Chair80.Controllers
             {
                 var ses = ctx.sec_sessions.Find(Guid.Parse(AuthKey.First().ToString()));
                 ses.end_time = DateTime.Now;
+                ses.device_id = null;
                 ctx.Entry(ses).State = System.Data.Entity.EntityState.Modified;
 
                 if (ctx.SaveChanges() == 0)
@@ -916,6 +917,291 @@ namespace Chair80.Controllers
         }
 
 
+
+        [HttpPost]
+        [Route("FirebaseOAuth")]
+        public async Task<APIResult<LoginResponse>> FirebaseOAuth(FirebaseAuthRequest request)
+        {
+            string network = request.network;
+            string AccessToken = request.firebaseToken;
+            var c = HttpContext.Current;
+            try
+            {
+
+                if (FirebaseApp.DefaultInstance != null)
+                    FirebaseApp.DefaultInstance.Delete();
+
+                //{
+
+                FirebaseApp.Create(new AppOptions()
+                {
+                    Credential = GoogleCredential.FromFile(HttpContext.Current.Server.MapPath("~/App_Data/firebase-config.json")),
+
+                }
+                    );
+
+
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception(ex.Message + " Line : 412");
+            }
+            FirebaseToken decodedToken;
+            try
+            {
+
+
+                decodedToken = await FirebaseAuth.DefaultInstance.VerifyIdTokenAsync(AccessToken);
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception(ex.Message + " Line : 424");
+            }
+            string uid = decodedToken.Uid;
+            string email = "";
+            string name = "";
+            string picture = "";
+            try
+            {
+
+                Logger.log(JsonConvert.SerializeObject(decodedToken.Claims));
+
+                if (decodedToken.Claims.Keys.Contains("email")) email = decodedToken.Claims.FirstOrDefault(a => a.Key == "email").Value.ToString();
+
+                if (decodedToken.Claims.Keys.Contains("name")) name = decodedToken.Claims.FirstOrDefault(a => a.Key == "name").Value.ToString();
+
+                if (decodedToken.Claims.Keys.Contains("picture")) picture = decodedToken.Claims.FirstOrDefault(a => a.Key == "picture").Value.ToString();
+
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception(ex.Message + " Line : 445");
+            }
+
+            //try
+            //{
+
+            //return new APIResult<LoginResponse>(ResultType.fail, null, "API_ERROR_BAD");
+
+            var f_name = name.Split(' ')[0];
+
+            var l_name = "";
+
+            if (name.Split(' ').Length>1)l_name= name.Split(' ')[1];
+
+            if (name.Split(' ').Length > 1)
+                l_name = name.Substring(f_name.Length);
+
+
+            return await this.Auth(email, uid, f_name, l_name, c, picture, network, uid);
+            //}
+            //catch (Exception ex)
+            //{
+
+            //    throw new Exception(ex.Message +  " Name:" + name + " Email:" + email + " uid:"+uid);
+            //}
+        }
+
+        public async Task<APIResult<LoginResponse>> Auth(string email, string password, string first_name, string last_name, HttpContext http, string pic = "", string network = "", string FirebaseUID = "")
+        {
+            using (DAL.MainEntities ctx = new DAL.MainEntities())
+            {
+                //try
+                //{
+
+
+                tbl_accounts dbuser = null;
+                try
+                {
+
+
+                    if (email != "")
+                    {
+                        dbuser = ctx.tbl_accounts.Include("sec_users").Where(a => a.email == email).FirstOrDefault();
+                    }
+                    else
+                    if (FirebaseUID != "")
+                    {
+                        dbuser = ctx.tbl_accounts.Include("sec_users").Where(a => a.sec_users.firebase_uid == FirebaseUID).FirstOrDefault();
+                    }
+
+                    if (dbuser == null)
+                    {
+                        dbuser = new tbl_accounts();
+                        dbuser.email = email;
+                        dbuser.first_name = first_name;
+                        dbuser.last_name = last_name;
+                        dbuser.register_time = DateTime.Now;
+
+
+                        ctx.tbl_accounts.Add(dbuser);
+                        try
+                        {
+                            ctx.SaveChanges();
+                            sec_users sec_user = new sec_users();
+
+                            sec_user.pwd = password;
+                            sec_user.id = dbuser.id;
+                            sec_user.mail_verified = true;
+
+                            if (FirebaseUID != "")
+                                sec_user.firebase_uid = FirebaseUID;
+
+                            ctx.sec_users.Add(sec_user);
+                            ctx.SaveChanges();
+                        }
+                        //catch (DbEntityValidationException e)
+                        //{
+                        //    return new APIResult<LoginResponse>(ResultType.fail, null, General.fetchEntityError(e));
+                        //}
+                        catch (Exception ex)
+                        {
+                            return APIResult<LoginResponse>.Error(ResponseCode.BackendDatabase, ex.Message + "save changes1");
+                        }
+
+                    }
+
+                }
+                catch (Exception ex)
+                {
+
+                    return APIResult<LoginResponse>.Error(ResponseCode.BackendDatabase, ex.Message + "get dbuser");
+
+                }
+                tbl_images img = ctx.tbl_images.Where(a => a.model_name == "tbl_accounts" && a.model_id == dbuser.id && a.model_tag == "main").FirstOrDefault();
+                if (pic != "" && img == null)
+                {
+
+                    img = new tbl_images();
+
+                    try
+                    {
+
+                        img.original = "/Storage/Original/" + DateTime.Now.ToString("yyyyMMddhhmmss") + "_" + network + ".jpg";
+                        string imgPath = ConfigurationManager.AppSettings["mediaServer_Path"] + img.original.Replace("/", "\\");
+                        img.large = img.original;
+                        img.thumb = img.original;
+                        img.meduim = img.original;
+                        img.model_id = dbuser.id;
+                        img.model_name = "tbl_accounts";
+                        img.model_tag = "main";
+                        System.Net.WebClient webClient = new System.Net.WebClient();
+
+                        webClient.Encoding = System.Text.Encoding.UTF8;
+
+
+                        webClient.DownloadFile(pic, imgPath);
+                        ctx.tbl_images.Add(img);
+
+                    }
+                    catch (Exception ex)
+                    {
+                       // return APIResult<LoginResponse>.(ResultType.fail, null, ex.Message + "Save Image");
+                    }
+                    try
+                    {
+
+                        ctx.SaveChanges();
+                    }
+                    //catch (DbEntityValidationException e)
+                    //{
+
+                    //    return new APIResult<LoginResponse>(ResultType.fail, null, General.fetchEntityError(e));
+                    //}
+                    catch (Exception ex)
+                    {
+                       // return new APIResult<LoginResponse>(ResultType.fail, null, ex.Message + "save changes2");
+                    }
+
+                }
+
+
+
+                var returned = new LoginResponse { account = dbuser };
+                IPResult s = new IPResult();
+
+                string ip = "";
+                string agent = "";
+                IPResult iploc = new IPResult();
+
+
+                //if(HttpContext.Current == null) return new APIResult<LoginResponse>(ResultType.fail, null, "Null HTTPContext");
+                //if (http.Request == null) return  APIResult<LoginResponse>.Error(ResponseCode., null, "Null HTTPRequest");
+                //if (http.Request.ServerVariables == null) return new APIResult<LoginResponse>(ResultType.fail, null, "Null ServerVariables");
+                //if (http.Request.ServerVariables.Count == 0) return new APIResult<LoginResponse>(ResultType.fail, null, "Empty ServerVariables");
+                //if (!http.Request.ServerVariables.AllKeys.Contains("REMOTE_ADDR")) return new APIResult<LoginResponse>(ResultType.fail, null, "REMOTE_ADDR Not in ServerVariables");
+                //if (!http.Request.ServerVariables.AllKeys.Contains("HTTP_USER_AGENT")) return new APIResult<LoginResponse>(ResultType.fail, null, "HTTP_USER_AGENT No in ServerVariables");
+                try
+                {
+                    ip = http.Request.ServerVariables.Get("REMOTE_ADDR");
+                    agent = http.Request.ServerVariables.Get("HTTP_USER_AGENT");
+
+                    iploc = General.GetResponse("http://ip-api.com/json/" + ip);
+                }
+                catch (Exception ex)
+                {
+                    return  APIResult<LoginResponse>.Error(ResponseCode.BackendServerRequest, ex.Message + "get location ip:" + ip + " agent:" + agent);
+                }
+
+                try
+                {
+
+                    //&& a.ip == ip && a.agent == agent
+                    var userSessions = ctx.sec_sessions.Where(a => a.user_id == dbuser.id && a.end_time == null).FirstOrDefault();
+                    if (userSessions == null)
+                    {
+                        Sessions ses = new Sessions();
+                        ses.Entity.user_id = dbuser.id;
+                        ses.Entity.ip = ip;
+                        ses.Entity.isp = iploc.isp;
+                        ses.Entity.lat = iploc.lat;
+                        ses.Entity.lon = iploc.lon;
+                        ses.Entity.timezone = iploc.timezone;
+                        ses.Entity.city = iploc.city;
+                        ses.Entity.country = iploc.country;
+                        ses.Entity.country_code = iploc.countryCode;
+                        ses.Entity.agent = agent;
+
+
+                        ctx.sec_sessions.Add(ses.Entity);
+                        ctx.SaveChanges();
+
+                        dbuser.sec_users.sec_sessions = new List<sec_sessions>() { ses.Entity };
+                        returned.token = ses.Entity.id;
+                    }
+                    else
+                    {
+                        returned.token = userSessions.id;
+                    }
+                    
+                    returned.roles = ctx.sec_users_roles.Include("sec_roles").Where(a => a.user_id == dbuser.id).Select(b => b.sec_roles.role_key).ToArray();
+                    return  APIResult<LoginResponse>.Success(returned, "Login Success");
+
+                }
+                catch (DbEntityValidationException e)
+                {
+
+                    return APIResult<LoginResponse>.Error(ResponseCode.BackendDatabase, General.fetchEntityError(e));
+                }
+                catch (Exception ex)
+                {
+
+                    return  APIResult<LoginResponse>.Error(ResponseCode.BackendDatabase, ex.Message + " Save Session");
+
+                }
+
+                //}
+                //catch (Exception ex)
+                //{
+
+                //    throw new Exception( ex.Message + "Auth");
+                //}
+
+            }
+        }
     }
 
     //class FacebookUser

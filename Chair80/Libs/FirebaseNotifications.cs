@@ -34,7 +34,7 @@ namespace Chair80.Libs
                    
                 };
                 var result = await sender.SendAsync(message);
-                Console.WriteLine($"Success: {result.MessageResponse.Success}");
+                Logger.log($"Success: {result.MessageResponse.Success} ids = {string.Join(",",divices)}");
 
                 //var json = "{\"notification\":{\"title\":\"json message\",\"body\":\"works like a charm!\"},\"to\":\"" + registrationId + "\"}";
                 //result = await sender.SendAsync(json);

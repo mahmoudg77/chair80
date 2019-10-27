@@ -72,6 +72,7 @@
           <Property Name="mail_verified" Type="bit" />
           <Property Name="phone_verified" Type="bit" />
           <Property Name="firebase_uid" Type="nvarchar" MaxLength="300" />
+          <Property Name="camera_status" Type="bit" />
         </EntityType>
         <EntityType Name="sec_users_roles">
           <Key>
@@ -441,6 +442,9 @@ warning 6002: The table/view 'chari80_db.dbo.vwTripsDetails' does not have a pri
           <Property Name="trip_gender_name" Type="nvarchar" MaxLength="300" Nullable="false" />
           <Property Name="trip_id" Type="int" Nullable="false" />
           <Property Name="guid" Type="uniqueidentifier" />
+          <Property Name="started_seats" Type="int" />
+          <Property Name="ended_seats" Type="int" />
+          <Property Name="reached_seats" Type="int" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'chari80_db.dbo.vwTripSeatDetails' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -911,7 +915,10 @@ warning 6002: The table/view 'chari80_db.dbo.vwTripSeatDetails' does not have a 
     [vwTripsDetails].[acc_country] AS [acc_country], 
     [vwTripsDetails].[trip_gender_name] AS [trip_gender_name], 
     [vwTripsDetails].[trip_id] AS [trip_id], 
-    [vwTripsDetails].[guid] AS [guid]
+    [vwTripsDetails].[guid] AS [guid], 
+    [vwTripsDetails].[started_seats] AS [started_seats], 
+    [vwTripsDetails].[ended_seats] AS [ended_seats], 
+    [vwTripsDetails].[reached_seats] AS [reached_seats]
     FROM [dbo].[vwTripsDetails] AS [vwTripsDetails]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="vwTripSeatDetails" EntityType="Self.vwTripSeatDetails" store:Type="Views" store:Schema="dbo">
@@ -1118,6 +1125,7 @@ warning 6002: The table/view 'chari80_db.dbo.vwTripSeatDetails' does not have a 
           <NavigationProperty Name="sec_sessions" Relationship="Self.FK_sec_sessions_sec_users" FromRole="sec_users" ToRole="sec_sessions" />
           <NavigationProperty Name="sec_users_roles" Relationship="Self.FK_sec_users_roles_sec_users" FromRole="sec_users" ToRole="sec_users_roles" />
           <NavigationProperty Name="tbl_accounts" Relationship="MainModel.FK_sec_users_tbl_accounts" FromRole="sec_users" ToRole="tbl_accounts" />
+          <Property Name="camera_status" Type="Boolean" />
         </EntityType>
         <EntityType Name="sec_users_roles">
           <Key>
@@ -1732,6 +1740,9 @@ warning 6002: The table/view 'chari80_db.dbo.vwTripSeatDetails' does not have a 
           <Property Name="trip_id" Type="Int32" Nullable="false" />
           <Property Name="trip_gender_name" Type="String" Nullable="false" MaxLength="300" FixedLength="false" Unicode="true" />
           <Property Name="guid" Type="Guid" />
+          <Property Name="started_seats" Type="Int32" />
+          <Property Name="ended_seats" Type="Int32" />
+          <Property Name="reached_seats" Type="Int32" />
         </EntityType>
         <EntityType Name="vwTripSeatDetails">
           <Key>
@@ -2036,6 +2047,7 @@ warning 6002: The table/view 'chari80_db.dbo.vwTripSeatDetails' does not have a 
           <EntitySetMapping Name="sec_users">
             <EntityTypeMapping TypeName="MainModel.sec_users">
               <MappingFragment StoreEntitySet="sec_users">
+                <ScalarProperty Name="camera_status" ColumnName="camera_status" />
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="pwd" ColumnName="pwd" />
                 <ScalarProperty Name="reset_pwd_token" ColumnName="reset_pwd_token" />
@@ -2259,6 +2271,9 @@ warning 6002: The table/view 'chari80_db.dbo.vwTripSeatDetails' does not have a 
           <EntitySetMapping Name="vwTripsDetails">
             <EntityTypeMapping TypeName="MainModel.vwTripsDetails">
               <MappingFragment StoreEntitySet="vwTripsDetails">
+                <ScalarProperty Name="reached_seats" ColumnName="reached_seats" />
+                <ScalarProperty Name="ended_seats" ColumnName="ended_seats" />
+                <ScalarProperty Name="started_seats" ColumnName="started_seats" />
                 <ScalarProperty Name="guid" ColumnName="guid" />
                 <ScalarProperty Name="trip_gender_name" ColumnName="trip_gender_name" />
                 <ScalarProperty Name="trip_id" ColumnName="trip_id" />

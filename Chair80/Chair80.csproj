@@ -354,6 +354,7 @@
     <Compile Include="Requests\NeedSeatRequest.cs" />
     <Compile Include="Requests\SearchTripRequest.cs" />
     <Compile Include="Requests\ShareSeatRequest.cs" />
+    <Compile Include="Requests\FirebaseAuthRequest.cs" />
     <Compile Include="Requests\WebLoginRequest.cs" />
     <Compile Include="Requests\LoginRequest.cs" />
     <Compile Include="Requests\PasswordEditRequest.cs" />

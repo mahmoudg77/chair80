@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Chair80.DAL
+namespace FirebaseNotificationSender.DAL
 {
     using System;
     using System.Collections.Generic;
@@ -18,7 +18,6 @@ namespace Chair80.DAL
         public sec_users()
         {
             this.sec_sessions = new HashSet<sec_sessions>();
-            this.sec_users_roles = new HashSet<sec_users_roles>();
         }
     
         public int id { get; set; }
@@ -32,12 +31,9 @@ namespace Chair80.DAL
         public Nullable<bool> mail_verified { get; set; }
         public Nullable<bool> phone_verified { get; set; }
         public string firebase_uid { get; set; }
-        public Nullable<bool> camera_status { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<sec_sessions> sec_sessions { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<sec_users_roles> sec_users_roles { get; set; }
         public virtual tbl_accounts tbl_accounts { get; set; }
     }
 }

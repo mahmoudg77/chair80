@@ -270,10 +270,11 @@ namespace Chair80.Controllers.Account
                 acc.first_name = request.first_name;
                 acc.last_name = request.last_name;
                 acc.gender_id = request.gender_id;
-                acc.city_id = request.country_id;
+                acc.city_id = request.city_id;
                 acc.driver_license_no = request.driver_license_no;
                 acc.id_no = request.id_no;
                 acc.date_of_birth = request.date_of_birth;
+                acc.country_id = request.country_id;
 
                 ctx.Entry(acc).State = System.Data.Entity.EntityState.Modified;
 
@@ -454,6 +455,41 @@ namespace Chair80.Controllers.Account
 
                 return APIResult<List<vwProfile>>.Success(ctx.vwProfile.Where(a => myDriverIDs.Contains(a.id)).ToList());
             }
+        }
+
+
+        [LoginFilter]
+        [Route("CameraStatus")]
+        [HttpGet]
+        public APIResult<bool> CameraStatus()
+        {
+            var u = APIRequest.User(HttpContext.Current.Request);
+            return APIResult<bool>.Success(u.Entity.camera_status==null?false:(bool)u.Entity.camera_status);
+        }
+        [LoginFilter]
+        [Route("CameraStatus")]
+        [HttpPost]
+        public APIResult<bool> CameraStatus(bool status)
+        {
+            var u = APIRequest.User(HttpContext.Current.Request);
+            try
+            {
+                using (var ctx=new DAL.MainEntities())
+                {
+                    u.Entity.camera_status = status;
+                    ctx.Entry(u.Entity).State = System.Data.Entity.EntityState.Modified;
+                    ctx.SaveChanges();
+                }
+                return APIResult<bool>.Success(true);
+
+            }
+            catch (Exception ex)
+            {
+                return APIResult<bool>.Error(ResponseCode.BackendDatabase, ex.Message);
+            }
+
+              
+           
         }
     }
 }

@@ -1,0 +1,1164 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="Database.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="sec_sessions">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="user_id" Type="int" Nullable="false" />
+          <Property Name="start_time" Type="datetime" />
+          <Property Name="end_time" Type="datetime" />
+          <Property Name="ip" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="agent" Type="nvarchar(max)" />
+          <Property Name="browser" Type="nvarchar" MaxLength="50" />
+          <Property Name="country" Type="nvarchar" MaxLength="50" />
+          <Property Name="city" Type="nvarchar" MaxLength="50" />
+          <Property Name="country_code" Type="nvarchar" MaxLength="6" />
+          <Property Name="isp" Type="nvarchar" MaxLength="50" />
+          <Property Name="lat" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="lon" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="timezone" Type="nvarchar" MaxLength="100" />
+          <Property Name="paltform" Type="int" />
+          <Property Name="device_id" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="sec_users">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" Nullable="false" />
+          <Property Name="pwd" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="reset_pwd_token" Type="nvarchar" MaxLength="100" />
+          <Property Name="facebook_token" Type="nvarchar" MaxLength="100" />
+          <Property Name="twitter_token" Type="nvarchar" MaxLength="100" />
+          <Property Name="google_token" Type="nvarchar" MaxLength="100" />
+          <Property Name="instagram_token" Type="nvarchar" MaxLength="100" />
+          <Property Name="confirm_mail_token" Type="nvarchar" MaxLength="100" />
+          <Property Name="mail_verified" Type="bit" />
+          <Property Name="phone_verified" Type="bit" />
+          <Property Name="firebase_uid" Type="nvarchar" MaxLength="300" />
+        </EntityType>
+        <EntityType Name="tbl_accounts">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="first_name" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="last_name" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="date_of_birth" Type="date" />
+          <Property Name="mobile" Type="nvarchar" MaxLength="15" />
+          <Property Name="email" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="register_time" Type="datetime" />
+          <Property Name="is_deleted" Type="bit" />
+          <Property Name="gender_id" Type="int" />
+          <Property Name="id_no" Type="nvarchar" MaxLength="50" />
+          <Property Name="driver_license_no" Type="nvarchar" MaxLength="50" />
+          <Property Name="city_id" Type="int" />
+          <Property Name="country_id" Type="int" />
+          <Property Name="active" Type="bit" />
+        </EntityType>
+        <EntityType Name="trip_book">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="trip_share_details_id" Type="int" Nullable="false" />
+          <Property Name="trip_request_details_id" Type="int" Nullable="false" />
+          <Property Name="booked_at" Type="datetime" />
+          <Property Name="start_at" Type="datetime" />
+          <Property Name="end_at" Type="datetime" />
+          <Property Name="driver_rate" Type="int" />
+          <Property Name="rider_rate" Type="int" />
+          <Property Name="trip_token" Type="uniqueidentifier" />
+          <Property Name="seats" Type="int" />
+          <Property Name="reached_at" Type="datetime" />
+          <Property Name="canceled_at" Type="datetime" />
+          <Property Name="canceled_by" Type="int" />
+          <Property Name="accepted_at" Type="datetime" />
+          <Property Name="accepted_by" Type="int" />
+          <Property Name="rate_reason_id" Type="int" />
+          <Property Name="rate_comment" Type="nvarchar" MaxLength="500" />
+        </EntityType>
+        <EntityType Name="trip_request">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="rider_id" Type="int" Nullable="false" />
+          <Property Name="seats" Type="int" />
+          <Property Name="start_at_date" Type="date" />
+          <Property Name="end_at_date" Type="date" />
+          <Property Name="trip_type_id" Type="int" />
+          <Property Name="created_at" Type="datetime" />
+          <Property Name="created_by" Type="int" />
+        </EntityType>
+        <EntityType Name="trip_request_details">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="trip_request_id" Type="int" Nullable="false" />
+          <Property Name="seats" Type="int" />
+          <Property Name="start_at_date" Type="datetime" />
+          <Property Name="start_at_time" Type="time" Precision="7" />
+          <Property Name="from_lat" Type="decimal" Precision="18" Scale="6" />
+          <Property Name="from_lng" Type="decimal" Precision="18" Scale="6" />
+          <Property Name="from_plc" Type="nvarchar" MaxLength="200" />
+          <Property Name="to_lat" Type="decimal" Precision="18" Scale="6" />
+          <Property Name="to_lng" Type="decimal" Precision="18" Scale="6" />
+          <Property Name="to_plc" Type="nvarchar" MaxLength="200" />
+          <Property Name="gender_id" Type="int" />
+          <Property Name="seat_cost_from" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="seat_cost_to" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="trip_direction" Type="int" />
+          <Property Name="is_active" Type="bit" />
+          <Property Name="booked" Type="bit" />
+        </EntityType>
+        <EntityType Name="trip_share">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="driver_id" Type="int" Nullable="false" />
+          <Property Name="start_at_date" Type="date" />
+          <Property Name="end_at_date" Type="date" />
+          <Property Name="vehicle_id" Type="int" />
+          <Property Name="created_at" Type="datetime" />
+          <Property Name="created_by" Type="int" />
+          <Property Name="trip_type_id" Type="int" />
+        </EntityType>
+        <EntityType Name="trip_share_details">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="trip_share_id" Type="int" Nullable="false" />
+          <Property Name="seats" Type="int" />
+          <Property Name="start_at_date" Type="datetime" />
+          <Property Name="start_at_time" Type="time" Precision="7" />
+          <Property Name="from_lat" Type="decimal" Precision="18" Scale="6" />
+          <Property Name="from_lng" Type="decimal" Precision="18" Scale="6" />
+          <Property Name="from_plc" Type="nvarchar" MaxLength="200" />
+          <Property Name="to_lat" Type="decimal" Precision="18" Scale="6" />
+          <Property Name="to_lng" Type="decimal" Precision="18" Scale="6" />
+          <Property Name="to_plc" Type="nvarchar" MaxLength="200" />
+          <Property Name="gender_id" Type="int" />
+          <Property Name="booked_seats" Type="int" />
+          <Property Name="seat_cost" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="trip_direction" Type="int" />
+          <Property Name="is_active" Type="bit" />
+          <Property Name="guid" Type="uniqueidentifier" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'chari80_db.dbo.vwTripsDetails' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="vwTripsDetails">
+          <Key>
+            <PropertyRef Name="trip_share_id" />
+            <PropertyRef Name="driver_id" />
+            <PropertyRef Name="car_model" />
+            <PropertyRef Name="car_capacity" />
+            <PropertyRef Name="car_license_no" />
+            <PropertyRef Name="acc_first_name" />
+            <PropertyRef Name="acc_last_name" />
+            <PropertyRef Name="acc_email" />
+            <PropertyRef Name="trip_id" />
+          </Key>
+          <Property Name="seats" Type="int" />
+          <Property Name="start_at_date" Type="datetime" />
+          <Property Name="start_at_time" Type="time" Precision="7" />
+          <Property Name="from_lat" Type="decimal" Precision="18" Scale="6" />
+          <Property Name="from_lng" Type="decimal" Precision="18" Scale="6" />
+          <Property Name="from_plc" Type="nvarchar" MaxLength="200" />
+          <Property Name="to_lat" Type="decimal" Precision="18" Scale="6" />
+          <Property Name="to_lng" Type="decimal" Precision="18" Scale="6" />
+          <Property Name="to_plc" Type="nvarchar" MaxLength="200" />
+          <Property Name="trip_gender_id" Type="int" />
+          <Property Name="booked_seats" Type="int" />
+          <Property Name="seat_cost" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="trip_direction" Type="int" />
+          <Property Name="is_active" Type="bit" />
+          <Property Name="trip_share_id" Type="int" Nullable="false" />
+          <Property Name="driver_id" Type="int" Nullable="false" />
+          <Property Name="trip_start_date" Type="date" />
+          <Property Name="trip_end_date" Type="date" />
+          <Property Name="car_id" Type="int" />
+          <Property Name="car_model" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="car_color" Type="nvarchar" MaxLength="50" />
+          <Property Name="car_capacity" Type="int" Nullable="false" />
+          <Property Name="car_license_no" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="trip_type_id" Type="int" />
+          <Property Name="trip_type" Type="nvarchar" MaxLength="100" />
+          <Property Name="acc_firebase_uid" Type="nvarchar" MaxLength="300" />
+          <Property Name="acc_first_name" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="acc_last_name" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="acc_date_of_birth" Type="date" />
+          <Property Name="acc_mobile" Type="nvarchar" MaxLength="15" />
+          <Property Name="acc_email" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="acc_register_time" Type="datetime" />
+          <Property Name="acc_gender_id" Type="int" />
+          <Property Name="acc_id_no" Type="nvarchar" MaxLength="50" />
+          <Property Name="acc_driver_license_no" Type="nvarchar" MaxLength="50" />
+          <Property Name="acc_city_id" Type="int" />
+          <Property Name="acc_country_id" Type="int" />
+          <Property Name="acc_gender" Type="nvarchar" MaxLength="300" />
+          <Property Name="acc_city" Type="nvarchar" MaxLength="300" />
+          <Property Name="acc_country" Type="nvarchar" MaxLength="300" />
+          <Property Name="trip_gender_name" Type="nvarchar" MaxLength="300" />
+          <Property Name="trip_id" Type="int" Nullable="false" />
+          <Property Name="guid" Type="uniqueidentifier" />
+          <Property Name="started_seats" Type="int" />
+          <Property Name="ended_seats" Type="int" />
+          <Property Name="reached_seats" Type="int" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'chari80_db.dbo.vwTripSeatDetails' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="vwTripSeatDetails">
+          <Key>
+            <PropertyRef Name="first_name" />
+            <PropertyRef Name="last_name" />
+            <PropertyRef Name="gender_name" />
+            <PropertyRef Name="trip_id" />
+            <PropertyRef Name="main_trip_id" />
+            <PropertyRef Name="id" />
+            <PropertyRef Name="driver_first_name" />
+            <PropertyRef Name="driver_last_name" />
+            <PropertyRef Name="rider_id" />
+            <PropertyRef Name="driver_id" />
+          </Key>
+          <Property Name="first_name" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="last_name" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="mobile" Type="nvarchar" MaxLength="15" />
+          <Property Name="gender_id" Type="int" />
+          <Property Name="gender_name" Type="nvarchar" MaxLength="300" Nullable="false" />
+          <Property Name="seat_cost" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="from_lat" Type="decimal" Precision="18" Scale="6" />
+          <Property Name="from_lng" Type="decimal" Precision="18" Scale="6" />
+          <Property Name="from_plc" Type="nvarchar" MaxLength="200" />
+          <Property Name="to_lat" Type="decimal" Precision="18" Scale="6" />
+          <Property Name="to_lng" Type="decimal" Precision="18" Scale="6" />
+          <Property Name="to_plc" Type="nvarchar" MaxLength="200" />
+          <Property Name="booked_at" Type="datetime" />
+          <Property Name="reached_at" Type="datetime" />
+          <Property Name="start_at" Type="datetime" />
+          <Property Name="end_at" Type="datetime" />
+          <Property Name="trip_token" Type="uniqueidentifier" />
+          <Property Name="trip_id" Type="int" Nullable="false" />
+          <Property Name="main_trip_id" Type="int" Nullable="false" />
+          <Property Name="id" Type="int" Nullable="false" />
+          <Property Name="canceled_at" Type="datetime" />
+          <Property Name="canceled_by" Type="int" />
+          <Property Name="accepted_at" Type="datetime" />
+          <Property Name="accepted_by" Type="int" />
+          <Property Name="rider_firebase_id" Type="nvarchar" MaxLength="300" />
+          <Property Name="driver_firebase_id" Type="nvarchar" MaxLength="300" />
+          <Property Name="driver_first_name" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="driver_last_name" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="driver_mobile" Type="nvarchar" MaxLength="15" />
+          <Property Name="driver_gender_id" Type="int" />
+          <Property Name="rider_id" Type="int" Nullable="false" />
+          <Property Name="driver_id" Type="int" Nullable="false" />
+          <Property Name="guid" Type="uniqueidentifier" />
+        </EntityType>
+        <Association Name="FK_sec_sessions_sec_users">
+          <End Role="sec_users" Type="Self.sec_users" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="sec_sessions" Type="Self.sec_sessions" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="sec_users">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="sec_sessions">
+              <PropertyRef Name="user_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_sec_users_tbl_accounts">
+          <End Role="tbl_accounts" Type="Self.tbl_accounts" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="sec_users" Type="Self.sec_users" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_accounts">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="sec_users">
+              <PropertyRef Name="id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_trip_book_trip_share_details">
+          <End Role="trip_share_details" Type="Self.trip_share_details" Multiplicity="1" />
+          <End Role="trip_book" Type="Self.trip_book" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="trip_share_details">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="trip_book">
+              <PropertyRef Name="trip_share_details_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_trip_request_details_trip_request">
+          <End Role="trip_request" Type="Self.trip_request" Multiplicity="1" />
+          <End Role="trip_request_details" Type="Self.trip_request_details" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="trip_request">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="trip_request_details">
+              <PropertyRef Name="trip_request_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_trip_request_tbl_accounts">
+          <End Role="tbl_accounts" Type="Self.tbl_accounts" Multiplicity="1" />
+          <End Role="trip_request" Type="Self.trip_request" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_accounts">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="trip_request">
+              <PropertyRef Name="rider_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_trip_share_details_trip_share">
+          <End Role="trip_share" Type="Self.trip_share" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="trip_share_details" Type="Self.trip_share_details" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="trip_share">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="trip_share_details">
+              <PropertyRef Name="trip_share_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_trip_share_tbl_accounts">
+          <End Role="tbl_accounts" Type="Self.tbl_accounts" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="trip_share" Type="Self.trip_share" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_accounts">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="trip_share">
+              <PropertyRef Name="driver_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="DatabaseStoreContainer">
+          <EntitySet Name="sec_sessions" EntityType="Self.sec_sessions" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="sec_users" EntityType="Self.sec_users" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_accounts" EntityType="Self.tbl_accounts" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="trip_book" EntityType="Self.trip_book" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="trip_request" EntityType="Self.trip_request" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="trip_request_details" EntityType="Self.trip_request_details" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="trip_share" EntityType="Self.trip_share" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="trip_share_details" EntityType="Self.trip_share_details" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="vwTripsDetails" EntityType="Self.vwTripsDetails" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [vwTripsDetails].[seats] AS [seats], 
+    [vwTripsDetails].[start_at_date] AS [start_at_date], 
+    [vwTripsDetails].[start_at_time] AS [start_at_time], 
+    [vwTripsDetails].[from_lat] AS [from_lat], 
+    [vwTripsDetails].[from_lng] AS [from_lng], 
+    [vwTripsDetails].[from_plc] AS [from_plc], 
+    [vwTripsDetails].[to_lat] AS [to_lat], 
+    [vwTripsDetails].[to_lng] AS [to_lng], 
+    [vwTripsDetails].[to_plc] AS [to_plc], 
+    [vwTripsDetails].[trip_gender_id] AS [trip_gender_id], 
+    [vwTripsDetails].[booked_seats] AS [booked_seats], 
+    [vwTripsDetails].[seat_cost] AS [seat_cost], 
+    [vwTripsDetails].[trip_direction] AS [trip_direction], 
+    [vwTripsDetails].[is_active] AS [is_active], 
+    [vwTripsDetails].[trip_share_id] AS [trip_share_id], 
+    [vwTripsDetails].[driver_id] AS [driver_id], 
+    [vwTripsDetails].[trip_start_date] AS [trip_start_date], 
+    [vwTripsDetails].[trip_end_date] AS [trip_end_date], 
+    [vwTripsDetails].[car_id] AS [car_id], 
+    [vwTripsDetails].[car_model] AS [car_model], 
+    [vwTripsDetails].[car_color] AS [car_color], 
+    [vwTripsDetails].[car_capacity] AS [car_capacity], 
+    [vwTripsDetails].[car_license_no] AS [car_license_no], 
+    [vwTripsDetails].[trip_type_id] AS [trip_type_id], 
+    [vwTripsDetails].[trip_type] AS [trip_type], 
+    [vwTripsDetails].[acc_firebase_uid] AS [acc_firebase_uid], 
+    [vwTripsDetails].[acc_first_name] AS [acc_first_name], 
+    [vwTripsDetails].[acc_last_name] AS [acc_last_name], 
+    [vwTripsDetails].[acc_date_of_birth] AS [acc_date_of_birth], 
+    [vwTripsDetails].[acc_mobile] AS [acc_mobile], 
+    [vwTripsDetails].[acc_email] AS [acc_email], 
+    [vwTripsDetails].[acc_register_time] AS [acc_register_time], 
+    [vwTripsDetails].[acc_gender_id] AS [acc_gender_id], 
+    [vwTripsDetails].[acc_id_no] AS [acc_id_no], 
+    [vwTripsDetails].[acc_driver_license_no] AS [acc_driver_license_no], 
+    [vwTripsDetails].[acc_city_id] AS [acc_city_id], 
+    [vwTripsDetails].[acc_country_id] AS [acc_country_id], 
+    [vwTripsDetails].[acc_gender] AS [acc_gender], 
+    [vwTripsDetails].[acc_city] AS [acc_city], 
+    [vwTripsDetails].[acc_country] AS [acc_country], 
+    [vwTripsDetails].[trip_gender_name] AS [trip_gender_name], 
+    [vwTripsDetails].[trip_id] AS [trip_id], 
+    [vwTripsDetails].[guid] AS [guid], 
+    [vwTripsDetails].[started_seats] AS [started_seats], 
+    [vwTripsDetails].[ended_seats] AS [ended_seats], 
+    [vwTripsDetails].[reached_seats] AS [reached_seats]
+    FROM [dbo].[vwTripsDetails] AS [vwTripsDetails]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="vwTripSeatDetails" EntityType="Self.vwTripSeatDetails" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [vwTripSeatDetails].[first_name] AS [first_name], 
+    [vwTripSeatDetails].[last_name] AS [last_name], 
+    [vwTripSeatDetails].[mobile] AS [mobile], 
+    [vwTripSeatDetails].[gender_id] AS [gender_id], 
+    [vwTripSeatDetails].[gender_name] AS [gender_name], 
+    [vwTripSeatDetails].[seat_cost] AS [seat_cost], 
+    [vwTripSeatDetails].[from_lat] AS [from_lat], 
+    [vwTripSeatDetails].[from_lng] AS [from_lng], 
+    [vwTripSeatDetails].[from_plc] AS [from_plc], 
+    [vwTripSeatDetails].[to_lat] AS [to_lat], 
+    [vwTripSeatDetails].[to_lng] AS [to_lng], 
+    [vwTripSeatDetails].[to_plc] AS [to_plc], 
+    [vwTripSeatDetails].[booked_at] AS [booked_at], 
+    [vwTripSeatDetails].[reached_at] AS [reached_at], 
+    [vwTripSeatDetails].[start_at] AS [start_at], 
+    [vwTripSeatDetails].[end_at] AS [end_at], 
+    [vwTripSeatDetails].[trip_token] AS [trip_token], 
+    [vwTripSeatDetails].[trip_id] AS [trip_id], 
+    [vwTripSeatDetails].[main_trip_id] AS [main_trip_id], 
+    [vwTripSeatDetails].[id] AS [id], 
+    [vwTripSeatDetails].[canceled_at] AS [canceled_at], 
+    [vwTripSeatDetails].[canceled_by] AS [canceled_by], 
+    [vwTripSeatDetails].[accepted_at] AS [accepted_at], 
+    [vwTripSeatDetails].[accepted_by] AS [accepted_by], 
+    [vwTripSeatDetails].[rider_firebase_id] AS [rider_firebase_id], 
+    [vwTripSeatDetails].[driver_firebase_id] AS [driver_firebase_id], 
+    [vwTripSeatDetails].[driver_first_name] AS [driver_first_name], 
+    [vwTripSeatDetails].[driver_last_name] AS [driver_last_name], 
+    [vwTripSeatDetails].[driver_mobile] AS [driver_mobile], 
+    [vwTripSeatDetails].[driver_gender_id] AS [driver_gender_id], 
+    [vwTripSeatDetails].[rider_id] AS [rider_id], 
+    [vwTripSeatDetails].[driver_id] AS [driver_id], 
+    [vwTripSeatDetails].[guid] AS [guid]
+    FROM [dbo].[vwTripSeatDetails] AS [vwTripSeatDetails]</DefiningQuery>
+          </EntitySet>
+          <AssociationSet Name="FK_sec_sessions_sec_users" Association="Self.FK_sec_sessions_sec_users">
+            <End Role="sec_users" EntitySet="sec_users" />
+            <End Role="sec_sessions" EntitySet="sec_sessions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_sec_users_tbl_accounts" Association="Self.FK_sec_users_tbl_accounts">
+            <End Role="tbl_accounts" EntitySet="tbl_accounts" />
+            <End Role="sec_users" EntitySet="sec_users" />
+          </AssociationSet>
+          <AssociationSet Name="FK_trip_book_trip_share_details" Association="Self.FK_trip_book_trip_share_details">
+            <End Role="trip_share_details" EntitySet="trip_share_details" />
+            <End Role="trip_book" EntitySet="trip_book" />
+          </AssociationSet>
+          <AssociationSet Name="FK_trip_request_details_trip_request" Association="Self.FK_trip_request_details_trip_request">
+            <End Role="trip_request" EntitySet="trip_request" />
+            <End Role="trip_request_details" EntitySet="trip_request_details" />
+          </AssociationSet>
+          <AssociationSet Name="FK_trip_request_tbl_accounts" Association="Self.FK_trip_request_tbl_accounts">
+            <End Role="tbl_accounts" EntitySet="tbl_accounts" />
+            <End Role="trip_request" EntitySet="trip_request" />
+          </AssociationSet>
+          <AssociationSet Name="FK_trip_share_details_trip_share" Association="Self.FK_trip_share_details_trip_share">
+            <End Role="trip_share" EntitySet="trip_share" />
+            <End Role="trip_share_details" EntitySet="trip_share_details" />
+          </AssociationSet>
+          <AssociationSet Name="FK_trip_share_tbl_accounts" Association="Self.FK_trip_share_tbl_accounts">
+            <End Role="tbl_accounts" EntitySet="tbl_accounts" />
+            <End Role="trip_share" EntitySet="trip_share" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="Database" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="sec_sessions">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Guid" Nullable="false" />
+          <Property Name="user_id" Type="Int32" Nullable="false" />
+          <Property Name="start_time" Type="DateTime" Precision="3" />
+          <Property Name="end_time" Type="DateTime" Precision="3" />
+          <Property Name="ip" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="agent" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="browser" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="country" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="city" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="country_code" Type="String" MaxLength="6" FixedLength="false" Unicode="true" />
+          <Property Name="isp" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="lat" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="lon" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="timezone" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="paltform" Type="Int32" />
+          <Property Name="device_id" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="sec_users" Relationship="Self.FK_sec_sessions_sec_users" FromRole="sec_sessions" ToRole="sec_users" />
+        </EntityType>
+        <EntityType Name="sec_users">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" />
+          <Property Name="pwd" Type="String" MaxLength="500" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="reset_pwd_token" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="facebook_token" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="twitter_token" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="google_token" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="instagram_token" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="confirm_mail_token" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="mail_verified" Type="Boolean" />
+          <Property Name="phone_verified" Type="Boolean" />
+          <Property Name="firebase_uid" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="sec_sessions" Relationship="Self.FK_sec_sessions_sec_users" FromRole="sec_users" ToRole="sec_sessions" />
+          <NavigationProperty Name="tbl_accounts" Relationship="Self.FK_sec_users_tbl_accounts" FromRole="sec_users" ToRole="tbl_accounts" />
+        </EntityType>
+        <EntityType Name="tbl_accounts">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="first_name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="last_name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="date_of_birth" Type="DateTime" Precision="0" />
+          <Property Name="mobile" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
+          <Property Name="email" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="register_time" Type="DateTime" Precision="3" />
+          <Property Name="is_deleted" Type="Boolean" />
+          <Property Name="gender_id" Type="Int32" />
+          <Property Name="id_no" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="driver_license_no" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="city_id" Type="Int32" />
+          <Property Name="country_id" Type="Int32" />
+          <Property Name="active" Type="Boolean" />
+          <NavigationProperty Name="sec_users" Relationship="Self.FK_sec_users_tbl_accounts" FromRole="tbl_accounts" ToRole="sec_users" />
+          <NavigationProperty Name="trip_request" Relationship="Self.FK_trip_request_tbl_accounts" FromRole="tbl_accounts" ToRole="trip_request" />
+          <NavigationProperty Name="trip_share" Relationship="Self.FK_trip_share_tbl_accounts" FromRole="tbl_accounts" ToRole="trip_share" />
+        </EntityType>
+        <EntityType Name="trip_book">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="trip_share_details_id" Type="Int32" Nullable="false" />
+          <Property Name="trip_request_details_id" Type="Int32" Nullable="false" />
+          <Property Name="booked_at" Type="DateTime" Precision="3" />
+          <Property Name="start_at" Type="DateTime" Precision="3" />
+          <Property Name="end_at" Type="DateTime" Precision="3" />
+          <Property Name="driver_rate" Type="Int32" />
+          <Property Name="rider_rate" Type="Int32" />
+          <Property Name="trip_token" Type="Guid" />
+          <Property Name="seats" Type="Int32" />
+          <Property Name="reached_at" Type="DateTime" Precision="3" />
+          <Property Name="canceled_at" Type="DateTime" Precision="3" />
+          <Property Name="canceled_by" Type="Int32" />
+          <Property Name="accepted_at" Type="DateTime" Precision="3" />
+          <Property Name="accepted_by" Type="Int32" />
+          <Property Name="rate_reason_id" Type="Int32" />
+          <Property Name="rate_comment" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="trip_share_details" Relationship="Self.FK_trip_book_trip_share_details" FromRole="trip_book" ToRole="trip_share_details" />
+        </EntityType>
+        <EntityType Name="trip_request">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="rider_id" Type="Int32" Nullable="false" />
+          <Property Name="seats" Type="Int32" />
+          <Property Name="start_at_date" Type="DateTime" Precision="0" />
+          <Property Name="end_at_date" Type="DateTime" Precision="0" />
+          <Property Name="trip_type_id" Type="Int32" />
+          <Property Name="created_at" Type="DateTime" Precision="3" />
+          <Property Name="created_by" Type="Int32" />
+          <NavigationProperty Name="tbl_accounts" Relationship="Self.FK_trip_request_tbl_accounts" FromRole="trip_request" ToRole="tbl_accounts" />
+          <NavigationProperty Name="trip_request_details" Relationship="Self.FK_trip_request_details_trip_request" FromRole="trip_request" ToRole="trip_request_details" />
+        </EntityType>
+        <EntityType Name="trip_request_details">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="trip_request_id" Type="Int32" Nullable="false" />
+          <Property Name="seats" Type="Int32" />
+          <Property Name="start_at_date" Type="DateTime" Precision="3" />
+          <Property Name="start_at_time" Type="Time" Precision="7" />
+          <Property Name="from_lat" Type="Decimal" Precision="18" Scale="6" />
+          <Property Name="from_lng" Type="Decimal" Precision="18" Scale="6" />
+          <Property Name="from_plc" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="to_lat" Type="Decimal" Precision="18" Scale="6" />
+          <Property Name="to_lng" Type="Decimal" Precision="18" Scale="6" />
+          <Property Name="to_plc" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="gender_id" Type="Int32" />
+          <Property Name="seat_cost_from" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="seat_cost_to" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="trip_direction" Type="Int32" />
+          <Property Name="is_active" Type="Boolean" />
+          <Property Name="booked" Type="Boolean" />
+          <NavigationProperty Name="trip_request" Relationship="Self.FK_trip_request_details_trip_request" FromRole="trip_request_details" ToRole="trip_request" />
+        </EntityType>
+        <EntityType Name="trip_share">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="driver_id" Type="Int32" Nullable="false" />
+          <Property Name="start_at_date" Type="DateTime" Precision="0" />
+          <Property Name="end_at_date" Type="DateTime" Precision="0" />
+          <Property Name="vehicle_id" Type="Int32" />
+          <Property Name="created_at" Type="DateTime" Precision="3" />
+          <Property Name="created_by" Type="Int32" />
+          <Property Name="trip_type_id" Type="Int32" />
+          <NavigationProperty Name="tbl_accounts" Relationship="Self.FK_trip_share_tbl_accounts" FromRole="trip_share" ToRole="tbl_accounts" />
+          <NavigationProperty Name="trip_share_details" Relationship="Self.FK_trip_share_details_trip_share" FromRole="trip_share" ToRole="trip_share_details" />
+        </EntityType>
+        <EntityType Name="trip_share_details">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="trip_share_id" Type="Int32" Nullable="false" />
+          <Property Name="seats" Type="Int32" />
+          <Property Name="start_at_date" Type="DateTime" Precision="3" />
+          <Property Name="start_at_time" Type="Time" Precision="7" />
+          <Property Name="from_lat" Type="Decimal" Precision="18" Scale="6" />
+          <Property Name="from_lng" Type="Decimal" Precision="18" Scale="6" />
+          <Property Name="from_plc" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="to_lat" Type="Decimal" Precision="18" Scale="6" />
+          <Property Name="to_lng" Type="Decimal" Precision="18" Scale="6" />
+          <Property Name="to_plc" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="gender_id" Type="Int32" />
+          <Property Name="booked_seats" Type="Int32" />
+          <Property Name="seat_cost" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="trip_direction" Type="Int32" />
+          <Property Name="is_active" Type="Boolean" />
+          <Property Name="guid" Type="Guid" />
+          <NavigationProperty Name="trip_book" Relationship="Self.FK_trip_book_trip_share_details" FromRole="trip_share_details" ToRole="trip_book" />
+          <NavigationProperty Name="trip_share" Relationship="Self.FK_trip_share_details_trip_share" FromRole="trip_share_details" ToRole="trip_share" />
+        </EntityType>
+        <EntityType Name="vwTripsDetail">
+          <Key>
+            <PropertyRef Name="trip_share_id" />
+            <PropertyRef Name="driver_id" />
+            <PropertyRef Name="car_model" />
+            <PropertyRef Name="car_capacity" />
+            <PropertyRef Name="car_license_no" />
+            <PropertyRef Name="acc_first_name" />
+            <PropertyRef Name="acc_last_name" />
+            <PropertyRef Name="acc_email" />
+            <PropertyRef Name="trip_id" />
+          </Key>
+          <Property Name="seats" Type="Int32" />
+          <Property Name="start_at_date" Type="DateTime" Precision="3" />
+          <Property Name="start_at_time" Type="Time" Precision="7" />
+          <Property Name="from_lat" Type="Decimal" Precision="18" Scale="6" />
+          <Property Name="from_lng" Type="Decimal" Precision="18" Scale="6" />
+          <Property Name="from_plc" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="to_lat" Type="Decimal" Precision="18" Scale="6" />
+          <Property Name="to_lng" Type="Decimal" Precision="18" Scale="6" />
+          <Property Name="to_plc" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="trip_gender_id" Type="Int32" />
+          <Property Name="booked_seats" Type="Int32" />
+          <Property Name="seat_cost" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="trip_direction" Type="Int32" />
+          <Property Name="is_active" Type="Boolean" />
+          <Property Name="trip_share_id" Type="Int32" Nullable="false" />
+          <Property Name="driver_id" Type="Int32" Nullable="false" />
+          <Property Name="trip_start_date" Type="DateTime" Precision="0" />
+          <Property Name="trip_end_date" Type="DateTime" Precision="0" />
+          <Property Name="car_id" Type="Int32" />
+          <Property Name="car_model" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="car_color" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="car_capacity" Type="Int32" Nullable="false" />
+          <Property Name="car_license_no" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="trip_type_id" Type="Int32" />
+          <Property Name="trip_type" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="acc_firebase_uid" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="acc_first_name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="acc_last_name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="acc_date_of_birth" Type="DateTime" Precision="0" />
+          <Property Name="acc_mobile" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
+          <Property Name="acc_email" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="acc_register_time" Type="DateTime" Precision="3" />
+          <Property Name="acc_gender_id" Type="Int32" />
+          <Property Name="acc_id_no" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="acc_driver_license_no" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="acc_city_id" Type="Int32" />
+          <Property Name="acc_country_id" Type="Int32" />
+          <Property Name="acc_gender" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="acc_city" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="acc_country" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="trip_gender_name" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="trip_id" Type="Int32" Nullable="false" />
+          <Property Name="guid" Type="Guid" />
+          <Property Name="started_seats" Type="Int32" />
+          <Property Name="ended_seats" Type="Int32" />
+          <Property Name="reached_seats" Type="Int32" />
+        </EntityType>
+        <EntityType Name="vwTripSeatDetail">
+          <Key>
+            <PropertyRef Name="first_name" />
+            <PropertyRef Name="last_name" />
+            <PropertyRef Name="gender_name" />
+            <PropertyRef Name="trip_id" />
+            <PropertyRef Name="main_trip_id" />
+            <PropertyRef Name="id" />
+            <PropertyRef Name="driver_first_name" />
+            <PropertyRef Name="driver_last_name" />
+            <PropertyRef Name="rider_id" />
+            <PropertyRef Name="driver_id" />
+          </Key>
+          <Property Name="first_name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="last_name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="mobile" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
+          <Property Name="gender_id" Type="Int32" />
+          <Property Name="gender_name" Type="String" MaxLength="300" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="seat_cost" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="from_lat" Type="Decimal" Precision="18" Scale="6" />
+          <Property Name="from_lng" Type="Decimal" Precision="18" Scale="6" />
+          <Property Name="from_plc" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="to_lat" Type="Decimal" Precision="18" Scale="6" />
+          <Property Name="to_lng" Type="Decimal" Precision="18" Scale="6" />
+          <Property Name="to_plc" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="booked_at" Type="DateTime" Precision="3" />
+          <Property Name="reached_at" Type="DateTime" Precision="3" />
+          <Property Name="start_at" Type="DateTime" Precision="3" />
+          <Property Name="end_at" Type="DateTime" Precision="3" />
+          <Property Name="trip_token" Type="Guid" />
+          <Property Name="trip_id" Type="Int32" Nullable="false" />
+          <Property Name="main_trip_id" Type="Int32" Nullable="false" />
+          <Property Name="id" Type="Int32" Nullable="false" />
+          <Property Name="canceled_at" Type="DateTime" Precision="3" />
+          <Property Name="canceled_by" Type="Int32" />
+          <Property Name="accepted_at" Type="DateTime" Precision="3" />
+          <Property Name="accepted_by" Type="Int32" />
+          <Property Name="rider_firebase_id" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="driver_firebase_id" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="driver_first_name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="driver_last_name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="driver_mobile" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
+          <Property Name="driver_gender_id" Type="Int32" />
+          <Property Name="rider_id" Type="Int32" Nullable="false" />
+          <Property Name="driver_id" Type="Int32" Nullable="false" />
+          <Property Name="guid" Type="Guid" />
+        </EntityType>
+        <Association Name="FK_sec_sessions_sec_users">
+          <End Role="sec_users" Type="Self.sec_users" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="sec_sessions" Type="Self.sec_sessions" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="sec_users">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="sec_sessions">
+              <PropertyRef Name="user_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_sec_users_tbl_accounts">
+          <End Role="tbl_accounts" Type="Self.tbl_accounts" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="sec_users" Type="Self.sec_users" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_accounts">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="sec_users">
+              <PropertyRef Name="id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_trip_request_tbl_accounts">
+          <End Role="tbl_accounts" Type="Self.tbl_accounts" Multiplicity="1" />
+          <End Role="trip_request" Type="Self.trip_request" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_accounts">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="trip_request">
+              <PropertyRef Name="rider_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_trip_share_tbl_accounts">
+          <End Role="tbl_accounts" Type="Self.tbl_accounts" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="trip_share" Type="Self.trip_share" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_accounts">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="trip_share">
+              <PropertyRef Name="driver_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_trip_book_trip_share_details">
+          <End Role="trip_share_details" Type="Self.trip_share_details" Multiplicity="1" />
+          <End Role="trip_book" Type="Self.trip_book" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="trip_share_details">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="trip_book">
+              <PropertyRef Name="trip_share_details_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_trip_request_details_trip_request">
+          <End Role="trip_request" Type="Self.trip_request" Multiplicity="1" />
+          <End Role="trip_request_details" Type="Self.trip_request_details" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="trip_request">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="trip_request_details">
+              <PropertyRef Name="trip_request_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_trip_share_details_trip_share">
+          <End Role="trip_share" Type="Self.trip_share" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="trip_share_details" Type="Self.trip_share_details" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="trip_share">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="trip_share_details">
+              <PropertyRef Name="trip_share_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="chari80_dbEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="sec_sessions" EntityType="Self.sec_sessions" />
+          <EntitySet Name="sec_users" EntityType="Self.sec_users" />
+          <EntitySet Name="tbl_accounts" EntityType="Self.tbl_accounts" />
+          <EntitySet Name="trip_book" EntityType="Self.trip_book" />
+          <EntitySet Name="trip_request" EntityType="Self.trip_request" />
+          <EntitySet Name="trip_request_details" EntityType="Self.trip_request_details" />
+          <EntitySet Name="trip_share" EntityType="Self.trip_share" />
+          <EntitySet Name="trip_share_details" EntityType="Self.trip_share_details" />
+          <EntitySet Name="vwTripsDetails" EntityType="Self.vwTripsDetail" />
+          <EntitySet Name="vwTripSeatDetails" EntityType="Self.vwTripSeatDetail" />
+          <AssociationSet Name="FK_sec_sessions_sec_users" Association="Self.FK_sec_sessions_sec_users">
+            <End Role="sec_users" EntitySet="sec_users" />
+            <End Role="sec_sessions" EntitySet="sec_sessions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_sec_users_tbl_accounts" Association="Self.FK_sec_users_tbl_accounts">
+            <End Role="tbl_accounts" EntitySet="tbl_accounts" />
+            <End Role="sec_users" EntitySet="sec_users" />
+          </AssociationSet>
+          <AssociationSet Name="FK_trip_request_tbl_accounts" Association="Self.FK_trip_request_tbl_accounts">
+            <End Role="tbl_accounts" EntitySet="tbl_accounts" />
+            <End Role="trip_request" EntitySet="trip_request" />
+          </AssociationSet>
+          <AssociationSet Name="FK_trip_share_tbl_accounts" Association="Self.FK_trip_share_tbl_accounts">
+            <End Role="tbl_accounts" EntitySet="tbl_accounts" />
+            <End Role="trip_share" EntitySet="trip_share" />
+          </AssociationSet>
+          <AssociationSet Name="FK_trip_book_trip_share_details" Association="Self.FK_trip_book_trip_share_details">
+            <End Role="trip_share_details" EntitySet="trip_share_details" />
+            <End Role="trip_book" EntitySet="trip_book" />
+          </AssociationSet>
+          <AssociationSet Name="FK_trip_request_details_trip_request" Association="Self.FK_trip_request_details_trip_request">
+            <End Role="trip_request" EntitySet="trip_request" />
+            <End Role="trip_request_details" EntitySet="trip_request_details" />
+          </AssociationSet>
+          <AssociationSet Name="FK_trip_share_details_trip_share" Association="Self.FK_trip_share_details_trip_share">
+            <End Role="trip_share" EntitySet="trip_share" />
+            <End Role="trip_share_details" EntitySet="trip_share_details" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="DatabaseStoreContainer" CdmEntityContainer="chari80_dbEntities">
+          <EntitySetMapping Name="sec_sessions">
+            <EntityTypeMapping TypeName="Database.sec_sessions">
+              <MappingFragment StoreEntitySet="sec_sessions">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="user_id" ColumnName="user_id" />
+                <ScalarProperty Name="start_time" ColumnName="start_time" />
+                <ScalarProperty Name="end_time" ColumnName="end_time" />
+                <ScalarProperty Name="ip" ColumnName="ip" />
+                <ScalarProperty Name="agent" ColumnName="agent" />
+                <ScalarProperty Name="browser" ColumnName="browser" />
+                <ScalarProperty Name="country" ColumnName="country" />
+                <ScalarProperty Name="city" ColumnName="city" />
+                <ScalarProperty Name="country_code" ColumnName="country_code" />
+                <ScalarProperty Name="isp" ColumnName="isp" />
+                <ScalarProperty Name="lat" ColumnName="lat" />
+                <ScalarProperty Name="lon" ColumnName="lon" />
+                <ScalarProperty Name="timezone" ColumnName="timezone" />
+                <ScalarProperty Name="paltform" ColumnName="paltform" />
+                <ScalarProperty Name="device_id" ColumnName="device_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="sec_users">
+            <EntityTypeMapping TypeName="Database.sec_users">
+              <MappingFragment StoreEntitySet="sec_users">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="pwd" ColumnName="pwd" />
+                <ScalarProperty Name="reset_pwd_token" ColumnName="reset_pwd_token" />
+                <ScalarProperty Name="facebook_token" ColumnName="facebook_token" />
+                <ScalarProperty Name="twitter_token" ColumnName="twitter_token" />
+                <ScalarProperty Name="google_token" ColumnName="google_token" />
+                <ScalarProperty Name="instagram_token" ColumnName="instagram_token" />
+                <ScalarProperty Name="confirm_mail_token" ColumnName="confirm_mail_token" />
+                <ScalarProperty Name="mail_verified" ColumnName="mail_verified" />
+                <ScalarProperty Name="phone_verified" ColumnName="phone_verified" />
+                <ScalarProperty Name="firebase_uid" ColumnName="firebase_uid" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_accounts">
+            <EntityTypeMapping TypeName="Database.tbl_accounts">
+              <MappingFragment StoreEntitySet="tbl_accounts">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="first_name" ColumnName="first_name" />
+                <ScalarProperty Name="last_name" ColumnName="last_name" />
+                <ScalarProperty Name="date_of_birth" ColumnName="date_of_birth" />
+                <ScalarProperty Name="mobile" ColumnName="mobile" />
+                <ScalarProperty Name="email" ColumnName="email" />
+                <ScalarProperty Name="register_time" ColumnName="register_time" />
+                <ScalarProperty Name="is_deleted" ColumnName="is_deleted" />
+                <ScalarProperty Name="gender_id" ColumnName="gender_id" />
+                <ScalarProperty Name="id_no" ColumnName="id_no" />
+                <ScalarProperty Name="driver_license_no" ColumnName="driver_license_no" />
+                <ScalarProperty Name="city_id" ColumnName="city_id" />
+                <ScalarProperty Name="country_id" ColumnName="country_id" />
+                <ScalarProperty Name="active" ColumnName="active" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="trip_book">
+            <EntityTypeMapping TypeName="Database.trip_book">
+              <MappingFragment StoreEntitySet="trip_book">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="trip_share_details_id" ColumnName="trip_share_details_id" />
+                <ScalarProperty Name="trip_request_details_id" ColumnName="trip_request_details_id" />
+                <ScalarProperty Name="booked_at" ColumnName="booked_at" />
+                <ScalarProperty Name="start_at" ColumnName="start_at" />
+                <ScalarProperty Name="end_at" ColumnName="end_at" />
+                <ScalarProperty Name="driver_rate" ColumnName="driver_rate" />
+                <ScalarProperty Name="rider_rate" ColumnName="rider_rate" />
+                <ScalarProperty Name="trip_token" ColumnName="trip_token" />
+                <ScalarProperty Name="seats" ColumnName="seats" />
+                <ScalarProperty Name="reached_at" ColumnName="reached_at" />
+                <ScalarProperty Name="canceled_at" ColumnName="canceled_at" />
+                <ScalarProperty Name="canceled_by" ColumnName="canceled_by" />
+                <ScalarProperty Name="accepted_at" ColumnName="accepted_at" />
+                <ScalarProperty Name="accepted_by" ColumnName="accepted_by" />
+                <ScalarProperty Name="rate_reason_id" ColumnName="rate_reason_id" />
+                <ScalarProperty Name="rate_comment" ColumnName="rate_comment" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="trip_request">
+            <EntityTypeMapping TypeName="Database.trip_request">
+              <MappingFragment StoreEntitySet="trip_request">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="rider_id" ColumnName="rider_id" />
+                <ScalarProperty Name="seats" ColumnName="seats" />
+                <ScalarProperty Name="start_at_date" ColumnName="start_at_date" />
+                <ScalarProperty Name="end_at_date" ColumnName="end_at_date" />
+                <ScalarProperty Name="trip_type_id" ColumnName="trip_type_id" />
+                <ScalarProperty Name="created_at" ColumnName="created_at" />
+                <ScalarProperty Name="created_by" ColumnName="created_by" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="trip_request_details">
+            <EntityTypeMapping TypeName="Database.trip_request_details">
+              <MappingFragment StoreEntitySet="trip_request_details">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="trip_request_id" ColumnName="trip_request_id" />
+                <ScalarProperty Name="seats" ColumnName="seats" />
+                <ScalarProperty Name="start_at_date" ColumnName="start_at_date" />
+                <ScalarProperty Name="start_at_time" ColumnName="start_at_time" />
+                <ScalarProperty Name="from_lat" ColumnName="from_lat" />
+                <ScalarProperty Name="from_lng" ColumnName="from_lng" />
+                <ScalarProperty Name="from_plc" ColumnName="from_plc" />
+                <ScalarProperty Name="to_lat" ColumnName="to_lat" />
+                <ScalarProperty Name="to_lng" ColumnName="to_lng" />
+                <ScalarProperty Name="to_plc" ColumnName="to_plc" />
+                <ScalarProperty Name="gender_id" ColumnName="gender_id" />
+                <ScalarProperty Name="seat_cost_from" ColumnName="seat_cost_from" />
+                <ScalarProperty Name="seat_cost_to" ColumnName="seat_cost_to" />
+                <ScalarProperty Name="trip_direction" ColumnName="trip_direction" />
+                <ScalarProperty Name="is_active" ColumnName="is_active" />
+                <ScalarProperty Name="booked" ColumnName="booked" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="trip_share">
+            <EntityTypeMapping TypeName="Database.trip_share">
+              <MappingFragment StoreEntitySet="trip_share">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="driver_id" ColumnName="driver_id" />
+                <ScalarProperty Name="start_at_date" ColumnName="start_at_date" />
+                <ScalarProperty Name="end_at_date" ColumnName="end_at_date" />
+                <ScalarProperty Name="vehicle_id" ColumnName="vehicle_id" />
+                <ScalarProperty Name="created_at" ColumnName="created_at" />
+                <ScalarProperty Name="created_by" ColumnName="created_by" />
+                <ScalarProperty Name="trip_type_id" ColumnName="trip_type_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="trip_share_details">
+            <EntityTypeMapping TypeName="Database.trip_share_details">
+              <MappingFragment StoreEntitySet="trip_share_details">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="trip_share_id" ColumnName="trip_share_id" />
+                <ScalarProperty Name="seats" ColumnName="seats" />
+                <ScalarProperty Name="start_at_date" ColumnName="start_at_date" />
+                <ScalarProperty Name="start_at_time" ColumnName="start_at_time" />
+                <ScalarProperty Name="from_lat" ColumnName="from_lat" />
+                <ScalarProperty Name="from_lng" ColumnName="from_lng" />
+                <ScalarProperty Name="from_plc" ColumnName="from_plc" />
+                <ScalarProperty Name="to_lat" ColumnName="to_lat" />
+                <ScalarProperty Name="to_lng" ColumnName="to_lng" />
+                <ScalarProperty Name="to_plc" ColumnName="to_plc" />
+                <ScalarProperty Name="gender_id" ColumnName="gender_id" />
+                <ScalarProperty Name="booked_seats" ColumnName="booked_seats" />
+                <ScalarProperty Name="seat_cost" ColumnName="seat_cost" />
+                <ScalarProperty Name="trip_direction" ColumnName="trip_direction" />
+                <ScalarProperty Name="is_active" ColumnName="is_active" />
+                <ScalarProperty Name="guid" ColumnName="guid" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="vwTripsDetails">
+            <EntityTypeMapping TypeName="Database.vwTripsDetail">
+              <MappingFragment StoreEntitySet="vwTripsDetails">
+                <ScalarProperty Name="seats" ColumnName="seats" />
+                <ScalarProperty Name="start_at_date" ColumnName="start_at_date" />
+                <ScalarProperty Name="start_at_time" ColumnName="start_at_time" />
+                <ScalarProperty Name="from_lat" ColumnName="from_lat" />
+                <ScalarProperty Name="from_lng" ColumnName="from_lng" />
+                <ScalarProperty Name="from_plc" ColumnName="from_plc" />
+                <ScalarProperty Name="to_lat" ColumnName="to_lat" />
+                <ScalarProperty Name="to_lng" ColumnName="to_lng" />
+                <ScalarProperty Name="to_plc" ColumnName="to_plc" />
+                <ScalarProperty Name="trip_gender_id" ColumnName="trip_gender_id" />
+                <ScalarProperty Name="booked_seats" ColumnName="booked_seats" />
+                <ScalarProperty Name="seat_cost" ColumnName="seat_cost" />
+                <ScalarProperty Name="trip_direction" ColumnName="trip_direction" />
+                <ScalarProperty Name="is_active" ColumnName="is_active" />
+                <ScalarProperty Name="trip_share_id" ColumnName="trip_share_id" />
+                <ScalarProperty Name="driver_id" ColumnName="driver_id" />
+                <ScalarProperty Name="trip_start_date" ColumnName="trip_start_date" />
+                <ScalarProperty Name="trip_end_date" ColumnName="trip_end_date" />
+                <ScalarProperty Name="car_id" ColumnName="car_id" />
+                <ScalarProperty Name="car_model" ColumnName="car_model" />
+                <ScalarProperty Name="car_color" ColumnName="car_color" />
+                <ScalarProperty Name="car_capacity" ColumnName="car_capacity" />
+                <ScalarProperty Name="car_license_no" ColumnName="car_license_no" />
+                <ScalarProperty Name="trip_type_id" ColumnName="trip_type_id" />
+                <ScalarProperty Name="trip_type" ColumnName="trip_type" />
+                <ScalarProperty Name="acc_firebase_uid" ColumnName="acc_firebase_uid" />
+                <ScalarProperty Name="acc_first_name" ColumnName="acc_first_name" />
+                <ScalarProperty Name="acc_last_name" ColumnName="acc_last_name" />
+                <ScalarProperty Name="acc_date_of_birth" ColumnName="acc_date_of_birth" />
+                <ScalarProperty Name="acc_mobile" ColumnName="acc_mobile" />
+                <ScalarProperty Name="acc_email" ColumnName="acc_email" />
+                <ScalarProperty Name="acc_register_time" ColumnName="acc_register_time" />
+                <ScalarProperty Name="acc_gender_id" ColumnName="acc_gender_id" />
+                <ScalarProperty Name="acc_id_no" ColumnName="acc_id_no" />
+                <ScalarProperty Name="acc_driver_license_no" ColumnName="acc_driver_license_no" />
+                <ScalarProperty Name="acc_city_id" ColumnName="acc_city_id" />
+                <ScalarProperty Name="acc_country_id" ColumnName="acc_country_id" />
+                <ScalarProperty Name="acc_gender" ColumnName="acc_gender" />
+                <ScalarProperty Name="acc_city" ColumnName="acc_city" />
+                <ScalarProperty Name="acc_country" ColumnName="acc_country" />
+                <ScalarProperty Name="trip_gender_name" ColumnName="trip_gender_name" />
+                <ScalarProperty Name="trip_id" ColumnName="trip_id" />
+                <ScalarProperty Name="guid" ColumnName="guid" />
+                <ScalarProperty Name="started_seats" ColumnName="started_seats" />
+                <ScalarProperty Name="ended_seats" ColumnName="ended_seats" />
+                <ScalarProperty Name="reached_seats" ColumnName="reached_seats" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="vwTripSeatDetails">
+            <EntityTypeMapping TypeName="Database.vwTripSeatDetail">
+              <MappingFragment StoreEntitySet="vwTripSeatDetails">
+                <ScalarProperty Name="first_name" ColumnName="first_name" />
+                <ScalarProperty Name="last_name" ColumnName="last_name" />
+                <ScalarProperty Name="mobile" ColumnName="mobile" />
+                <ScalarProperty Name="gender_id" ColumnName="gender_id" />
+                <ScalarProperty Name="gender_name" ColumnName="gender_name" />
+                <ScalarProperty Name="seat_cost" ColumnName="seat_cost" />
+                <ScalarProperty Name="from_lat" ColumnName="from_lat" />
+                <ScalarProperty Name="from_lng" ColumnName="from_lng" />
+                <ScalarProperty Name="from_plc" ColumnName="from_plc" />
+                <ScalarProperty Name="to_lat" ColumnName="to_lat" />
+                <ScalarProperty Name="to_lng" ColumnName="to_lng" />
+                <ScalarProperty Name="to_plc" ColumnName="to_plc" />
+                <ScalarProperty Name="booked_at" ColumnName="booked_at" />
+                <ScalarProperty Name="reached_at" ColumnName="reached_at" />
+                <ScalarProperty Name="start_at" ColumnName="start_at" />
+                <ScalarProperty Name="end_at" ColumnName="end_at" />
+                <ScalarProperty Name="trip_token" ColumnName="trip_token" />
+                <ScalarProperty Name="trip_id" ColumnName="trip_id" />
+                <ScalarProperty Name="main_trip_id" ColumnName="main_trip_id" />
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="canceled_at" ColumnName="canceled_at" />
+                <ScalarProperty Name="canceled_by" ColumnName="canceled_by" />
+                <ScalarProperty Name="accepted_at" ColumnName="accepted_at" />
+                <ScalarProperty Name="accepted_by" ColumnName="accepted_by" />
+                <ScalarProperty Name="rider_firebase_id" ColumnName="rider_firebase_id" />
+                <ScalarProperty Name="driver_firebase_id" ColumnName="driver_firebase_id" />
+                <ScalarProperty Name="driver_first_name" ColumnName="driver_first_name" />
+                <ScalarProperty Name="driver_last_name" ColumnName="driver_last_name" />
+                <ScalarProperty Name="driver_mobile" ColumnName="driver_mobile" />
+                <ScalarProperty Name="driver_gender_id" ColumnName="driver_gender_id" />
+                <ScalarProperty Name="rider_id" ColumnName="rider_id" />
+                <ScalarProperty Name="driver_id" ColumnName="driver_id" />
+                <ScalarProperty Name="guid" ColumnName="guid" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

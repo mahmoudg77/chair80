@@ -2,6 +2,7 @@
 using Chair80.Libs;
 using Chair80.Requests;
 using Chair80.Responses;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,6 +27,7 @@ namespace Chair80.Controllers.Trips
 
             var u = APIRequest.User(HttpContext.Current.Request);
             if (request.start_at == null) request.start_at = DateTime.Now;
+
             using (var ctx=new DAL.MainEntities())
             {
                 var Trip = new DAL.trip_share()
@@ -33,7 +35,7 @@ namespace Chair80.Controllers.Trips
                     created_at = DateTime.Now,
                     created_by = u.Entity.id,
                     driver_id = u.Entity.id,
-                    start_at_date = request.start_at==null?DateTime.Now:request.start_at.Value,
+                    start_at_date = request.start_at,
                    
                     trip_type_id = (int)request.trip_type,
                     vehicle_id = request.vehicle_id,
@@ -55,9 +57,10 @@ namespace Chair80.Controllers.Trips
                     is_active = true,
                     seats = request.seats,
                     seat_cost = request.seat_cost,
-                    start_at_date = request.start_at == null ? DateTime.Now.Date : request.start_at.Value,
-                    start_at_time = request.start_at == null ? DateTime.Now.TimeOfDay : request.start_at.Value.TimeOfDay,
+                    start_at_date = request.start_at.Value,
+                    start_at_time = request.start_at.Value.TimeOfDay,
                     trip_direction = 1,
+                    guid = Guid.NewGuid()
                 };
                 Trip.trip_share_details.Add(Leave_Details);
                 ctx.SaveChanges();
@@ -81,6 +84,7 @@ namespace Chair80.Controllers.Trips
                         start_at_date = request.round_at == null ? DateTime.Now.Date : request.round_at.Value,
                         start_at_time = request.round_at == null ? DateTime.Now.TimeOfDay : request.round_at.Value.TimeOfDay,
                         trip_direction = 2,
+                        guid = Guid.NewGuid()
                     };
                     Trip.trip_share_details.Add(Round_Details);
                     ctx.SaveChanges();
@@ -109,6 +113,7 @@ namespace Chair80.Controllers.Trips
                             start_at_date = cDate,
                             start_at_time = request.start_at.Value.TimeOfDay,
                             trip_direction = 1,
+                            guid = Guid.NewGuid()
                         };
                         Trip.trip_share_details.Add(Leave);
                         ctx.SaveChanges();
@@ -129,6 +134,7 @@ namespace Chair80.Controllers.Trips
                             start_at_date = rDate,
                             start_at_time = request.round_at.Value.TimeOfDay,
                             trip_direction = 2,
+                            guid = Guid.NewGuid()
                         };
                         Trip.trip_share_details.Add(Round);
                         ctx.SaveChanges();
@@ -377,25 +383,25 @@ namespace Chair80.Controllers.Trips
             using (var ctx=new DAL.MainEntities())
             {
 
-                var current_trips = ctx.vwTripsDetails.AsQueryable();
-                if (request.firebase_ids!=null &&  request.firebase_ids.Count() > 0)
+                var current_trips = ctx.vwTripsDetails.Where(a=>a.is_active==true).AsQueryable();
+                if (request.firebase_ids != null && request.firebase_ids.Count() > 0)
                 {
                     current_trips = current_trips.Where(a => request.firebase_ids.Contains(a.acc_firebase_uid));
                 }
-                if(request.from!=null)
+                if (request.from!=null)
                 {
                     if (!string.IsNullOrEmpty(request.from.country))
                     {
-                        current_trips = current_trips.Where(a => (a.from_plc+",").Contains(request.from.country + ","));
+                        current_trips = current_trips.Where(a => (a.from_plc + ",").Contains(request.from.country + ","));
                     }
                     if (!string.IsNullOrEmpty(request.from.city))
                     {
                         current_trips = current_trips.Where(a => (a.from_plc + ",").Contains(request.from.city + ","));
                     }
-                    if (string.IsNullOrEmpty(request.from.street))
-                    {
-                        current_trips = current_trips.Where(a => (a.from_plc + ",").Contains(request.from.street + ","));
-                    }
+                    //if (string.IsNullOrEmpty(request.from.street))
+                    //{
+                    //    current_trips = current_trips.Where(a => (a.from_plc + ",").Contains(request.from.street + ","));
+                    //}
                     if (request.from.lat != 0)
                     {
                         decimal lat_from = request.from.lat - decimal.Parse("0.0005");
@@ -415,16 +421,16 @@ namespace Chair80.Controllers.Trips
                 {
                     if (!string.IsNullOrEmpty(request.to.country))
                     {
-                        current_trips = current_trips.Where(a => (a.to_plc+",").Contains(request.to.country + ","));
+                        current_trips = current_trips.Where(a => (a.to_plc + ",").Contains(request.to.country + ","));
                     }
                     if (!string.IsNullOrEmpty(request.to.city))
                     {
                         current_trips = current_trips.Where(a => (a.to_plc + ",").Contains(request.to.city + ","));
                     }
-                    if (string.IsNullOrEmpty(request.to.street))
-                    {
-                        current_trips = current_trips.Where(a => (a.to_plc + ",").Contains(request.to.street + ","));
-                    }
+                    //if (string.IsNullOrEmpty(request.to.street))
+                    //{
+                    //    current_trips = current_trips.Where(a => (a.to_plc + ",").Contains(request.to.street + ","));
+                    //}
                     if (request.to.lat != 0)
                     {
                         decimal lat_from = request.to.lat - decimal.Parse("0.0005");
@@ -445,7 +451,7 @@ namespace Chair80.Controllers.Trips
                     current_trips = current_trips.Where(a => a.trip_gender_id == request.gender_id || a.trip_gender_id==0);
                 }
 
-                if (request.trip_type >0)
+                if (request.trip_type > 0)
                 {
                     current_trips = current_trips.Where(a => a.trip_type_id == (int)request.trip_type);
                 }
@@ -503,7 +509,8 @@ namespace Chair80.Controllers.Trips
             using (var ctx=new DAL.MainEntities())
             {
                 var selectedTrip = ctx.trip_share_details.Include("trip_share").FirstOrDefault(a => a.id == trip_id);
-                var triplist = ctx.trip_share_details.Include("trip_share").Where(a => a.trip_share_id == selectedTrip.trip_share_id && a.start_at_date > DateTime.Now).ToList();
+                var cTime = DateTime.Now.AddMinutes(-30);
+                var triplist = ctx.trip_share_details.Include("trip_share").Where(a => a.trip_share_id == selectedTrip.trip_share_id && a.start_at_date >= cTime).ToList();
                 if (triplist.Count == 0)
                 {
                     return APIResult<List<DAL.trip_book>>.Error(ResponseCode.UserValidationField, "This trip not available for booking now!");
@@ -592,10 +599,11 @@ namespace Chair80.Controllers.Trips
 
 
                 }
-                var driverDeviceID = ctx.sec_sessions.Where(a => a.user_id == selectedTrip.trip_share.driver_id && a.device_id != null).Select(a => a.device_id).ToArray();
-
+                var driverDeviceID = ctx.sec_sessions.Where(a => a.user_id == selectedTrip.trip_share.driver_id && a.device_id != null).Select(a => a.device_id).Distinct().ToArray();
+                //var ddd = ctx.sec_sessions.Where(a => a.user_id == selectedTrip.trip_share.driver_id).ToArray();
+               // Logger.log(JsonConvert.SerializeObject( ddd));
                 await FirebaseNotifications.Send(driverDeviceID, "Seats Booking", "Someone has booked your shared seats.", new { type=1,screen = "trip_share", id = selectedTrip.id,sender=ctx.vwProfile.FirstOrDefault(a=>a.id == u.Entity.id).firebase_uid });
-
+                 //FirebaseNotifications.Send(new string[] { "rP2tRzF3uKNfYrZu9YypmohBKJX2" }, "Seats Booking", "Someone has booked your shared seats.", new { type = 1, screen = "trip_share", id = 2272, sender = "PF3nbGndlZV99YyPI1J4NOs6XVE2" }); 
                 return APIResult<List<DAL.trip_book>>.Success(lst);
             }
         }
@@ -620,12 +628,12 @@ namespace Chair80.Controllers.Trips
 
                 bool r=ctx.SaveChanges()>0;
 
-                var tripid = lst.FirstOrDefault().trip_share_details.trip_share_id;
+                var tripid = lst.FirstOrDefault().trip_share_details.id;
 
                 var riderIDs = ctx.trip_request.Where(a=>lst.Select(s=>s.trip_request_details.trip_request_id).Contains(a.id)).Select(a=>a.rider_id).ToList();
 
 
-                var driverDeviceID = ctx.sec_sessions.Where(a => riderIDs.Contains( a.user_id)).Select(a => a.device_id).ToArray();
+                var driverDeviceID = ctx.sec_sessions.Where(a => riderIDs.Contains( a.user_id)).Select(a => a.device_id).Distinct().ToArray();
                var result= await FirebaseNotifications.Send(driverDeviceID, "Driver Reached You", "The driver just reached you.", new { type = 4, screen = "trip", id = tripid,sender= ctx.vwProfile.FirstOrDefault(a => a.id == u.Entity.id).firebase_uid });
 
                 
@@ -652,14 +660,14 @@ namespace Chair80.Controllers.Trips
 
 
                 bool r = ctx.SaveChanges() > 0;
-                var tripid = lst.FirstOrDefault().trip_share_details.trip_share_id;
+                var tripid = lst.FirstOrDefault().trip_share_details.id;
 
                 var riderIDs = ctx.trip_request.Where(a => lst.Select(s => s.trip_request_details.trip_request_id).Contains(a.id)).Select(a => a.rider_id).ToList();
 
 
-                var driverDeviceID = ctx.sec_sessions.Where(a => riderIDs.Contains(a.user_id)).Select(a => a.device_id).ToArray();
+                var driverDeviceID = ctx.sec_sessions.Where(a => riderIDs.Contains(a.user_id)).Select(a => a.device_id).Distinct().ToArray();
 
-                await FirebaseNotifications.Send(driverDeviceID, "Trip Started", "The driver just start your trip.", new { type = 5, screen = "trip", id = tripid, sender = ctx.vwProfile.FirstOrDefault(a => a.id == u.Entity.id).firebase_uid });
+                await FirebaseNotifications.Send(driverDeviceID, "Trip Started", "The driver just start your trip.", new { type = 5, screen = "start", id = tripid, sender = ctx.vwProfile.FirstOrDefault(a => a.id == u.Entity.id).firebase_uid });
 
                 return APIResult<bool>.Success(r);
             }
@@ -667,7 +675,7 @@ namespace Chair80.Controllers.Trips
 
         [HttpPost]
         [Route("Ended")]
-        public async Task< APIResult<bool>> Ended(string ids)
+        public async Task<APIResult<bool>> Ended(string ids)
         {
 
             int[] book_ids = ids.Split(',').Select(a => int.Parse(a)).ToArray();
@@ -685,12 +693,12 @@ namespace Chair80.Controllers.Trips
 
                 bool r = ctx.SaveChanges() > 0;
 
-                var tripid = lst.FirstOrDefault().trip_share_details.trip_share_id;
+                var tripid = lst.FirstOrDefault().trip_share_details.id;
 
                 var riderIDs = ctx.trip_request.Where(a => lst.Select(s => s.trip_request_details.trip_request_id).Contains(a.id)).Select(a => a.rider_id).ToList();
 
 
-                var driverDeviceID = ctx.sec_sessions.Where(a => riderIDs.Contains(a.user_id)).Select(a => a.device_id).ToArray();
+                var driverDeviceID = ctx.sec_sessions.Where(a => riderIDs.Contains(a.user_id)).Select(a => a.device_id).Distinct().ToArray();
 
                 await FirebaseNotifications.Send(driverDeviceID, "Trip Ended", "The driver just end your trip.", new { type = 6, screen = "trip-rate", id = tripid, sender = ctx.vwProfile.FirstOrDefault(a => a.id == u.Entity.id).firebase_uid });
 
@@ -721,12 +729,12 @@ namespace Chair80.Controllers.Trips
 
                 bool r = ctx.SaveChanges() > 0;
 
-                var tripid = lst.FirstOrDefault().trip_share_details.trip_share_id;
+                var tripid = lst.FirstOrDefault().trip_share_details.id;
 
                 var riderIDs = ctx.trip_request.Where(a => lst.Select(s => s.trip_request_details.trip_request_id).Contains(a.id)).Select(a => a.rider_id).ToList();
 
 
-                var driverDeviceID = ctx.sec_sessions.Where(a => riderIDs.Contains(a.user_id)).Select(a => a.device_id).ToArray();
+                var driverDeviceID = ctx.sec_sessions.Where(a => riderIDs.Contains(a.user_id)).Select(a => a.device_id).Distinct().ToArray();
 
                 await FirebaseNotifications.Send(driverDeviceID, "Trip Accepted", "The driver just accept your trip.", new { type = 2, screen = "trip", id = tripid, sender = ctx.vwProfile.FirstOrDefault(a => a.id == u.Entity.id).firebase_uid });
 
@@ -757,12 +765,12 @@ namespace Chair80.Controllers.Trips
                 }
 
                 bool r = ctx.SaveChanges() > 0;
-                var tripid = lst.FirstOrDefault().trip_share_details.trip_share_id;
+                var tripid = lst.FirstOrDefault().trip_share_details.id;
 
                 var riderIDs = ctx.trip_request.Where(a => lst.Select(s => s.trip_request_details.trip_request_id).Contains(a.id)).Select(a => a.rider_id).ToList();
 
 
-                var driverDeviceID = ctx.sec_sessions.Where(a => riderIDs.Contains(a.user_id)).Select(a => a.device_id).ToArray();
+                var driverDeviceID = ctx.sec_sessions.Where(a => riderIDs.Contains(a.user_id)).Select(a => a.device_id).Distinct().ToArray();
 
                 await FirebaseNotifications.Send(driverDeviceID, "Seats Canceled", "The driver just canceled your request seats.", new { type = 3, screen = "trip", id = tripid, sender = ctx.vwProfile.FirstOrDefault(a => a.id == u.Entity.id).firebase_uid });
 
@@ -781,7 +789,7 @@ namespace Chair80.Controllers.Trips
                 var cDate = DateTime.Now.Date;
                 var cTime = DateTime.Now.AddMinutes(-30);
 
-                return APIResult<DAL.vwTripsDetails>.Success(ctx.vwTripsDetails.Where(a => a.start_at_date < sTime && a.start_at_date > cTime && a.is_active==true).FirstOrDefault());
+                return APIResult<DAL.vwTripsDetails>.Success(ctx.vwTripsDetails.Where(a => a.start_at_date < sTime && a.start_at_date > cTime && a.is_active==true).OrderByDescending(a => a.trip_id).FirstOrDefault());
             }
         }
     }

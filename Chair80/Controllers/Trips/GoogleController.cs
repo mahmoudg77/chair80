@@ -1,4 +1,5 @@
-﻿using Chair80.Libs;
+﻿using Chair80.Filters;
+using Chair80.Libs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,11 +12,13 @@ using System.Web.Http;
 namespace Chair80.Controllers.Trips
 {
     [RoutePrefix("{lang}/Google")]
+    [AppFilter]
     public class GoogleController : ApiController
     {
         // GET: Google
         [HttpGet]
         [Route("Direction")]
+        [LoginFilter]
         public async Task<APIResult<object>> Direction(string origin,string destination, string mode="driving")
         {
             string url = "https://maps.googleapis.com/maps/api/directions/json?origin=" + origin + "&destination=" + destination + "&mode=" + mode + "&key=" + Settings.Get("go_dir_key");

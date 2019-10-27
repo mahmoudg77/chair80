@@ -29,18 +29,27 @@ namespace Chair80.Controllers.Trips
 
         [HttpGet]
         [Route("Current")]
-        public APIResult<DAL.vwTripsDetails> Current()
+        public APIResult<DAL.vwTripsDetails> Current(bool is_rider=false)
         {
             var u = APIRequest.User(HttpContext.Current.Request);
+
             using (var ctx = new DAL.MainEntities())
             {
                 var sTime = DateTime.Now.AddMinutes(60);
                 var cDate = DateTime.Now.Date;
                 var cTime = DateTime.Now.AddMinutes(-30);
-                return APIResult<DAL.vwTripsDetails>.Success(ctx.vwTripsDetails.Where(a => a.start_at_date < sTime && a.start_at_date > cTime && a.is_active == true && a.driver_id==u.Entity.id).FirstOrDefault());
+
+                if (is_rider)
+                {
+                    var books = ctx.trip_book.Include("trip_request_details").Include("trip_request_details.trip_request").Where(a => a.trip_request_details.trip_request.rider_id == u.Entity.id && a.end_at == null && a.reached_at != null).OrderByDescending(a=>a.id).FirstOrDefault();
+                    return APIResult<DAL.vwTripsDetails>.Success(ctx.vwTripsDetails.Where(a => a.trip_id==books.trip_share_details_id).OrderByDescending(a=>a.trip_id).FirstOrDefault());
+
+                } else
+                return APIResult<DAL.vwTripsDetails>.Success(ctx.vwTripsDetails.Where(a => a.start_at_date < sTime && a.start_at_date > cTime && a.is_active == true && a.driver_id==u.Entity.id && ((a.ended_seats<a.started_seats && a.started_seats>0) || (a.started_seats==0))).OrderByDescending(a=>a.trip_id).FirstOrDefault());
             }
         }
 
+       
         [HttpGet]
         [Route("History")]
         public APIResult<List<DAL.vwSeatsHistory>> History(int trip_type_id=0)
@@ -98,22 +107,26 @@ namespace Chair80.Controllers.Trips
             var u = APIRequest.User(HttpContext.Current.Request);
             using (var ctx=new MainEntities())
             {
-                var book=ctx.trip_book.Include("trip_request_details").Include("trip_request_details.trip_request").FirstOrDefault(a=>a.id==id);
-                if (book == null)
+                var books=ctx.trip_book.Include("trip_request_details").Include("trip_request_details.trip_request").Where(a=>a.trip_share_details_id==id && a.trip_request_details.trip_request.created_by == u.Entity.id);
+                if (books == null || books.Count()==0)
                 {
                     return APIResult<bool>.Error(ResponseCode.UserValidationField, "This trip not found !");
                 }
-                if (book.trip_request_details.trip_request.rider_id == u.Entity.id)
+                foreach (var book in books)
                 {
-                    return APIResult<bool>.Error(ResponseCode.UserValidationField, "You cannot rate this trip!");
+                    //if (book.trip_request_details.trip_request.rider_id == u.Entity.id)
+                    //{
+                    //    return APIResult<bool>.Error(ResponseCode.UserValidationField, "You cannot rate this trip!");
+                    //}
+
+                    book.rider_rate = request.rate;
+                    book.rate_comment = request.comment;
+                    book.rate_reason_id = request.reason_id;
+
+                    ctx.Entry(book).State = System.Data.Entity.EntityState.Modified;
                 }
 
-                book.driver_rate = request.rate;
-                book.rate_comment = request.comment;
-                book.rate_reason_id = request.reason_id;
 
-
-                ctx.Entry(book).State = System.Data.Entity.EntityState.Modified;
 
                 ctx.SaveChanges();
 
@@ -146,7 +159,7 @@ namespace Chair80.Controllers.Trips
 
         [HttpGet]
         [Route("GetShareUrl")]
-        public APIResult<string> GetShareUrl(int? trip_id=0, int? booked_id=0)
+        public APIResult<string> GetShareUrl(int trip_id, int? booked_id=0)
         {
             using(var ctx=new MainEntities())
             {
@@ -154,6 +167,7 @@ namespace Chair80.Controllers.Trips
                 Guid token=Guid.Empty ;
                 if (trip_id != 0)
                 {
+
                     var trip = ctx.trip_share_details.FirstOrDefault(a => a.id == trip_id);
                     if (trip != null) token = (Guid) trip.guid;
                 }else if (booked_id != 0)
@@ -174,15 +188,15 @@ namespace Chair80.Controllers.Trips
             }
         }
        
-        [HttpGet]
-        [Route("GetShareUrl")]
-        public APIResult<string> GetShareUrl()
-        {
-            var trip = Current();
-            if (trip.data == null) return APIResult<string>.Error(ResponseCode.UserValidationField, "There is no trip to share it!");
+        //[HttpGet]
+        //[Route("GetShareUrl")]
+        //public APIResult<string> GetShareUrl()
+        //{
+        //    var trip = Current();
+        //    if (trip.data == null) return APIResult<string>.Error(ResponseCode.UserValidationField, "There is no trip to share it!");
 
-            return APIResult<string>.Success(Settings.Get("site_url") + "/Trip/Tracking/" + trip.data.guid.ToString());
-        }
+        //    return APIResult<string>.Success(Settings.Get("site_url") + "/Trip/Tracking/" + trip.data.guid.ToString());
+        //}
         private string getCountry(string place)
         {
             string[] elements = place.Split(',');
