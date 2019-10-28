@@ -171,31 +171,33 @@ namespace Chair80.Controllers.Trips
             using (var ctx = new DAL.MainEntities())
             {
 
+                int searchReduis = int.Parse(Settings.Get("search_redius","500"));
+
                 var current_trips = ctx.trip_request_details.Include("trip_request").AsQueryable();
 
 
-                current_trips = current_trips.Where(a => a.from_plc.Contains(details.from_plc));
+                //current_trips = current_trips.Where(a => a.from_plc.Contains(details.from_plc));
 
                 //current_trips = current_trips.Where(a => (a.from_plc + ",").Contains(request.from.city + ","));
 
 
                 //current_trips = current_trips.Where(a => a.from_plc.Contains(request.from.street + ","));
 
-                current_trips = current_trips.Where(a => a.from_lat.Value + 500 < details.from_lat && a.from_lat.Value - 500 > details.from_lat);
+                current_trips = current_trips.Where(a => a.from_lat.Value + searchReduis < details.from_lat && a.from_lat.Value - searchReduis > details.from_lat);
 
-                current_trips = current_trips.Where(a => a.from_lng.Value + 500 < details.from_lng && a.from_lng.Value - 500 > details.from_lng);
+                current_trips = current_trips.Where(a => a.from_lng.Value + searchReduis < details.from_lng && a.from_lng.Value - searchReduis > details.from_lng);
 
 
 
-                current_trips = current_trips.Where(a => a.to_plc.Contains(details.to_plc));
+                //current_trips = current_trips.Where(a => a.to_plc.Contains(details.to_plc));
 
 
 
                 //current_trips = current_trips.Where(a => a.to_plc.Contains(request.to.street + ","));
 
-                current_trips = current_trips.Where(a => a.to_lat.Value + 500 < details.to_lat && a.to_lat.Value - 500 > details.to_lat);
+                current_trips = current_trips.Where(a => a.to_lat.Value + searchReduis < details.to_lat && a.to_lat.Value - searchReduis > details.to_lat);
 
-                current_trips = current_trips.Where(a => a.to_lng.Value + 500 < details.to_lng && a.to_lng.Value - 500 > details.to_lng);
+                current_trips = current_trips.Where(a => a.to_lng.Value + searchReduis < details.to_lng && a.to_lng.Value - searchReduis > details.to_lng);
 
 
 
@@ -380,6 +382,8 @@ namespace Chair80.Controllers.Trips
         [Route("Search")]
         public APIResult<IEnumerable<DAL.vwTripsDetails>> Search(SearchTripRequest request)
         {
+            int searchReduis = int.Parse(Settings.Get("search_redius", "20000"));
+
             using (var ctx=new DAL.MainEntities())
             {
 
@@ -390,58 +394,58 @@ namespace Chair80.Controllers.Trips
                 }
                 if (request.from!=null)
                 {
-                    if (!string.IsNullOrEmpty(request.from.country))
-                    {
-                        current_trips = current_trips.Where(a => (a.from_plc + ",").Contains(request.from.country + ","));
-                    }
-                    if (!string.IsNullOrEmpty(request.from.city))
-                    {
-                        current_trips = current_trips.Where(a => (a.from_plc + ",").Contains(request.from.city + ","));
-                    }
+                    //if (!string.IsNullOrEmpty(request.from.country))
+                    //{
+                    //    current_trips = current_trips.Where(a => (a.from_plc + ",").Contains(request.from.country + ","));
+                    //}
+                    //if (!string.IsNullOrEmpty(request.from.city))
+                    //{
+                    //    current_trips = current_trips.Where(a => (a.from_plc + ",").Contains(request.from.city + ","));
+                    //}
                     //if (string.IsNullOrEmpty(request.from.street))
                     //{
                     //    current_trips = current_trips.Where(a => (a.from_plc + ",").Contains(request.from.street + ","));
                     //}
                     if (request.from.lat != 0)
                     {
-                        decimal lat_from = request.from.lat - decimal.Parse("0.0005");
-                        decimal lat_to = request.from.lat + decimal.Parse("0.0005");
+                        decimal lat_from = request.from.lat - ((decimal)searchReduis / (decimal)1000000);
+                        decimal lat_to = request.from.lat + ((decimal)searchReduis / (decimal)1000000);
 
                         current_trips = current_trips.Where(a => a.from_lat  <= lat_to && a.from_lat  >= lat_from);
                     }
                     if (request.from.lng != 0)
                     {
-                        decimal lng_from = request.from.lng - decimal.Parse("0.0005");
-                        decimal lng_to = request.from.lng + decimal.Parse("0.0005");
+                        decimal lng_from = request.from.lng - ((decimal)searchReduis / (decimal)1000000);
+                        decimal lng_to = request.from.lng + ((decimal)searchReduis / (decimal)1000000);
 
                         current_trips = current_trips.Where(a => a.from_lng <= lng_to && a.from_lng >= lng_from);
                     }
                 }
                 if (request.to != null)
                 {
-                    if (!string.IsNullOrEmpty(request.to.country))
-                    {
-                        current_trips = current_trips.Where(a => (a.to_plc + ",").Contains(request.to.country + ","));
-                    }
-                    if (!string.IsNullOrEmpty(request.to.city))
-                    {
-                        current_trips = current_trips.Where(a => (a.to_plc + ",").Contains(request.to.city + ","));
-                    }
+                    //if (!string.IsNullOrEmpty(request.to.country))
+                    //{
+                    //    current_trips = current_trips.Where(a => (a.to_plc + ",").Contains(request.to.country + ","));
+                    //}
+                    //if (!string.IsNullOrEmpty(request.to.city))
+                    //{
+                    //    current_trips = current_trips.Where(a => (a.to_plc + ",").Contains(request.to.city + ","));
+                    //}
                     //if (string.IsNullOrEmpty(request.to.street))
                     //{
                     //    current_trips = current_trips.Where(a => (a.to_plc + ",").Contains(request.to.street + ","));
                     //}
                     if (request.to.lat != 0)
                     {
-                        decimal lat_from = request.to.lat - decimal.Parse("0.0005");
-                        decimal lat_to = request.to.lat + decimal.Parse("0.0005");
+                        decimal lat_from = request.to.lat - ((decimal)searchReduis / (decimal)1000000);
+                        decimal lat_to = request.to.lat + ((decimal)searchReduis / (decimal)1000000);
 
                         current_trips = current_trips.Where(a => a.to_lat <= lat_to && a.to_lat  >= lat_from);
                     }
                     if (request.to.lng != 0)
                     {
-                        decimal lng_from = request.to.lng - decimal.Parse("0.0005");
-                        decimal lng_to = request.to.lng + decimal.Parse("0.0005");
+                        decimal lng_from = request.to.lng - ((decimal)searchReduis / (decimal)1000000);
+                        decimal lng_to = request.to.lng + ((decimal)searchReduis / (decimal)1000000);
                         current_trips = current_trips.Where(a => a.to_lng <= lng_to && a.to_lng  >= lng_from);
                     }
                 }

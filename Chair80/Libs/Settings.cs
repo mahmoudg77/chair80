@@ -17,11 +17,12 @@ namespace Chair80.Libs
                 AppSetting = ctx.tbl_setting.ToList();
             }
         }
-        public static string Get(string key)
+        public static string Get(string key,string defaultValue=null)
         {
+            Load();
             var setting= AppSetting.FirstOrDefault(a => a.setting_key ==key);
             if (setting != null) return setting.setting_value;
-            return null;
+            return defaultValue;
         }
     }
 }
