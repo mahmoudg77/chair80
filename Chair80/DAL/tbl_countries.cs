@@ -12,7 +12,7 @@ namespace Chair80.DAL
     using System;
     using System.Collections.Generic;
     
-    public partial class tbl_countries:BLL.CountryTranslate
+    public partial class tbl_countries :BLL.CountryTranslate
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public tbl_countries()

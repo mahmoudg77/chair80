@@ -148,6 +148,7 @@
           <Property Name="original" Type="nvarchar" MaxLength="255" />
           <Property Name="created_at" Type="datetime" />
           <Property Name="created_by" Type="int" />
+          <Property Name="deleted_at" Type="datetime" />
         </EntityType>
         <EntityType Name="tbl_rate_reasons">
           <Key>
@@ -326,21 +327,20 @@ warning 6002: The table/view 'chari80_db.dbo.vwProfile' does not have a primary 
           <Property Name="MyVehicles" Type="int" />
           <Property Name="DriveVehicles" Type="int" />
           <Property Name="MyDrivers" Type="int" />
+          <Property Name="rate_total" Type="decimal" Precision="12" Scale="6" />
+          <Property Name="rate_count" Type="int" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'chari80_db.dbo.vwSeatsHistory' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="vwSeatsHistory">
           <Key>
             <PropertyRef Name="driver_name" />
-            <PropertyRef Name="rider_name" />
             <PropertyRef Name="driver_id" />
-            <PropertyRef Name="rider_id" />
-            <PropertyRef Name="book_id" />
           </Key>
           <Property Name="driver_name" Type="nvarchar" MaxLength="101" Nullable="false" />
-          <Property Name="rider_name" Type="nvarchar" MaxLength="101" Nullable="false" />
+          <Property Name="rider_name" Type="nvarchar" MaxLength="101" />
           <Property Name="driver_id" Type="int" Nullable="false" />
-          <Property Name="rider_id" Type="int" Nullable="false" />
+          <Property Name="rider_id" Type="int" />
           <Property Name="started_at" Type="datetime" />
           <Property Name="ended_at" Type="datetime" />
           <Property Name="from_plc" Type="nvarchar" MaxLength="200" />
@@ -355,7 +355,7 @@ warning 6002: The table/view 'chari80_db.dbo.vwSeatsHistory' does not have a pri
           <Property Name="trip_type_id" Type="int" />
           <Property Name="canceled_at" Type="datetime" />
           <Property Name="start_at_date" Type="datetime" />
-          <Property Name="book_id" Type="int" Nullable="false" />
+          <Property Name="book_id" Type="int" />
           <Property Name="seat_cost" Type="decimal" Precision="18" Scale="2" />
           <Property Name="guid" Type="uniqueidentifier" />
         </EntityType>
@@ -445,6 +445,7 @@ warning 6002: The table/view 'chari80_db.dbo.vwTripsDetails' does not have a pri
           <Property Name="started_seats" Type="int" />
           <Property Name="ended_seats" Type="int" />
           <Property Name="reached_seats" Type="int" />
+          <Property Name="camera_status" Type="bit" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'chari80_db.dbo.vwTripSeatDetails' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -611,18 +612,6 @@ warning 6002: The table/view 'chari80_db.dbo.vwTripSeatDetails' does not have a 
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_tbl_drivers_vechiles_rel_vechile">
-          <End Role="tbl_vehicles" Type="Self.tbl_vehicles" Multiplicity="0..1" />
-          <End Role="tbl_drivers_vehicles_rel" Type="Self.tbl_drivers_vehicles_rel" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="tbl_vehicles">
-              <PropertyRef Name="id" />
-            </Principal>
-            <Dependent Role="tbl_drivers_vehicles_rel">
-              <PropertyRef Name="vehicle_id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_tbl_drivers_vehicles_rel_driver">
           <End Role="tbl_accounts" Type="Self.tbl_accounts" Multiplicity="0..1">
             <OnDelete Action="Cascade" />
@@ -652,7 +641,9 @@ warning 6002: The table/view 'chari80_db.dbo.vwTripSeatDetails' does not have a 
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_trip_book_trip_share_details">
-          <End Role="trip_share_details" Type="Self.trip_share_details" Multiplicity="1" />
+          <End Role="trip_share_details" Type="Self.trip_share_details" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="trip_book" Type="Self.trip_book" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="trip_share_details">
@@ -676,7 +667,9 @@ warning 6002: The table/view 'chari80_db.dbo.vwTripSeatDetails' does not have a 
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_trip_request_details_trip_request">
-          <End Role="trip_request" Type="Self.trip_request" Multiplicity="1" />
+          <End Role="trip_request" Type="Self.trip_request" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="trip_request_details" Type="Self.trip_request_details" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="trip_request">
@@ -688,7 +681,9 @@ warning 6002: The table/view 'chari80_db.dbo.vwTripSeatDetails' does not have a 
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_trip_request_tbl_accounts">
-          <End Role="tbl_accounts" Type="Self.tbl_accounts" Multiplicity="1" />
+          <End Role="tbl_accounts" Type="Self.tbl_accounts" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="trip_request" Type="Self.trip_request" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="tbl_accounts">
@@ -823,7 +818,9 @@ warning 6002: The table/view 'chari80_db.dbo.vwTripSeatDetails' does not have a 
     [vwProfile].[firebase_uid] AS [firebase_uid], 
     [vwProfile].[MyVehicles] AS [MyVehicles], 
     [vwProfile].[DriveVehicles] AS [DriveVehicles], 
-    [vwProfile].[MyDrivers] AS [MyDrivers]
+    [vwProfile].[MyDrivers] AS [MyDrivers], 
+    [vwProfile].[rate_total] AS [rate_total], 
+    [vwProfile].[rate_count] AS [rate_count]
     FROM [dbo].[vwProfile] AS [vwProfile]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="vwSeatsHistory" EntityType="Self.vwSeatsHistory" store:Type="Views" store:Schema="dbo">
@@ -918,7 +915,8 @@ warning 6002: The table/view 'chari80_db.dbo.vwTripSeatDetails' does not have a 
     [vwTripsDetails].[guid] AS [guid], 
     [vwTripsDetails].[started_seats] AS [started_seats], 
     [vwTripsDetails].[ended_seats] AS [ended_seats], 
-    [vwTripsDetails].[reached_seats] AS [reached_seats]
+    [vwTripsDetails].[reached_seats] AS [reached_seats], 
+    [vwTripsDetails].[camera_status] AS [camera_status]
     FROM [dbo].[vwTripsDetails] AS [vwTripsDetails]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="vwTripSeatDetails" EntityType="Self.vwTripSeatDetails" store:Type="Views" store:Schema="dbo">
@@ -993,10 +991,6 @@ warning 6002: The table/view 'chari80_db.dbo.vwTripSeatDetails' does not have a 
           <AssociationSet Name="FK_tbl_cities_tbl_countries" Association="Self.FK_tbl_cities_tbl_countries">
             <End Role="tbl_countries" EntitySet="tbl_countries" />
             <End Role="tbl_cities" EntitySet="tbl_cities" />
-          </AssociationSet>
-          <AssociationSet Name="FK_tbl_drivers_vechiles_rel_vechile" Association="Self.FK_tbl_drivers_vechiles_rel_vechile">
-            <End Role="tbl_vehicles" EntitySet="tbl_vehicles" />
-            <End Role="tbl_drivers_vehicles_rel" EntitySet="tbl_drivers_vehicles_rel" />
           </AssociationSet>
           <AssociationSet Name="FK_tbl_drivers_vehicles_rel_driver" Association="Self.FK_tbl_drivers_vehicles_rel_driver">
             <End Role="tbl_accounts" EntitySet="tbl_accounts" />
@@ -1170,6 +1164,7 @@ warning 6002: The table/view 'chari80_db.dbo.vwTripSeatDetails' does not have a 
           <Property Name="original" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="created_at" Type="DateTime" Precision="3" />
           <Property Name="created_by" Type="Int32" />
+          <Property Name="deleted_at" Type="DateTime" Precision="3" />
         </EntityType>
         <EntityType Name="tbl_setting">
           <Key>
@@ -1349,7 +1344,6 @@ warning 6002: The table/view 'chari80_db.dbo.vwTripSeatDetails' does not have a 
           <EntitySet Name="vwTripSeatDetails" EntityType="MainModel.vwTripSeatDetails" />
           <EntitySet Name="vwProfile" EntityType="MainModel.vwProfile" />
           <EntitySet Name="vwSeatsPending" EntityType="MainModel.vwSeatsPending" />
-          <EntitySet Name="vwSeatsHistory" EntityType="MainModel.vwSeatsHistory" />
           <EntitySet Name="tbl_rate_reasons" EntityType="MainModel.tbl_rate_reasons" />
           <EntitySet Name="tbl_drivers_vehicles_rel" EntityType="MainModel.tbl_drivers_vehicles_rel" />
           <AssociationSet Name="FK_tbl_drivers_vehicles_rel_driver" Association="MainModel.FK_tbl_drivers_vehicles_rel_driver">
@@ -1377,6 +1371,7 @@ warning 6002: The table/view 'chari80_db.dbo.vwTripSeatDetails' does not have a 
             <End Role="tbl_genders" EntitySet="tbl_genders" />
             <End Role="trip_share_details" EntitySet="trip_share_details" />
           </AssociationSet>
+          <EntitySet Name="vwSeatsHistory" EntityType="MainModel.vwSeatsHistory" />
           </EntityContainer>
         <EntityType Name="tbl_accounts">
           <Key>
@@ -1743,6 +1738,7 @@ warning 6002: The table/view 'chari80_db.dbo.vwTripSeatDetails' does not have a 
           <Property Name="started_seats" Type="Int32" />
           <Property Name="ended_seats" Type="Int32" />
           <Property Name="reached_seats" Type="Int32" />
+          <Property Name="camera_status" Type="Boolean" />
         </EntityType>
         <EntityType Name="vwTripSeatDetails">
           <Key>
@@ -1824,6 +1820,8 @@ warning 6002: The table/view 'chari80_db.dbo.vwTripSeatDetails' does not have a 
           <Property Name="MyVehicles" Type="Int32" />
           <Property Name="DriveVehicles" Type="Int32" />
           <Property Name="MyDrivers" Type="Int32" />
+          <Property Name="rate_total" Type="Decimal" Precision="12" Scale="6" />
+          <Property Name="rate_count" Type="Int32" />
         </EntityType>
         <EntityType Name="vwSeatsPending">
           <Key>
@@ -1847,36 +1845,6 @@ warning 6002: The table/view 'chari80_db.dbo.vwTripSeatDetails' does not have a 
           <Property Name="seat_cost_from" Type="Decimal" Precision="18" Scale="2" />
           <Property Name="seat_cost_to" Type="Decimal" Precision="18" Scale="2" />
           <Property Name="seat_cost" Type="Decimal" Precision="18" Scale="2" />
-        </EntityType>
-        <EntityType Name="vwSeatsHistory">
-          <Key>
-            <PropertyRef Name="driver_name" />
-            <PropertyRef Name="rider_name" />
-            <PropertyRef Name="driver_id" />
-            <PropertyRef Name="rider_id" />
-            <PropertyRef Name="book_id" />
-          </Key>
-          <Property Name="driver_name" Type="String" Nullable="false" MaxLength="101" FixedLength="false" Unicode="true" />
-          <Property Name="rider_name" Type="String" Nullable="false" MaxLength="101" FixedLength="false" Unicode="true" />
-          <Property Name="driver_id" Type="Int32" Nullable="false" />
-          <Property Name="rider_id" Type="Int32" Nullable="false" />
-          <Property Name="started_at" Type="DateTime" Precision="3" />
-          <Property Name="ended_at" Type="DateTime" Precision="3" />
-          <Property Name="from_plc" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
-          <Property Name="from_lng" Type="Decimal" Precision="18" Scale="6" />
-          <Property Name="from_lat" Type="Decimal" Precision="18" Scale="6" />
-          <Property Name="to_plc" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
-          <Property Name="to_lng" Type="Decimal" Precision="18" Scale="6" />
-          <Property Name="to_lat" Type="Decimal" Precision="18" Scale="6" />
-          <Property Name="driver_rate" Type="Int32" />
-          <Property Name="rider_rate" Type="Int32" />
-          <Property Name="seats" Type="Int32" />
-          <Property Name="trip_type_id" Type="Int32" />
-          <Property Name="canceled_at" Type="DateTime" Precision="3" />
-          <Property Name="start_at_date" Type="DateTime" Precision="3" />
-          <Property Name="book_id" Type="Int32" Nullable="false" />
-          <Property Name="seat_cost" Type="Decimal" Precision="18" Scale="2" />
-          <Property Name="guid" Type="Guid" />
         </EntityType>
         <EntityType Name="tbl_rate_reasons">
           <Key>
@@ -1982,6 +1950,33 @@ warning 6002: The table/view 'chari80_db.dbo.vwTripSeatDetails' does not have a 
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="vwSeatsHistory">
+          <Key>
+            <PropertyRef Name="driver_name" />
+            <PropertyRef Name="driver_id" />
+          </Key>
+          <Property Name="driver_name" Type="String" Nullable="false" MaxLength="101" FixedLength="false" Unicode="true" />
+          <Property Name="rider_name" Type="String" MaxLength="101" FixedLength="false" Unicode="true" />
+          <Property Name="driver_id" Type="Int32" Nullable="false" />
+          <Property Name="rider_id" Type="Int32" />
+          <Property Name="started_at" Type="DateTime" Precision="3" />
+          <Property Name="ended_at" Type="DateTime" Precision="3" />
+          <Property Name="from_plc" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="from_lng" Type="Decimal" Precision="18" Scale="6" />
+          <Property Name="from_lat" Type="Decimal" Precision="18" Scale="6" />
+          <Property Name="to_plc" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="to_lng" Type="Decimal" Precision="18" Scale="6" />
+          <Property Name="to_lat" Type="Decimal" Precision="18" Scale="6" />
+          <Property Name="driver_rate" Type="Int32" />
+          <Property Name="rider_rate" Type="Int32" />
+          <Property Name="seats" Type="Int32" />
+          <Property Name="trip_type_id" Type="Int32" />
+          <Property Name="canceled_at" Type="DateTime" Precision="3" />
+          <Property Name="start_at_date" Type="DateTime" Precision="3" />
+          <Property Name="book_id" Type="Int32" />
+          <Property Name="seat_cost" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="guid" Type="Guid" />
+        </EntityType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -2091,6 +2086,7 @@ warning 6002: The table/view 'chari80_db.dbo.vwTripSeatDetails' does not have a 
           <EntitySetMapping Name="tbl_images">
             <EntityTypeMapping TypeName="MainModel.tbl_images">
               <MappingFragment StoreEntitySet="tbl_images">
+                <ScalarProperty Name="deleted_at" ColumnName="deleted_at" />
                 <ScalarProperty Name="created_by" ColumnName="created_by" />
                 <ScalarProperty Name="created_at" ColumnName="created_at" />
                 <ScalarProperty Name="id" ColumnName="id" />
@@ -2271,6 +2267,7 @@ warning 6002: The table/view 'chari80_db.dbo.vwTripSeatDetails' does not have a 
           <EntitySetMapping Name="vwTripsDetails">
             <EntityTypeMapping TypeName="MainModel.vwTripsDetails">
               <MappingFragment StoreEntitySet="vwTripsDetails">
+                <ScalarProperty Name="camera_status" ColumnName="camera_status" />
                 <ScalarProperty Name="reached_seats" ColumnName="reached_seats" />
                 <ScalarProperty Name="ended_seats" ColumnName="ended_seats" />
                 <ScalarProperty Name="started_seats" ColumnName="started_seats" />
@@ -2362,6 +2359,8 @@ warning 6002: The table/view 'chari80_db.dbo.vwTripSeatDetails' does not have a 
           <EntitySetMapping Name="vwProfile">
             <EntityTypeMapping TypeName="MainModel.vwProfile">
               <MappingFragment StoreEntitySet="vwProfile">
+                <ScalarProperty Name="rate_count" ColumnName="rate_count" />
+                <ScalarProperty Name="rate_total" ColumnName="rate_total" />
                 <ScalarProperty Name="MyDrivers" ColumnName="MyDrivers" />
                 <ScalarProperty Name="DriveVehicles" ColumnName="DriveVehicles" />
                 <ScalarProperty Name="MyVehicles" ColumnName="MyVehicles" />
@@ -2411,33 +2410,6 @@ warning 6002: The table/view 'chari80_db.dbo.vwTripSeatDetails' does not have a 
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="vwSeatsHistory">
-            <EntityTypeMapping TypeName="MainModel.vwSeatsHistory">
-              <MappingFragment StoreEntitySet="vwSeatsHistory">
-                <ScalarProperty Name="guid" ColumnName="guid" />
-                <ScalarProperty Name="seat_cost" ColumnName="seat_cost" />
-                <ScalarProperty Name="book_id" ColumnName="book_id" />
-                <ScalarProperty Name="start_at_date" ColumnName="start_at_date" />
-                <ScalarProperty Name="canceled_at" ColumnName="canceled_at" />
-                <ScalarProperty Name="trip_type_id" ColumnName="trip_type_id" />
-                <ScalarProperty Name="seats" ColumnName="seats" />
-                <ScalarProperty Name="rider_rate" ColumnName="rider_rate" />
-                <ScalarProperty Name="driver_rate" ColumnName="driver_rate" />
-                <ScalarProperty Name="to_lat" ColumnName="to_lat" />
-                <ScalarProperty Name="to_lng" ColumnName="to_lng" />
-                <ScalarProperty Name="to_plc" ColumnName="to_plc" />
-                <ScalarProperty Name="from_lat" ColumnName="from_lat" />
-                <ScalarProperty Name="from_lng" ColumnName="from_lng" />
-                <ScalarProperty Name="from_plc" ColumnName="from_plc" />
-                <ScalarProperty Name="ended_at" ColumnName="ended_at" />
-                <ScalarProperty Name="started_at" ColumnName="started_at" />
-                <ScalarProperty Name="rider_id" ColumnName="rider_id" />
-                <ScalarProperty Name="driver_id" ColumnName="driver_id" />
-                <ScalarProperty Name="rider_name" ColumnName="rider_name" />
-                <ScalarProperty Name="driver_name" ColumnName="driver_name" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="tbl_rate_reasons">
             <EntityTypeMapping TypeName="MainModel.tbl_rate_reasons">
               <MappingFragment StoreEntitySet="tbl_rate_reasons">
@@ -2463,6 +2435,33 @@ warning 6002: The table/view 'chari80_db.dbo.vwTripSeatDetails' does not have a 
               <MappingFragment StoreEntitySet="tbl_genders">
                 <ScalarProperty Name="name" ColumnName="name" />
                 <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="vwSeatsHistory">
+            <EntityTypeMapping TypeName="MainModel.vwSeatsHistory">
+              <MappingFragment StoreEntitySet="vwSeatsHistory">
+                <ScalarProperty Name="guid" ColumnName="guid" />
+                <ScalarProperty Name="seat_cost" ColumnName="seat_cost" />
+                <ScalarProperty Name="book_id" ColumnName="book_id" />
+                <ScalarProperty Name="start_at_date" ColumnName="start_at_date" />
+                <ScalarProperty Name="canceled_at" ColumnName="canceled_at" />
+                <ScalarProperty Name="trip_type_id" ColumnName="trip_type_id" />
+                <ScalarProperty Name="seats" ColumnName="seats" />
+                <ScalarProperty Name="rider_rate" ColumnName="rider_rate" />
+                <ScalarProperty Name="driver_rate" ColumnName="driver_rate" />
+                <ScalarProperty Name="to_lat" ColumnName="to_lat" />
+                <ScalarProperty Name="to_lng" ColumnName="to_lng" />
+                <ScalarProperty Name="to_plc" ColumnName="to_plc" />
+                <ScalarProperty Name="from_lat" ColumnName="from_lat" />
+                <ScalarProperty Name="from_lng" ColumnName="from_lng" />
+                <ScalarProperty Name="from_plc" ColumnName="from_plc" />
+                <ScalarProperty Name="ended_at" ColumnName="ended_at" />
+                <ScalarProperty Name="started_at" ColumnName="started_at" />
+                <ScalarProperty Name="rider_id" ColumnName="rider_id" />
+                <ScalarProperty Name="driver_id" ColumnName="driver_id" />
+                <ScalarProperty Name="rider_name" ColumnName="rider_name" />
+                <ScalarProperty Name="driver_name" ColumnName="driver_name" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

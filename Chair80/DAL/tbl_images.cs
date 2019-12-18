@@ -24,5 +24,6 @@ namespace Chair80.DAL
         public string original { get; set; }
         public Nullable<System.DateTime> created_at { get; set; }
         public Nullable<int> created_by { get; set; }
+        public Nullable<System.DateTime> deleted_at { get; set; }
     }
 }

@@ -60,5 +60,6 @@ namespace Chair80.DAL
         public Nullable<int> started_seats { get; set; }
         public Nullable<int> ended_seats { get; set; }
         public Nullable<int> reached_seats { get; set; }
+        public Nullable<bool> camera_status { get; set; }
     }
 }

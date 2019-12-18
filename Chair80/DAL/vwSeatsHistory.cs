@@ -17,7 +17,7 @@ namespace Chair80.DAL
         public string driver_name { get; set; }
         public string rider_name { get; set; }
         public int driver_id { get; set; }
-        public int rider_id { get; set; }
+        public Nullable<int> rider_id { get; set; }
         public Nullable<System.DateTime> started_at { get; set; }
         public Nullable<System.DateTime> ended_at { get; set; }
         public string from_plc { get; set; }
@@ -32,7 +32,7 @@ namespace Chair80.DAL
         public Nullable<int> trip_type_id { get; set; }
         public Nullable<System.DateTime> canceled_at { get; set; }
         public Nullable<System.DateTime> start_at_date { get; set; }
-        public int book_id { get; set; }
+        public Nullable<int> book_id { get; set; }
         public Nullable<decimal> seat_cost { get; set; }
         public Nullable<System.Guid> guid { get; set; }
     }

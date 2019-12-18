@@ -12,8 +12,8 @@ namespace Chair80.DAL
     using System;
     using System.Collections.Generic;
     
-    public partial class trip_types:BLL.TripTypesTranslate
-    {
+    public partial class trip_types : BLL.TripTypesTranslate
+    { 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public trip_types()
         {

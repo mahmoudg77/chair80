@@ -35,17 +35,19 @@ namespace Chair80.Controllers.Trips
 
             using (var ctx = new DAL.MainEntities())
             {
-                var sTime = DateTime.Now.AddMinutes(60);
+                var sTime = DateTime.Now.AddMinutes(180);
                 var cDate = DateTime.Now.Date;
-                var cTime = DateTime.Now.AddMinutes(-30);
+                var cTime = DateTime.Now.AddMinutes(-180);
 
                 if (is_rider)
                 {
-                    var books = ctx.trip_book.Include("trip_request_details").Include("trip_request_details.trip_request").Where(a => a.trip_request_details.trip_request.rider_id == u.Entity.id && a.end_at == null && a.reached_at != null).OrderByDescending(a=>a.id).FirstOrDefault();
+                    var books = ctx.trip_book.Include("trip_request_details").Include("trip_request_details.trip_request").Where(a => a.trip_request_details.trip_request.rider_id == u.Entity.id && a.end_at == null && a.reached_at != null).OrderBy(a=>a.id).FirstOrDefault();
+                    if(books==null)
+                        return APIResult<DAL.vwTripsDetails>.Success(null);
                     return APIResult<DAL.vwTripsDetails>.Success(ctx.vwTripsDetails.Where(a => a.trip_id==books.trip_share_details_id).OrderByDescending(a=>a.trip_id).FirstOrDefault());
 
                 } else
-                return APIResult<DAL.vwTripsDetails>.Success(ctx.vwTripsDetails.Where(a => a.start_at_date < sTime && a.start_at_date > cTime && a.is_active == true && a.driver_id==u.Entity.id && ((a.ended_seats<a.started_seats && a.started_seats>0) || (a.started_seats==0))).OrderByDescending(a=>a.trip_id).FirstOrDefault());
+                return APIResult<DAL.vwTripsDetails>.Success(ctx.vwTripsDetails.Where(a => a.start_at_date>cTime && a.start_at_date<=sTime &&  a.is_active == true && a.driver_id==u.Entity.id && ((a.ended_seats<a.started_seats && a.started_seats>0) || (a.started_seats==0))).OrderBy(a=>a.trip_id).FirstOrDefault());
             }
         }
 
@@ -182,7 +184,7 @@ namespace Chair80.Controllers.Trips
                   
                 }
 
-                if (token == null) return APIResult<string>.Error(ResponseCode.UserValidationField, "There is no trip to share it!");
+                if (token == Guid.Empty || token==null) return APIResult<string>.Error(ResponseCode.UserValidationField, "There is no trip to share it!");
 
                 return APIResult<string>.Success(Settings.Get("site_url") + "/Trip/Tracking/" + token);
             }

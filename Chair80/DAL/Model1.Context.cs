@@ -49,9 +49,9 @@ namespace Chair80.DAL
         public virtual DbSet<vwTripSeatDetails> vwTripSeatDetails { get; set; }
         public virtual DbSet<vwProfile> vwProfile { get; set; }
         public virtual DbSet<vwSeatsPending> vwSeatsPending { get; set; }
-        public virtual DbSet<vwSeatsHistory> vwSeatsHistory { get; set; }
         public virtual DbSet<tbl_rate_reasons> tbl_rate_reasons { get; set; }
         public virtual DbSet<tbl_drivers_vehicles_rel> tbl_drivers_vehicles_rel { get; set; }
         public virtual DbSet<tbl_genders> tbl_genders { get; set; }
+        public virtual DbSet<vwSeatsHistory> vwSeatsHistory { get; set; }
     }
 }

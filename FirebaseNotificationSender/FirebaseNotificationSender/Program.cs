@@ -39,7 +39,7 @@ namespace FirebaseNotificationSender
                 fbt = trip.trip_request.tbl_accounts.sec_users.sec_sessions.Where(a => a.end_time == null).OrderByDescending(a => a.start_time).FirstOrDefault().device_id;
             }
 
-            Libs.FirebaseNotifications.Send(new string[] { fbt }, "Schedule Trip", "You have a schedule will started within a few minuts.", new { type = 7, screen = "schedule", id = tripid });
+            Libs.FirebaseNotifications.Send(new string[] { fbt }, "Schedule Trip", "You have a scheduled trip will start within a few minutes.", new { type = 7, screen = "schedule", id = tripid });
 
         }
     }

@@ -30,6 +30,28 @@ namespace Chair80.Controllers.Trips
 
             using (var ctx=new DAL.MainEntities())
             {
+
+
+                var t = new Controllers.Trips.TripController();
+
+                checkCurrent:
+                var currTrip = t.Current().data;
+
+                if (currTrip != null)
+                {
+                    if (currTrip.booked_seats == 0)
+                    {
+                        var trp = ctx.trip_share_details.Find(currTrip.trip_id);
+                        trp.is_active = false;
+                        ctx.Entry(trp).State = System.Data.Entity.EntityState.Modified;
+                        ctx.SaveChanges();
+                        goto checkCurrent;
+                    }
+                    else
+                    {
+                        return APIResult<DAL.vwTripsDetails>.Error(ResponseCode.UserNotAcceptable, "You have already trip, You cannot share new trip");
+                    }
+                }
                 var Trip = new DAL.trip_share()
                 {
                     created_at = DateTime.Now,
@@ -216,7 +238,7 @@ namespace Chair80.Controllers.Trips
                 
                 current_trips = current_trips.Where(a => a.start_at_date < sTime && a.start_at_date > rTime);
 
-                current_trips = current_trips.Where(a => a.seat_cost_from <= details.seat_cost && a.seat_cost_to >= details.seat_cost);
+                current_trips = current_trips.Where(a => ((a.seat_cost_from > 0 && a.seat_cost_from <= details.seat_cost) || a.seat_cost_from==0) && ((a.seat_cost_to>0 && a.seat_cost_to >= details.seat_cost) || a.seat_cost_to ==0));
                 current_trips = current_trips.Where(a => a.seats <= details.seats);
                 current_trips = current_trips.Where(a => a.is_active == true);
                 current_trips = current_trips.Where(a => a.booked ==false || a.booked==null);
@@ -388,10 +410,7 @@ namespace Chair80.Controllers.Trips
             {
 
                 var current_trips = ctx.vwTripsDetails.Where(a=>a.is_active==true).AsQueryable();
-                if (request.firebase_ids != null && request.firebase_ids.Count() > 0)
-                {
-                    current_trips = current_trips.Where(a => request.firebase_ids.Contains(a.acc_firebase_uid));
-                }
+               
                 if (request.from!=null)
                 {
                     //if (!string.IsNullOrEmpty(request.from.country))
@@ -419,6 +438,13 @@ namespace Chair80.Controllers.Trips
                         decimal lng_to = request.from.lng + ((decimal)searchReduis / (decimal)1000000);
 
                         current_trips = current_trips.Where(a => a.from_lng <= lng_to && a.from_lng >= lng_from);
+                    }
+                }
+                else
+                {
+                    if (request.firebase_ids != null && request.firebase_ids.Count() > 0)
+                    {
+                        current_trips = current_trips.Where(a => request.firebase_ids.Contains(a.acc_firebase_uid));
                     }
                 }
                 if (request.to != null)

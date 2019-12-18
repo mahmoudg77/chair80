@@ -45,7 +45,6 @@
         <EntityTypeShape EntityType="MainModel.vwTripSeatDetails" Width="1.5" PointX="3.375" PointY="13.75" />
         <EntityTypeShape EntityType="MainModel.vwProfile" Width="1.5" PointX="9.375" PointY="11.75" />
         <EntityTypeShape EntityType="MainModel.vwSeatsPending" Width="1.5" PointX="15.375" PointY="0.75" />
-        <EntityTypeShape EntityType="MainModel.vwSeatsHistory" Width="1.5" PointX="5.375" PointY="13.75" />
         <EntityTypeShape EntityType="MainModel.tbl_rate_reasons" Width="1.5" PointX="15.375" PointY="6" />
         <EntityTypeShape EntityType="MainModel.tbl_drivers_vehicles_rel" Width="1.5" PointX="12.75" PointY="0.75" />
         <AssociationConnector Association="MainModel.FK_tbl_drivers_vehicles_rel_driver" />
@@ -55,6 +54,7 @@
         <AssociationConnector Association="MainModel.FK_tbl_accounts_tbl_genders" />
         <AssociationConnector Association="MainModel.FK_trip_request_details_tbl_genders" />
         <AssociationConnector Association="MainModel.FK_trip_share_details_tbl_genders" />
+        <EntityTypeShape EntityType="MainModel.vwSeatsHistory" Width="1.5" PointX="5.375" PointY="13.75" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

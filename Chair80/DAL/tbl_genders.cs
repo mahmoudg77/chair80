@@ -12,7 +12,7 @@ namespace Chair80.DAL
     using System;
     using System.Collections.Generic;
     
-    public partial class tbl_genders:BLL.GenderTranslate
+    public partial class tbl_genders :BLL.GenderTranslate
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public tbl_genders()
