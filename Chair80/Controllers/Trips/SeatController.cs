@@ -539,8 +539,9 @@ namespace Chair80.Controllers.Trips
             using (var ctx=new DAL.MainEntities())
             {
                 var selectedTrip = ctx.trip_share_details.Include("trip_share").FirstOrDefault(a => a.id == trip_id);
-                var cTime = DateTime.Now.AddMinutes(-30);
-                var triplist = ctx.trip_share_details.Include("trip_share").Where(a => a.trip_share_id == selectedTrip.trip_share_id && a.start_at_date >= cTime).ToList();
+                if(selectedTrip.trip_share.driver_id==u.Entity.id) return APIResult<List<DAL.trip_book>>.Error(ResponseCode.UserValidationField, "You cannot booking your shared trip!");
+                //var cTime = DateTime.Now.AddMinutes(-30) ; //&& a.start_at_date >= cTime
+                var triplist = ctx.trip_share_details.Include("trip_share").Where(a => a.trip_share_id == selectedTrip.trip_share_id ).ToList();
                 if (triplist.Count == 0)
                 {
                     return APIResult<List<DAL.trip_book>>.Error(ResponseCode.UserValidationField, "This trip not available for booking now!");
